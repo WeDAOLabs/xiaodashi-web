@@ -1,1 +1,55 @@
-# xiaodashi-web
+# 肖大师 Web (xiaodashi-web)
+
+这是一个现代化的全栈 Web 应用项目，采用前后端分离的 Monorepo 架构。
+
+## 技术栈
+
+- **前端 (Frontend)**: Next.js, React, TypeScript, Tailwind CSS
+- **后端 (Backend)**: NestJS, TypeScript, Prisma
+- **共享 (Shared)**: TypeScript 类型与工具库
+
+详细技术栈请参考 [docs/tech-stack.md](./docs/tech-stack.md)。
+
+## 项目结构
+
+本项目使用 npm workspaces 管理 Monorepo。
+
+- `frontend/`: 前端 Next.js 应用
+- `backend/`: 后端 NestJS 应用
+- `shared/`: 前后端共享的代码 (类型定义等)
+- `docs/`: 项目文档
+
+## 环境要求
+
+- Node.js 20.x 或更高版本
+- npm 9.x 或更高版本
+
+## 快速开始
+
+1. **安装依赖**
+   在项目根目录运行：
+   ```bash
+   npm install
+   ```
+
+2. **启动前端开发服务器**
+   ```bash
+   npm run dev:frontend
+   ```
+   前端应用将在 `http://localhost:3000` 启动。
+
+3. **启动后端开发服务器**
+   ```bash
+   npm run dev:backend
+   ```
+   后端服务将在 `http://localhost:3001` (默认) 启动。
+
+## 可用脚本
+
+所有脚本都应在项目根目录运行。
+
+- `npm run dev:frontend`: 启动前端开发服务器。
+- `npm run dev:backend`: 启动后端开发服务器。
+- `npm run build:frontend`: 构建前端生产环境代码。
+- `npm run build:backend`: 构建后端生产环境代码。
+- `npm run build:shared`: 构建共享模块。
