@@ -7,6 +7,10 @@
 /dist
 /build
 /out
+/backend/dist
+
+# TypeScript
+*.tsbuildinfo
 
 # Logs
 logs
@@ -29,3 +33,10 @@ yarn-error.log*
 
 # OS-specific
 .DS_Store
+
+# NestJS & Testing
+.nest/
+/coverage/
+
+# Generated files
+/backend/openapi.json

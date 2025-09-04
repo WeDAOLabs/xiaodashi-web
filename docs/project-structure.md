@@ -11,7 +11,7 @@ xiaodashi-web/
 │   ├── api-design.md              # API 设计规范
 │   └── development-guide.md       # 开发指南
 ├── frontend/                      # 前端项目 (Next.js)
-├── backend/                       # 后端项目 (Express.js)
+├── backend/                       # 后端项目 (NestJS)
 ├── shared/                        # 共享代码和类型定义
 ├── docker/                        # Docker 配置文件
 ├── scripts/                       # 部署和构建脚本
@@ -120,84 +120,39 @@ frontend/
 ```
 backend/
 ├── src/
-│   ├── controllers/              # 控制器层
-│   │   ├── auth.controller.ts    # 认证控制器
-│   │   ├── user.controller.ts    # 用户控制器
-│   │   ├── dashboard.controller.ts # 仪表板控制器
-│   │   └── index.ts              # 控制器导出
-│   ├── services/                 # 服务层 (业务逻辑)
-│   │   ├── auth.service.ts       # 认证服务
-│   │   ├── user.service.ts       # 用户服务
-│   │   ├── email.service.ts      # 邮件服务
-│   │   ├── file.service.ts       # 文件服务
-│   │   └── index.ts              # 服务导出
-│   ├── models/                   # 数据模型
-│   │   ├── user.model.ts         # 用户模型
-│   │   ├── auth.model.ts         # 认证模型
-│   │   └── index.ts              # 模型导出
-│   ├── routes/                   # 路由定义
-│   │   ├── auth.routes.ts        # 认证路由
-│   │   ├── user.routes.ts        # 用户路由
-│   │   ├── dashboard.routes.ts   # 仪表板路由
-│   │   └── index.ts              # 路由导出
-│   ├── middleware/               # 中间件
-│   │   ├── auth.middleware.ts    # 认证中间件
-│   │   ├── validation.middleware.ts # 验证中间件
-│   │   ├── error.middleware.ts   # 错误处理中间件
-│   │   ├── rate-limit.middleware.ts # 限流中间件
-│   │   ├── cors.middleware.ts    # CORS 中间件
-│   │   └── logger.middleware.ts  # 日志中间件
-│   ├── utils/                    # 工具函数
-│   │   ├── jwt.util.ts           # JWT 工具
-│   │   ├── bcrypt.util.ts        # 密码加密工具
-│   │   ├── validation.util.ts    # 验证工具
-│   │   ├── response.util.ts      # 响应格式化工具
-│   │   ├── logger.util.ts        # 日志工具
-│   │   └── date.util.ts          # 日期工具
-│   ├── types/                    # TypeScript 类型定义
-│   │   ├── auth.types.ts         # 认证类型
-│   │   ├── user.types.ts         # 用户类型
-│   │   ├── api.types.ts          # API 类型
-│   │   ├── database.types.ts     # 数据库类型
-│   │   └── common.types.ts       # 通用类型
-│   ├── config/                   # 配置文件
-│   │   ├── database.config.ts    # 数据库配置
-│   │   ├── redis.config.ts       # Redis 配置
-│   │   ├── jwt.config.ts         # JWT 配置
-│   │   ├── email.config.ts       # 邮件配置
-│   │   └── app.config.ts         # 应用配置
-│   ├── database/                 # 数据库相关
-│   │   ├── migrations/           # 数据库迁移
-│   │   ├── seeds/                # 数据库种子数据
-│   │   └── connection.ts         # 数据库连接
-│   ├── app.ts                    # 应用入口文件
-│   └── server.ts                 # 服务器启动文件
-├── prisma/                       # Prisma ORM 配置
-│   ├── schema.prisma             # 数据库模式定义
-│   ├── migrations/               # 数据库迁移文件
-│   └── seed.ts                   # 种子数据脚本
-├── tests/                        # 测试文件
-│   ├── unit/                     # 单元测试
-│   │   ├── controllers/          # 控制器测试
-│   │   ├── services/             # 服务测试
-│   │   └── utils/                # 工具函数测试
-│   ├── integration/              # 集成测试
-│   │   ├── auth.test.ts          # 认证集成测试
-│   │   └── user.test.ts          # 用户集成测试
-│   ├── fixtures/                 # 测试数据
-│   └── helpers/                  # 测试辅助函数
-├── docs/                         # API 文档
-│   ├── api.md                    # API 文档
-│   └── swagger.json              # Swagger 配置
-├── .env                          # 环境变量
-├── .env.example                  # 环境变量示例
-├── .eslintrc.json                # ESLint 配置
-├── .prettierrc                   # Prettier 配置
-├── jest.config.js                # Jest 测试配置
-├── nodemon.json                  # Nodemon 配置
-├── package.json                  # 项目依赖
-├── tsconfig.json                 # TypeScript 配置
-└── README.md                     # 后端项目说明
+│   ├── app.controller.ts    # 应用根控制器
+│   ├── app.module.ts        # 应用根模块
+│   ├── app.service.ts       # 应用根服务
+│   ├── main.ts              # 应用入口文件
+│   ├── users/               # 示例：用户模块
+│   │   ├── users.module.ts
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   ├── dto/               # 数据传输对象
+│   │   │   ├── create-user.dto.ts
+│   │   │   └── update-user.dto.ts
+│   │   └── entities/          # 数据实体
+│   │       └── user.entity.ts
+│   ├── auth/                # 示例：认证模块
+│   │   ├── auth.module.ts
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── dto/
+│   │   ├── guards/
+│   │   └── strategies/
+│   └── common/                # 通用模块/工具
+│       ├── decorators/
+│       ├── guards/
+│       └── pipes/
+├── test/                    # 测试文件
+│   ├── app.e2e-spec.ts      # e2e 测试
+│   └── jest-e2e.json        # e2e 测试配置
+├── .eslintrc.js             # ESLint 配置
+├── nest-cli.json            # NestJS CLI 配置文件
+├── package.json
+├── tsconfig.build.json
+├── tsconfig.json
+└── README.md
 ```
 
 ## 共享代码结构 (shared/)

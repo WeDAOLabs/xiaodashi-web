@@ -429,168 +429,75 @@ export const useCreateUser = () => {
 
 ## 后端开发指南
 
-### Express.js 应用结构
+### NestJS 应用结构
 
-#### 应用入口文件
+NestJS 强制使用一种有组织的、基于模块的架构。核心概念包括模块（Modules）、控制器（Controllers）和服务（Services）。
+
+- **模块 (`@Module`)**: 用于组织应用结构。每个应用至少有一个根模块 (`AppModule`)。
+- **控制器 (`@Controller`)**: 负责处理传入的请求和向客户端返回响应。通过装饰器（如 `@Get`, `@Post`）将路由绑定到处理方法。
+- **服务 (`@Injectable`)**: 负责处理业务逻辑。服务是“可注入的”，意味着可以被控制器或其他服务依赖。
+
+#### 应用入口文件 (`main.ts`)
 ```typescript
-// app.ts
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import { errorHandler } from './middleware/error.middleware';
-import { authRoutes } from './routes/auth.routes';
-import { userRoutes } from './routes/user.routes';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
 
-const app = express();
-
-// 中间件
-app.use(helmet());
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-}));
-
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 分钟
-  max: 100, // 限制每个 IP 100 次请求
-}));
-
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
-
-// 路由
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/users', userRoutes);
-
-// 错误处理
-app.use(errorHandler);
-
-export default app;
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  
+  // 设置全局 API 前缀, e.g., /api/v1
+  app.setGlobalPrefix('api/v1');
+  
+  // 启用 CORS
+  app.enableCors();
+  
+  await app.listen(process.env.PORT || 3001);
+}
+bootstrap();
 ```
 
-#### 控制器模式
+#### 控制器模式 (`*.controller.ts`)
 ```typescript
-// controllers/user.controller.ts
-import { Request, Response, NextFunction } from 'express';
-import { UserService } from '../services/user.service';
-import { CreateUserDto, UpdateUserDto } from '../types/user.types';
+import { Controller, Get } from '@nestjs/common';
+import { AppService } from './app.service';
 
+@Controller('users') // 路由前缀为 /users
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-  async getUsers(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { page = 1, limit = 20, search } = req.query;
-      const users = await this.userService.getUsers({
-        page: Number(page),
-        limit: Number(limit),
-        search: search as string,
-      });
-      
-      res.json({
-        success: true,
-        data: users,
-        message: '获取用户列表成功',
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async createUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      const userData: CreateUserDto = req.body;
-      const user = await this.userService.createUser(userData);
-      
-      res.status(201).json({
-        success: true,
-        data: user,
-        message: '用户创建成功',
-      });
-    } catch (error) {
-      next(error);
-    }
+  @Get()
+  findAll() {
+    return this.userService.findAll();
   }
 }
 ```
 
-#### 服务层模式
+#### 服务层模式 (`*.service.ts`)
 ```typescript
-// services/user.service.ts
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
-import { CreateUserDto, UpdateUserDto } from '../types/user.types';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service'; // 假设 Prisma 服务已创建
 
+@Injectable()
 export class UserService {
-  constructor(private prisma: PrismaClient) {}
+  constructor(private prisma: PrismaService) {}
 
-  async getUsers(options: {
-    page: number;
-    limit: number;
-    search?: string;
-  }) {
-    const { page, limit, search } = options;
-    const skip = (page - 1) * limit;
-
-    const where = search ? {
-      OR: [
-        { name: { contains: search, mode: 'insensitive' as const } },
-        { email: { contains: search, mode: 'insensitive' as const } },
-      ],
-    } : {};
-
-    const [users, total] = await Promise.all([
-      this.prisma.user.findMany({
-        where,
-        skip,
-        take: limit,
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      }),
-      this.prisma.user.count({ where }),
-    ]);
-
+  async findAll() {
+    const users = await this.prisma.user.findMany();
+    // 遵循统一响应格式
     return {
-      items: users,
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
-        hasPrev: page > 1,
-      },
+      success: true,
+      data: users,
+      message: '获取用户列表成功',
+      code: 200,
+      timestamp: new Date().toISOString(),
     };
-  }
-
-  async createUser(userData: CreateUserDto) {
-    const hashedPassword = await bcrypt.hash(userData.password, 12);
-    
-    const user = await this.prisma.user.create({
-      data: {
-        ...userData,
-        password: hashedPassword,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        createdAt: true,
-      },
-    });
-
-    return user;
   }
 }
 ```
 
 ### 数据库操作 (Prisma)
+
+NestJS 与 Prisma 的集成非常成熟。通常会创建一个 `PrismaModule` 和 `PrismaService` 来在整个应用中共享数据库连接。
 
 #### Schema 定义
 ```prisma
@@ -628,110 +535,51 @@ enum Role {
 # 创建迁移
 npx prisma migrate dev --name add_user_table
 
-# 重置数据库
-npx prisma migrate reset
+# 应用迁移
+npx prisma migrate deploy
 
 # 生成 Prisma Client
 npx prisma generate
 ```
 
-### 中间件开发
+### 数据验证 (Pipes & DTOs)
 
-#### 认证中间件
+NestJS 使用管道（Pipes）和数据传输对象（DTOs）来处理输入验证，通常与 `class-validator` 和 `class-transformer` 库结合使用。
+
+#### 创建 DTO (`create-user.dto.ts`)
 ```typescript
-// middleware/auth.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import { IsEmail, IsString, MinLength } from 'class-validator';
 
-const prisma = new PrismaClient();
+export class CreateUserDto {
+  @IsString()
+  @MinLength(2)
+  name: string;
 
-export const authenticateToken = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1];
+  @IsEmail()
+  email: string;
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: 'AUTH_INVALID_TOKEN',
-          message: '访问令牌缺失',
-        },
-      });
-    }
+  @IsString()
+  @MinLength(6)
+  password: string;
+}
+```
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: { id: true, email: true, name: true, role: true },
-    });
+#### 在控制器中使用 DTO
+```typescript
+import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        error: {
-          code: 'AUTH_INVALID_TOKEN',
-          message: '用户不存在',
-        },
-      });
-    }
+@Controller('users')
+export class UserController {
+  // ...
 
-    req.user = user;
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      error: {
-        code: 'AUTH_INVALID_TOKEN',
-        message: '访问令牌无效',
-      },
-    });
+  @Post()
+  create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
-};
+}
 ```
-
-#### 验证中间件
-```typescript
-// middleware/validation.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import Joi from 'joi';
-
-export const validate = (schema: Joi.ObjectSchema) => {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const { error } = schema.validate(req.body);
-    
-    if (error) {
-      return res.status(422).json({
-        success: false,
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: '参数验证失败',
-          details: error.details.map(detail => ({
-            field: detail.path.join('.'),
-            message: detail.message,
-          })),
-        },
-      });
-    }
-    
-    next();
-  };
-};
-
-// 使用示例
-const createUserSchema = Joi.object({
-  name: Joi.string().min(2).max(50).required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-});
-
-router.post('/users', validate(createUserSchema), createUser);
-```
+要全局启用验证，可以在 `main.ts` 中添加 `app.useGlobalPipes(new ValidationPipe());`。
 
 ## 测试指南
 
@@ -1143,7 +991,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
 1. **环境搭建**: 详细的开发环境配置步骤
 2. **开发规范**: 代码风格、命名规范、Git 工作流
 3. **前端开发**: React 组件、状态管理、样式开发、API 集成
-4. **后端开发**: Express.js 应用结构、数据库操作、中间件开发
+4. **后端开发**: NestJS 应用结构、数据库操作、DTO 及验证管道
 5. **测试指南**: 前端和后端的测试策略
 6. **部署指南**: 开发和生产环境的部署方案
 7. **性能优化**: 前后端性能优化技巧

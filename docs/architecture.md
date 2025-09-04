@@ -9,9 +9,9 @@
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Backend API   │    │   Database      │
-│   (Next.js)     │◄──►│   (Node.js)     │◄──►│   (PostgreSQL)  │
+│   (Next.js)     │◄──►│   (NestJS)      │◄──►│   (PostgreSQL)  │
 │                 │    │                 │    │                 │
-│ - React 18      │    │ - Express.js    │    │ - 主数据库      │
+│ - React 18      │    │ - NestJS        │    │ - 主数据库      │
 │ - TypeScript    │    │ - TypeScript    │    │ - Redis 缓存    │
 │ - Tailwind CSS  │    │ - JWT 认证      │    │                 │
 │ - Zustand       │    │ - Prisma ORM    │    │                 │
@@ -31,12 +31,12 @@
 
 ### 后端技术栈
 - **Node.js**: JavaScript 运行时
-- **Express.js**: Web 应用框架
+- **NestJS**: 渐进式 Node.js 框架
 - **TypeScript**: 类型安全
 - **Prisma**: 现代化 ORM
 - **JWT**: 身份认证
 - **bcrypt**: 密码加密
-- **Joi**: 数据验证
+- **class-validator**: 数据验证
 
 ### 数据库
 - **PostgreSQL**: 主数据库
@@ -73,25 +73,27 @@ frontend/
 └── next.config.js
 ```
 
-### 后端结构 (Express.js)
+### 后端结构 (NestJS)
 ```
 backend/
 ├── src/
-│   ├── controllers/       # 控制器
-│   ├── services/         # 业务逻辑
-│   ├── models/           # 数据模型
-│   ├── routes/           # 路由定义
-│   ├── middleware/       # 中间件
-│   │   ├── auth.ts       # 认证中间件
-│   │   ├── validation.ts # 验证中间件
-│   │   └── error.ts      # 错误处理
-│   ├── utils/            # 工具函数
-│   ├── types/            # TypeScript 类型
-│   └── app.ts            # 应用入口
-├── prisma/               # 数据库相关
-│   ├── schema.prisma     # 数据库模式
-│   └── migrations/       # 数据库迁移
-├── tests/                # 测试文件
+│   ├── app.controller.ts    # 根控制器
+│   ├── app.module.ts        # 根模块
+│   ├── app.service.ts       # 根服务
+│   ├── main.ts              # 应用入口文件
+│   ├── users/               # 示例：用户模块
+│   │   ├── users.module.ts
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   └── entities/
+│   │       └── user.entity.ts
+│   └── auth/                # 示例：认证模块
+│       ├── auth.module.ts
+│       ├── auth.controller.ts
+│       ├── auth.service.ts
+│       └── guards/
+│           └── jwt-auth.guard.ts
+├── test/                    # 测试文件
 ├── package.json
 ├── tsconfig.json
 └── .env.example
