@@ -11,7 +11,11 @@ const Showcase = () => (
   </section>
 );
 
-const ShowcaseCard = ({ imageUrl }) => (
+interface ShowcaseCardProps {
+  imageUrl: string;
+}
+
+const ShowcaseCard = ({ imageUrl }: ShowcaseCardProps) => (
   <div
     className="w-full aspect-video rounded-2xl bg-cover bg-center bg-gray-100"
     style={{ backgroundImage: `url("${imageUrl}")` }}

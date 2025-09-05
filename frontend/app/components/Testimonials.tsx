@@ -23,7 +23,13 @@ const Testimonials = () => (
   </section>
 );
 
-const TestimonialCard = ({ title, description, imageUrl }) => (
+interface TestimonialCardProps {
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
+const TestimonialCard = ({ title, description, imageUrl }: TestimonialCardProps) => (
   <div className="flex flex-col gap-4">
     <div
       className="w-full aspect-square rounded-xl bg-cover bg-center bg-gray-100"

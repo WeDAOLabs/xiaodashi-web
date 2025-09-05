@@ -33,7 +33,13 @@ const Features = () => (
   </section>
 );
 
-const FeatureCard = ({ title, description, imageUrl }) => (
+interface FeatureCardProps {
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
+const FeatureCard = ({ title, description, imageUrl }: FeatureCardProps) => (
   <div className="flex flex-col items-center text-center gap-4">
     <div
       className="w-full aspect-square rounded-xl bg-cover bg-center bg-gray-100"
