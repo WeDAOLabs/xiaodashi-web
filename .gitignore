@@ -40,3 +40,4 @@ yarn-error.log*
 
 # Generated files
 /backend/openapi.json
+GEMINI.md
