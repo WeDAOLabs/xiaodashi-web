@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 const Hero = () => (
-  <section className="w-full text-center">
+  <section className="w-full text-center py-20 md:py-32">
     <div className="flex flex-col items-center justify-center gap-8">
       <div className="max-w-4xl">
         <h1 className="text-5xl font-black leading-tight tracking-tighter text-[var(--text-primary)] md:text-7xl">

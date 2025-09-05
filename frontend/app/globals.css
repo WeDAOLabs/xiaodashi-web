@@ -1,17 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-:root {
-  --primary-color: #0071e3;
-  --secondary-color: #1d1d1f;
-  --background-color: #ffffff;
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --accent-color: #0077ed;
+@theme {
+  --font-sans: var(--font-noto-sans-sc), var(--font-spline-sans), sans-serif;
 }
 
+:root {
+    --primary-color: #0071e3;
+    --secondary-color: #1d1d1f;
+    --background-color: #ffffff;
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --accent-color: #0077ed;
+}
 body {
-  background-color: var(--background-color);
-  color: var(--text-primary);
+    font-family: var(--font-sans);
+    background-color: var(--background-color);
+    color: var(--text-primary);
+}
+.apple-link {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.apple-link:hover {
+    text-decoration: underline;
 }

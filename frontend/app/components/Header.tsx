@@ -1,52 +1,76 @@
-import Link from 'next/link';
-import { SVGProps } from 'react';
+'use client';
 
-const Header = () => (
-  <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-10 py-4 backdrop-blur-md">
-    <div className="flex items-center gap-4">
-      <div className="size-8 text-[var(--primary-color)]">
-        <Icon />
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { SVGProps } from 'react';
+import { cn } from '@/lib/utils';
+
+const Header = () => {
+  const pathname = usePathname();
+
+  return (
+    <header className="sticky top-0 z-50 grid grid-cols-3 items-center whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-10 py-4 backdrop-blur-md">
+      <Link href="/" className="flex items-center gap-4 justify-self-start">
+        <div className="size-8 text-[var(--primary-color)]">
+          <Icon />
+        </div>
+        <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
+          智商180的AI全域营销大师
+        </h2>
+      </Link>
+      <nav className="flex items-center gap-8 justify-self-center">
+        <Link
+          href="/"
+          className={cn(
+            'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
+            pathname === '/'
+              ? 'text-[var(--text-primary)]'
+              : 'text-[var(--text-secondary)]'
+          )}
+        >
+          首页
+        </Link>
+        <Link
+          href="/products"
+          className={cn(
+            'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
+            pathname === '/products'
+              ? 'text-[var(--text-primary)]'
+              : 'text-[var(--text-secondary)]'
+          )}
+        >
+          产品
+        </Link>
+        <Link
+          href="#"
+          className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
+        >
+          解决方案
+        </Link>
+        <Link
+          href="#"
+          className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
+        >
+          客户案例
+        </Link>
+        <Link
+          href="#"
+          className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
+        >
+          定价
+        </Link>
+      </nav>
+      <div className="flex items-center gap-4 justify-self-end">
+        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-[var(--accent-color)]">
+          <span className="truncate">免费试用</span>
+        </button>
+        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gray-100 text-[var(--text-primary)] text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-gray-200">
+          <span className="truncate">登录</span>
+        </button>
       </div>
-      <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
-        智商180的AI全域营销大师
-      </h2>
-    </div>
-    <nav className="flex items-center gap-8">
-      <Link
-        href="#"
-        className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-      >
-        产品
-      </Link>
-      <Link
-        href="#"
-        className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-      >
-        解决方案
-      </Link>
-      <Link
-        href="#"
-        className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-      >
-        客户案例
-      </Link>
-      <Link
-        href="#"
-        className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-      >
-        定价
-      </Link>
-    </nav>
-    <div className="flex items-center gap-4">
-      <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-[var(--accent-color)]">
-        <span className="truncate">免费试用</span>
-      </button>
-      <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gray-100 text-[var(--text-primary)] text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-gray-200">
-        <span className="truncate">登录</span>
-      </button>
-    </div>
-  </header>
-);
+    </header>
+  );
+};
 
 export default Header;
 
