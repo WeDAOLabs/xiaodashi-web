@@ -25,7 +25,7 @@ const Header = () => {
     { href: '/products', text: '产品' },
     { href: '/solutions', text: '解决方案' },
     { href: '/customer-stories', text: '客户案例' },
-    { href: '#', text: '定价' },
+    { href: '/pricing', text: '定价' },
   ];
 
   return (
