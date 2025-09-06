@@ -11,23 +11,23 @@ const ComparisonTable = () => {
 
   const renderCell = (content: string | boolean | null) => {
     if (content === null) {
-      return <span className="text-gray-400">-</span>;
+      return <span className="text-[var(--text-secondary)]">-</span>;
     }
     if (typeof content === 'boolean' && content) {
-      return <CheckIcon className="w-6 h-6 mx-auto text-blue-600" />;
+      return <CheckIcon className="w-6 h-6 mx-auto text-[var(--primary-color)]" />;
     }
-    return <span className="text-gray-800 font-medium">{content}</span>;
+    return <span className="text-[var(--text-primary)] font-medium">{content}</span>;
   };
 
   return (
     <div className="mt-32">
-      <h2 className="text-center text-4xl font-bold text-gray-900 mb-16">功能比较</h2>
+      <h2 className="text-center text-4xl font-bold text-[var(--text-primary)] mb-16">功能比较</h2>
       
       {/* Desktop View: Table */}
       <div className="hidden md:block max-w-6xl mx-auto">
-        <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
+        <div className="bg-[var(--background-color)] rounded-xl border border-[var(--border-color)] overflow-x-auto">
           <table className="w-full text-base text-left min-w-[700px]">
-            <thead className="border-b border-gray-200">
+            <thead className="border-b border-[var(--border-color)]">
               <tr>
                 <th className="px-8 py-5 font-semibold min-w-[250px]" scope="col">功能</th>
                 <th className="px-8 py-5 text-center font-semibold" scope="col">个人版</th>
@@ -35,10 +35,10 @@ const ComparisonTable = () => {
                 <th className="px-8 py-5 text-center font-semibold" scope="col">企业版</th>
               </tr>
             </thead>
-            <tbody className="text-gray-600">
+            <tbody className="text-[var(--text-secondary)]">
               {features.map((feature) => (
-                <tr key={feature.name} className="border-b border-gray-200 last:border-b-0">
-                  <th className="px-8 py-4 font-medium text-gray-900 whitespace-nowrap" scope="row">{feature.name}</th>
+                <tr key={feature.name} className="border-b border-[var(--border-color)] last:border-b-0">
+                  <th className="px-8 py-4 font-medium text-[var(--text-primary)] whitespace-nowrap" scope="row">{feature.name}</th>
                   <td className="px-8 py-4 text-center">{renderCell(feature.personal)}</td>
                   <td className="px-8 py-4 text-center">{renderCell(feature.professional)}</td>
                   <td className="px-8 py-4 text-center">{renderCell(feature.enterprise)}</td>
@@ -52,19 +52,19 @@ const ComparisonTable = () => {
       {/* Mobile View: Cards */}
       <div className="block md:hidden max-w-md mx-auto space-y-4">
         {features.map((feature) => (
-          <div key={feature.name} className="p-4 bg-white rounded-lg border border-gray-200">
-            <h4 className="font-bold text-lg text-gray-900 mb-4 text-center border-b pb-2">{feature.name}</h4>
+          <div key={feature.name} className="p-4 bg-[var(--background-color)] rounded-lg border border-[var(--border-color)]">
+            <h4 className="font-bold text-lg text-[var(--text-primary)] mb-4 text-center border-b pb-2">{feature.name}</h4>
             <div className="grid grid-cols-3 gap-2 text-center text-sm">
               <div>
-                <p className="font-semibold text-gray-500 mb-1">个人版</p>
+                <p className="font-semibold text-[var(--text-secondary)] mb-1">个人版</p>
                 <div>{renderCell(feature.personal)}</div>
               </div>
               <div>
-                <p className="font-semibold text-gray-500 mb-1">专业版</p>
+                <p className="font-semibold text-[var(--text-secondary)] mb-1">专业版</p>
                 <div>{renderCell(feature.professional)}</div>
               </div>
               <div>
-                <p className="font-semibold text-gray-500 mb-1">企业版</p>
+                <p className="font-semibold text-[var(--text-secondary)] mb-1">企业版</p>
                 <div>{renderCell(feature.enterprise)}</div>
               </div>
             </div>

@@ -23,16 +23,22 @@ const Footer = () => (
           解决方案
         </Link>
         <Link
-          href="#"
+          href="/customer-stories"
           className="text-sm font-normal text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
         >
           客户案例
         </Link>
         <Link
-          href="#"
+          href="/pricing"
           className="text-sm font-normal text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
         >
           定价
+        </Link>
+        <Link
+          href="/community"
+          className="text-sm font-normal text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
+        >
+          社区
         </Link>
         <Link
           href="#"

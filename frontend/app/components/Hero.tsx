@@ -14,8 +14,8 @@ const Hero = () => (
           </p>
         </div>
         <div className="flex gap-4">
-          <Button>立即免费试用</Button>
-          <Button variant="secondary">联系销售</Button>
+          <Button href="#">立即免费试用</Button>
+          <Button href="#" variant="secondary">联系销售</Button>
         </div>
         <div className="relative mt-12 w-full max-h-[600px] overflow-hidden rounded-2xl shadow-2xl">
           <Image

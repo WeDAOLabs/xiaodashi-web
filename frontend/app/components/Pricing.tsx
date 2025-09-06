@@ -10,9 +10,7 @@ const Pricing = () => (
       我们的方案灵活多样，旨在与您的业务共同成长，在每个阶段都提供卓越价值。如需企业级定制解决方案，请联系我们的销售团队。
     </p>
     <div className="mt-8 flex justify-center">
-      <Button asChild>
-        <Link href="/pricing">查看定价方案</Link>
-      </Button>
+      <Button href="/pricing">查看定价方案</Button>
     </div>
   </section>
 );

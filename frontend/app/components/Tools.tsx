@@ -11,14 +11,10 @@ const Tools = () => {
         title="AI 营销，从未如此简单"
         description="体验我们顶尖的 AI 营销工具套件。免费试用，释放您的营销潜力。"
       >
-        <Button asChild>
-          <Link href="#">开始免费试用</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link href="#tools" className="flex items-center gap-1">
-            探索工具
-            <ChevronRightIcon className="w-5 h-5" />
-          </Link>
+        <Button href="#">开始免费试用</Button>
+        <Button href="#tools" variant="secondary" className="flex items-center gap-1">
+          探索工具
+          <ChevronRightIcon className="w-5 h-5" />
         </Button>
       </PageHero>
       <section className="py-20 md:py-28 bg-gray-50" id="tools">
@@ -43,16 +39,12 @@ const Tools = () => {
                   </p>
                 </div>
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <Button asChild variant="secondary">
-                    <Link href="#" className="flex items-center gap-1">
-                      了解更多
-                      <ChevronRightIcon className="w-5 h-5" />
-                    </Link>
+                  <Button href="#" variant="secondary" className="flex items-center gap-1">
+                    了解更多
+                    <ChevronRightIcon className="w-5 h-5" />
                   </Button>
-                  <Button asChild>
-                    <Link href="#">
-                      立即体验
-                    </Link>
+                  <Button href="#">
+                    立即体验
                   </Button>
                 </div>
               </div>
@@ -72,16 +64,12 @@ const Tools = () => {
                   智能规划和发布内容，实时互动，全面提升您的社交媒体影响力。
                 </p>
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <Button asChild variant="secondary">
-                    <Link href="#" className="flex items-center gap-1">
-                      了解更多
-                      <ChevronRightIcon className="w-5 h-5" />
-                    </Link>
+                  <Button href="#" variant="secondary" className="flex items-center gap-1">
+                    了解更多
+                    <ChevronRightIcon className="w-5 h-5" />
                   </Button>
-                  <Button asChild>
-                    <Link href="#">
-                      立即体验
-                    </Link>
+                  <Button href="#">
+                    立即体验
                   </Button>
                 </div>
               </div>
@@ -95,16 +83,12 @@ const Tools = () => {
                   个性化邮件模板，智能发送时间优化，显著提高邮件打开率和转化率。
                 </p>
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <Button asChild variant="secondary">
-                    <Link href="#" className="flex items-center gap-1">
-                      了解更多
-                      <ChevronRightIcon className="w-5 h-5" />
-                    </Link>
+                  <Button href="#" variant="secondary" className="flex items-center gap-1">
+                    了解更多
+                    <ChevronRightIcon className="w-5 h-5" />
                   </Button>
-                  <Button asChild>
-                    <Link href="#">
-                      立即体验
-                    </Link>
+                  <Button href="#">
+                    立即体验
                   </Button>
                 </div>
               </div>
@@ -118,15 +102,11 @@ const Tools = () => {
                   从关键词策略到内容优化，全方位提升搜索引擎排名。在一个仪表盘中，洞察所有营销活动数据。
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
-                  <Button asChild>
-                    <Link href="#">
-                      探索 SEO 工具
-                    </Link>
+                  <Button href="#">
+                    探索 SEO 工具
                   </Button>
-                  <Button asChild variant="secondary">
-                    <Link href="#" className="rounded-full border border-gray-600 bg-transparent px-5 py-2.5 text-sm font-normal text-white transition-colors hover:bg-gray-700">
-                      查看分析仪表盘
-                    </Link>
+                  <Button href="#" variant="secondary" className="rounded-full border border-gray-600 bg-transparent px-5 py-2.5 text-sm font-normal text-white transition-colors hover:bg-gray-700">
+                    查看分析仪表盘
                   </Button>
                 </div>
               </div>

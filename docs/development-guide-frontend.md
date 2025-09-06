@@ -49,6 +49,30 @@
 
 ---
 
+## 样式规范：使用CSS变量进行主题化
+
+**核心要求**: **严禁**在组件中硬编码颜色值。所有颜色都必须通过项目中预定义的CSS变量来引用，以确保全局主题的一致性和可维护性。
+
+项目中所有核心颜色都在 `globals.css` 的 `:root` 中定义，例如 `--primary-color`, `--text-primary`, `--background-color` 等。
+
+-   **错误实践 (Bad Practice):**
+    ```tsx
+    // 错误: 硬编码颜色值，破坏了主题。
+    <div className="bg-blue-600 text-white">
+      <p className="text-gray-500">Some text</p>
+    </div>
+    ```
+
+-   **正确实践 (Good Practice):**
+    ```tsx
+    // 正确: 使用CSS变量，与全局主题保持一致。
+    <div className="bg-[var(--primary-color)] text-white">
+      <p className="text-[var(--text-secondary)]">Some text</p>
+    </div>
+    ```
+
+---
+
 ## 组件导入规范
 
 - **路径别名 (Path Aliases):** 本项目前端使用 `@/` 作为 `frontend/` 目录的别名。所有组件和模块的导入都应优先使用此别名，以保证路径的一致性。例如，`@/app/components/Header`。在引用前，请确认 `tsconfig.json` 中 `paths` 的具体配置。

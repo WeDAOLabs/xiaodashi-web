@@ -32,12 +32,12 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-white/80 px-4 py-4 backdrop-blur-sm sm:px-10">
+      <header className="sticky top-0 z-40 flex items-center justify-between whitespace-nowrap border-b border-solid border-[var(--border-color)] bg-[var(--background-color)]/80 px-4 py-4 backdrop-blur-sm sm:px-10">
         <Link href="/" className="flex items-center gap-4">
-          <div className="size-8 text-blue-600">
+          <div className="size-8 text-[var(--primary-color)]">
             <Icon />
           </div>
-          <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-gray-900">
+          <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
             智商180的AI全域营销大师
           </h2>
         </Link>
@@ -47,10 +47,10 @@ const Header = () => {
               key={link.text}
               href={link.href}
               className={cn(
-                'text-sm font-medium transition-colors duration-200 hover:text-blue-600',
+                'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
                 pathname === link.href
-                  ? 'text-gray-900'
-                  : 'text-gray-500'
+                  ? 'text-[var(--text-primary)]'
+                  : 'text-[var(--text-secondary)]'
               )}
             >
               {link.text}
@@ -58,8 +58,8 @@ const Header = () => {
           ))}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
-          <Button size="sm">免费试用</Button>
-          <Button size="sm" variant="ghost">登录</Button>
+          <Button href="#" size="sm">免费试用</Button>
+          <Button href="#" size="sm" variant="ghost">登录</Button>
         </div>
         <button
           className="z-50 p-2 lg:hidden"
@@ -70,17 +70,17 @@ const Header = () => {
       </header>
 
       {isMenuOpen && (
-        <div className="fixed inset-0 z-30 flex h-screen flex-col bg-white lg:hidden">
+        <div className="fixed inset-0 z-30 flex h-screen flex-col bg-[var(--background-color)] lg:hidden">
           <nav className="flex flex-col items-center gap-8 pt-24">
             {navLinks.map((link) => (
               <Link
                 key={link.text}
                 href={link.href}
                 className={cn(
-                  'text-lg font-medium transition-colors duration-200 hover:text-blue-600',
+                  'text-lg font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
                   pathname === link.href
-                    ? 'text-gray-900'
-                    : 'text-gray-500'
+                    ? 'text-[var(--text-primary)]'
+                    : 'text-[var(--text-secondary)]'
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >

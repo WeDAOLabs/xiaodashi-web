@@ -8,9 +8,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-blue-600 text-white hover:bg-blue-700',
-        secondary: 'bg-transparent text-blue-600 hover:underline',
-        ghost: 'bg-gray-100 text-gray-900 hover:bg-gray-200',
+        primary: 'bg-[var(--primary-color)] text-white hover:bg-[var(--accent-color)]',
+        secondary: 'bg-transparent text-[var(--primary-color)] hover:underline',
+        ghost: 'bg-gray-100 text-[var(--text-primary)] hover:bg-gray-200',
       },
       size: {
         default: 'h-12 px-8 text-base',
@@ -25,32 +25,25 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
   href?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, href, ...props }, ref) => {
-    const Comp = asChild && href ? Link : 'button';
-    
-    const buttonContent = (
-        <span className="truncate">{props.children}</span>
-    );
+  ({ className, variant, size, href, children, ...props }, ref) => {
+    const classes = cn(buttonVariants({ variant, size, className }));
 
-    if (asChild && href) {
-        return (
-            <Link href={href} className={cn(buttonVariants({ variant, size, className }))} ref={ref as React.Ref<HTMLAnchorElement>} {...props}>
-                {buttonContent}
-            </Link>
-        )
+    if (href) {
+      return (
+        <Link href={href} className={classes} ref={ref as React.Ref<HTMLAnchorElement>} {...props}>
+          {children}
+        </Link>
+      );
     }
 
     return (
-      <button
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
+      <button className={classes} ref={ref} {...props}>
+        {children}
+      </button>
     );
   }
 );
