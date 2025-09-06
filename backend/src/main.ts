@@ -12,7 +12,7 @@ async function bootstrap() {
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('肖大师 API')
-      .setDescription('肖大师 Web 应用 API 文档')
+      .setDescription('智商180的AI全域营销大师 Web 应用 API 文档')
       .setVersion('1.0')
       .addBearerAuth() // 支持 JWT Bearer Token
       .build();

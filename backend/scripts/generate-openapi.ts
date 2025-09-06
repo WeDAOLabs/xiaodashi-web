@@ -9,7 +9,7 @@ async function generateOpenApiSpec() {
   const app = await NestFactory.create(AppModule, { logger: false });
 
   const config = new DocumentBuilder()
-    .setTitle('肖大师 API')
+    .setTitle('智商180的AI全域营销大师 API')
     .setDescription('肖大师 Web 应用 API 文档')
     .setVersion('1.0')
     .addBearerAuth()

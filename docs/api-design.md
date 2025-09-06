@@ -416,7 +416,7 @@ openapi: 3.0.0
 info:
   title: 肖大师 API
   version: 1.0.0
-  description: 肖大师 Web 应用 API 文档
+  description: 智商180的AI全域营销大师 Web 应用 API 文档
 servers:
   - url: https://api.xiaodashi.com/v1
     description: 生产环境

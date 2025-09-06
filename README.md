@@ -1,5 +1,5 @@
-# 肖大师 Web (xiaodashi-web)
-
+# 智商180的AI全域营销大师 Web (xiaodashi-web)
+网站名称是：智商180的AI全域营销大师
 这是一个现代化的全栈 Web 应用项目，采用前后端分离的 Monorepo 架构。
 
 ## 技术栈

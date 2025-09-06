@@ -986,7 +986,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
 
 ## 总结
 
-本开发指南涵盖了肖大师 Web 项目的完整开发流程，包括：
+本开发指南涵盖了智商180的AI全域营销大师 Web 项目的完整开发流程，包括：
 
 1. **环境搭建**: 详细的开发环境配置步骤
 2. **开发规范**: 代码风格、命名规范、Git 工作流

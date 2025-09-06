@@ -46,3 +46,48 @@
 
 1.  **`layout.tsx` (或相关组件)**: 使用 `next/font/local` 加载字体文件，并为字体创建一个 CSS 变量 (e.g., `variable: '--font-noto-sans-sc'`)。
 2.  **`globals.css`**: 在 `@theme` 指令块中，消费 `layout.tsx` 中创建的 CSS 变量，将其赋值给 Tailwind 的主题（如 `--font-sans`）。
+
+---
+
+## 组件导入规范
+
+- **路径别名 (Path Aliases):** 本项目前端使用 `@/` 作为 `frontend/` 目录的别名。所有组件和模块的导入都应优先使用此别名，以保证路径的一致性。例如，`@/app/components/Header`。在引用前，请确认 `tsconfig.json` 中 `paths` 的具体配置。
+
+- **默认与命名导入 (Default vs. Named Imports):**
+    - 务必确认组件的导出方式。如果组件使用 `export default` 导出，导入时不应使用大括号 `{}`。
+    - **错误示例**: `import { MyComponent } from './MyComponent';` (当 `MyComponent` 是默认导出时)
+    - **正确示例**: `import MyComponent from './MyComponent';` (当 `MyComponent` 是默认导出时)
+    - 在不确定导出方式时，应先查看组件源文件，避免出现模块解析错误。
+
+---
+
+## `next/image` 组件使用规范 (Next.js 13+)
+
+**核心要求**: `next/image` 组件不再支持 `layout` 属性。
+
+- **`layout` 属性已废弃**: 不要使用 `layout="responsive"`, `layout="fill"`, 或 `layout="fixed"`。
+- **响应式图片**: 要实现旧版 `layout="responsive"` 的效果，移除 `layout` 属性，并为 `Image` 组件添加 `className="h-auto w-full"`。`width` 和 `height` 属性此时用于计算宽高比，防止布局位移。
+
+  - **错误实践 (Bad Practice):**
+    ```tsx
+    // 错误: 使用了已废弃的 layout 属性。
+    <Image
+      src="/my-image.png"
+      alt="My Image"
+      width={800}
+      height={600}
+      layout="responsive" 
+    />
+    ```
+
+  - **正确实践 (Good Practice):**
+    ```tsx
+    // 正确: 移除 layout 属性，通过 className 实现响应式。
+    <Image
+      src="/my-image.png"
+      alt="My Image"
+      width={800}
+      height={600}
+      className="h-auto w-full" 
+    />
+    ```
