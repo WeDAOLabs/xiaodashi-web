@@ -1,9 +1,9 @@
 const Community = () => (
-  <section className="rounded-2xl bg-gray-50 p-12 text-center">
-    <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)]">
+  <section className="rounded-2xl bg-gray-50 p-8 text-center sm:p-12">
+    <h2 className="text-3xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] sm:text-4xl">
       加入我们的社区
     </h2>
-    <p className="mx-auto mt-6 max-w-3xl text-lg font-normal leading-relaxed text-[var(--text-secondary)]">
+    <p className="mx-auto mt-6 max-w-3xl text-base font-normal leading-relaxed text-[var(--text-secondary)] sm:text-lg">
       与成千上万的智商180的AI全域营销大师的用户交流，分享营销洞见，洞悉行业最新趋势。我们的社区是您学习与合作的宝贵平台。
     </p>
     <div className="mt-8 flex justify-center">

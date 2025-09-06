@@ -9,8 +9,8 @@ const Header = () => {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 grid grid-cols-3 items-center whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-10 py-4 backdrop-blur-md">
-      <Link href="/" className="flex items-center gap-4 justify-self-start">
+    <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-4 py-4 backdrop-blur-md sm:px-10">
+      <Link href="/" className="flex items-center gap-4">
         <div className="size-8 text-[var(--primary-color)]">
           <Icon />
         </div>
@@ -18,7 +18,7 @@ const Header = () => {
           智商180的AI全域营销大师
         </h2>
       </Link>
-      <nav className="flex items-center gap-8 justify-self-center">
+      <nav className="hidden items-center gap-8 lg:flex">
         <Link
           href="/"
           className={cn(
@@ -60,7 +60,7 @@ const Header = () => {
           定价
         </Link>
       </nav>
-      <div className="flex items-center gap-4 justify-self-end">
+      <div className="hidden items-center gap-4 md:flex">
         <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-[var(--accent-color)]">
           <span className="truncate">免费试用</span>
         </button>
