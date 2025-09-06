@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from '@/app/components/ui/Button';
+import ChevronRightIcon from '@/app/components/ChevronRightIcon';
 
 interface CommunityFeatureSectionProps {
   title: string;
@@ -20,9 +22,12 @@ const CommunityFeatureSection: React.FC<CommunityFeatureSectionProps> = ({ title
             <p className="text-gray-600 mb-6 text-lg">{description}</p>
             <div className="flex justify-center md:justify-start space-x-4">
               {links.map(link => (
-                <Link key={link.text} href={link.href} className="text-blue-600 hover:underline text-lg">
-                  {link.text} →
-                </Link>
+                <Button key={link.text} asChild variant="secondary">
+                  <Link href={link.href} className="flex items-center gap-1">
+                    {link.text}
+                    <ChevronRightIcon className="w-5 h-5" />
+                  </Link>
+                </Button>
               ))}
             </div>
           </div>

@@ -34,28 +34,26 @@ const Tools = () => {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <div className="group relative col-span-1 overflow-hidden rounded-3xl bg-white p-8 md:col-span-2">
               <div className="relative z-10 flex h-full flex-col justify-between">
-                <div>
+                <div className="flex-grow">
                   <h3 className="text-2xl font-semibold text-gray-900 md:text-4xl">
                     AI 内容生成器
                   </h3>
                   <p className="mt-2 max-w-md text-base font-light text-gray-600 md:text-lg">
-                    无论是博客文章、社交媒体帖子还是广告文案，都能在数秒内生成引人入胜的内容。
+                    无论是博客文章、社交媒体帖子还是广告文案，都能在数秒内生成引人入-胜的内容。
                   </p>
-                  <Link
-                    href="#"
-                    className="text-blue-600 mt-6 inline-flex items-center gap-1 text-base font-normal hover:underline"
-                  >
-                    了解更多
-                    <ChevronRightIcon className="w-5 h-5" />
-                  </Link>
                 </div>
-                <div className="mt-8 text-right">
-                  <Link
-                    href="#"
-                    className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-normal text-white shadow-md transition-transform group-hover:scale-105"
-                  >
-                    立即体验
-                  </Link>
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <Button asChild variant="secondary">
+                    <Link href="#" className="flex items-center gap-1">
+                      了解更多
+                      <ChevronRightIcon className="w-5 h-5" />
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="#">
+                      立即体验
+                    </Link>
+                  </Button>
                 </div>
               </div>
               <Image
@@ -73,20 +71,18 @@ const Tools = () => {
                 <p className="mt-2 flex-grow text-base font-light text-gray-600">
                   智能规划和发布内容，实时互动，全面提升您的社交媒体影响力。
                 </p>
-                <div className="mt-8 flex items-center justify-between">
-                  <Link
-                    href="#"
-                    className="text-blue-600 inline-flex items-center gap-1 text-base font-normal hover:underline"
-                  >
-                    了解更多
-                    <ChevronRightIcon className="w-5 h-5" />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-normal text-white shadow-md transition-transform group-hover:scale-105"
-                  >
-                    立即体验
-                  </Link>
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <Button asChild variant="secondary">
+                    <Link href="#" className="flex items-center gap-1">
+                      了解更多
+                      <ChevronRightIcon className="w-5 h-5" />
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="#">
+                      立即体验
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -98,20 +94,18 @@ const Tools = () => {
                 <p className="mt-2 flex-grow text-base font-light text-gray-600">
                   个性化邮件模板，智能发送时间优化，显著提高邮件打开率和转化率。
                 </p>
-                <div className="mt-8 flex items-center justify-between">
-                  <Link
-                    href="#"
-                    className="text-blue-600 inline-flex items-center gap-1 text-base font-normal hover:underline"
-                  >
-                    了解更多
-                    <ChevronRightIcon className="w-5 h-5" />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-normal text-white shadow-md transition-transform group-hover:scale-105"
-                  >
-                    立即体验
-                  </Link>
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <Button asChild variant="secondary">
+                    <Link href="#" className="flex items-center gap-1">
+                      了解更多
+                      <ChevronRightIcon className="w-5 h-5" />
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link href="#">
+                      立即体验
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -124,18 +118,16 @@ const Tools = () => {
                   从关键词策略到内容优化，全方位提升搜索引擎排名。在一个仪表盘中，洞察所有营销活动数据。
                 </p>
                 <div className="mt-8 flex flex-wrap gap-4">
-                  <Link
-                    href="#"
-                    className="rounded-full bg-white px-5 py-2.5 text-sm font-normal text-gray-900 shadow-md transition-transform hover:scale-105"
-                  >
-                    探索 SEO 工具
-                  </Link>
-                  <Link
-                    href="#"
-                    className="rounded-full border border-gray-600 bg-transparent px-5 py-2.5 text-sm font-normal text-white transition-colors hover:bg-gray-700"
-                  >
-                    查看分析仪表盘
-                  </Link>
+                  <Button asChild>
+                    <Link href="#">
+                      探索 SEO 工具
+                    </Link>
+                  </Button>
+                  <Button asChild variant="secondary">
+                    <Link href="#" className="rounded-full border border-gray-600 bg-transparent px-5 py-2.5 text-sm font-normal text-white transition-colors hover:bg-gray-700">
+                      查看分析仪表盘
+                    </Link>
+                  </Button>
                 </div>
               </div>
               <div className="absolute bottom-0 right-0 top-0 grid w-1/2 grid-cols-2 gap-2 p-4 opacity-20 transition-opacity group-hover:opacity-40">

@@ -63,7 +63,7 @@ const pricingFaqItems = [
 
 const PricingPage = () => {
   return (
-    <div className="relative flex size-full min-h-screen flex-col bg-gray-50 overflow-x-hidden">
+    <div className="relative flex size-full min-h-screen flex-col bg-white overflow-x-hidden">
       <Header />
       <main className="flex-1">
         <PageHero 
