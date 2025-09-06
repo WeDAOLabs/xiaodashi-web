@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import ChevronRightIcon from './ChevronRightIcon';
 import { Button } from './ui/Button';
 import PageHero from './ui/PageHero';
