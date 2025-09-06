@@ -2,73 +2,97 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SVGProps } from 'react';
+import { SVGProps, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
 const Header = () => {
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
+  const navLinks = [
+    { href: '/', text: '首页' },
+    { href: '/products', text: '产品' },
+    { href: '#', text: '解决方案' },
+    { href: '#', text: '客户案例' },
+    { href: '#', text: '定价' },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-4 py-4 backdrop-blur-md sm:px-10">
-      <Link href="/" className="flex items-center gap-4">
-        <div className="size-8 text-[var(--primary-color)]">
-          <Icon />
+    <>
+      <header className="sticky top-0 z-40 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-4 py-4 backdrop-blur-md sm:px-10">
+        <Link href="/" className="flex items-center gap-4">
+          <div className="size-8 text-[var(--primary-color)]">
+            <Icon />
+          </div>
+          <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
+            智商180的AI全域营销大师
+          </h2>
+        </Link>
+        <nav className="hidden items-center gap-8 lg:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.text}
+              href={link.href}
+              className={cn(
+                'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
+                pathname === link.href
+                  ? 'text-[var(--text-primary)]'
+                  : 'text-[var(--text-secondary)]'
+              )}
+            >
+              {link.text}
+            </Link>
+          ))}
+        </nav>
+        <div className="hidden items-center gap-4 md:flex">
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-[var(--accent-color)]">
+            <span className="truncate">免费试用</span>
+          </button>
+          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gray-100 text-[var(--text-primary)] text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-gray-200">
+            <span className="truncate">登录</span>
+          </button>
         </div>
-        <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
-          智商180的AI全域营销大师
-        </h2>
-      </Link>
-      <nav className="hidden items-center gap-8 lg:flex">
-        <Link
-          href="/"
-          className={cn(
-            'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
-            pathname === '/'
-              ? 'text-[var(--text-primary)]'
-              : 'text-[var(--text-secondary)]'
-          )}
+        <button
+          className="z-50 p-2 lg:hidden"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          首页
-        </Link>
-        <Link
-          href="/products"
-          className={cn(
-            'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
-            pathname === '/products'
-              ? 'text-[var(--text-primary)]'
-              : 'text-[var(--text-secondary)]'
-          )}
-        >
-          产品
-        </Link>
-        <Link
-          href="#"
-          className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-        >
-          解决方案
-        </Link>
-        <Link
-          href="#"
-          className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-        >
-          客户案例
-        </Link>
-        <Link
-          href="#"
-          className="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-        >
-          定价
-        </Link>
-      </nav>
-      <div className="hidden items-center gap-4 md:flex">
-        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-[var(--accent-color)]">
-          <span className="truncate">免费试用</span>
+          {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
-        <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gray-100 text-[var(--text-primary)] text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-gray-200">
-          <span className="truncate">登录</span>
-        </button>
-      </div>
-    </header>
+      </header>
+
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-30 flex h-screen flex-col bg-[var(--background-color)] lg:hidden">
+          <nav className="flex flex-col items-center gap-8 pt-24">
+            {navLinks.map((link) => (
+              <Link
+                key={link.text}
+                href={link.href}
+                className={cn(
+                  'text-lg font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
+                  pathname === link.href
+                    ? 'text-[var(--text-primary)]'
+                    : 'text-[var(--text-secondary)]'
+                )}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {link.text}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -91,3 +115,40 @@ function Icon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+const MenuIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <line x1="4" x2="20" y1="12" y2="12" />
+    <line x1="4" x2="20" y1="6" y2="6" />
+    <line x1="4" x2="20" y1="18" y2="18" />
+  </svg>
+);
+
+const CloseIcon = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <line x1="18" x2="6" y1="6" y2="18" />
+    <line x1="6" x2="18" y1="6" y2="18" />
+  </svg>
+);
