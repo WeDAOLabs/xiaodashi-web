@@ -1,8 +1,8 @@
-import Footer from '@/app/components/Footer';
 import Header from '@/app/components/Header';
-import ComparisonTable from '@/app/components/pricing/ComparisonTable';
-import Faq from '@/app/components/pricing/Faq';
+import Footer from '@/app/components/Footer';
 import PricingCard from '@/app/components/pricing/PricingCard';
+import ComparisonTable from '@/app/components/pricing/ComparisonTable';
+import Faq from '@/app/components/ui/Faq';
 
 const pricingPlans = [
   {
@@ -45,6 +45,21 @@ const pricingPlans = [
   },
 ];
 
+const pricingFaqItems = [
+    {
+      question: '我该如何订阅？',
+      answer: '只需选择您想要的方案，点击“选择”或“免费开始”按钮，然后按照屏幕上的指示完成注册和支付流程即可。整个过程只需几分钟。'
+    },
+    {
+      question: '我可以随时更改或取消我的计划吗？',
+      answer: '是的，您可以随时在您的账户设置中轻松升级、降级或取消您的计划。更改将立即生效。'
+    },
+    {
+      question: '支持哪些付款方式？',
+      answer: '我们接受所有主流信用卡（Visa, MasterCard, American Express），以及支付宝和微信支付，为您提供灵活便捷的支付选择。'
+    }
+];
+
 const PricingPage = () => {
   return (
     <div className="relative flex size-full min-h-screen flex-col bg-gray-50 overflow-x-hidden">
@@ -61,7 +76,7 @@ const PricingPage = () => {
             ))}
           </div>
           <ComparisonTable />
-          <Faq />
+          <Faq title="常见问题" items={pricingFaqItems} />
         </div>
       </main>
       <Footer />

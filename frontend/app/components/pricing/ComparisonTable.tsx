@@ -1,4 +1,4 @@
-import CheckIcon from './CheckIcon';
+import CheckIcon from '@/app/components/ui/CheckIcon';
 
 const ComparisonTable = () => {
   const features = [
