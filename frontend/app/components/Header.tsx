@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SVGProps, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { Button } from '@/app/components/ui/Button';
 
 const Header = () => {
   const pathname = usePathname();
@@ -31,12 +32,12 @@ const Header = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-[var(--background-color)] bg-opacity-80 px-4 py-4 backdrop-blur-md sm:px-10">
+      <header className="sticky top-0 z-40 flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 bg-white/80 px-4 py-4 backdrop-blur-sm sm:px-10">
         <Link href="/" className="flex items-center gap-4">
-          <div className="size-8 text-[var(--primary-color)]">
+          <div className="size-8 text-blue-600">
             <Icon />
           </div>
-          <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
+          <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-gray-900">
             智商180的AI全域营销大师
           </h2>
         </Link>
@@ -46,10 +47,10 @@ const Header = () => {
               key={link.text}
               href={link.href}
               className={cn(
-                'text-sm font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
+                'text-sm font-medium transition-colors duration-200 hover:text-blue-600',
                 pathname === link.href
-                  ? 'text-[var(--text-primary)]'
-                  : 'text-[var(--text-secondary)]'
+                  ? 'text-gray-900'
+                  : 'text-gray-500'
               )}
             >
               {link.text}
@@ -57,12 +58,8 @@ const Header = () => {
           ))}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-[var(--primary-color)] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-[var(--accent-color)]">
-            <span className="truncate">免费试用</span>
-          </button>
-          <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-6 bg-gray-100 text-[var(--text-primary)] text-sm font-bold leading-normal tracking-[0.015em] transition-colors duration-200 hover:bg-gray-200">
-            <span className="truncate">登录</span>
-          </button>
+          <Button size="sm">免费试用</Button>
+          <Button size="sm" variant="ghost">登录</Button>
         </div>
         <button
           className="z-50 p-2 lg:hidden"
@@ -73,17 +70,17 @@ const Header = () => {
       </header>
 
       {isMenuOpen && (
-        <div className="fixed inset-0 z-30 flex h-screen flex-col bg-[var(--background-color)] lg:hidden">
+        <div className="fixed inset-0 z-30 flex h-screen flex-col bg-white lg:hidden">
           <nav className="flex flex-col items-center gap-8 pt-24">
             {navLinks.map((link) => (
               <Link
                 key={link.text}
                 href={link.href}
                 className={cn(
-                  'text-lg font-medium transition-colors duration-200 hover:text-[var(--primary-color)]',
+                  'text-lg font-medium transition-colors duration-200 hover:text-blue-600',
                   pathname === link.href
-                    ? 'text-[var(--text-primary)]'
-                    : 'text-[var(--text-secondary)]'
+                    ? 'text-gray-900'
+                    : 'text-gray-500'
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >

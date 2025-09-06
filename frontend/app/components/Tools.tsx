@@ -1,28 +1,25 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import ChevronRightIcon from './ChevronRightIcon';
+import { Button } from './ui/Button';
 import PageHero from './ui/PageHero';
 
 const Tools = () => {
   return (
     <>
       <PageHero
-        title="AI 营销，从未如此简单。"
+        title="AI 营销，从未如此简单"
         description="体验我们顶尖的 AI 营销工具套件。免费试用，释放您的营销潜力。"
       >
-        <Link
-          href="#"
-          className="rounded-full bg-blue-600 px-6 py-3 text-base font-normal text-white transition-opacity hover:opacity-90"
-        >
-          开始免费试用
-        </Link>
-        <Link
-          href="#tools"
-          className="text-blue-600 flex items-center gap-1 px-6 py-3 text-base font-normal hover:underline"
-        >
-          探索工具
-          <ChevronRightIcon className="w-5 h-5" />
-        </Link>
+        <Button asChild>
+          <Link href="#">开始免费试用</Link>
+        </Button>
+        <Button asChild variant="secondary">
+          <Link href="#tools" className="flex items-center gap-1">
+            探索工具
+            <ChevronRightIcon className="w-5 h-5" />
+          </Link>
+        </Button>
       </PageHero>
       <section className="py-20 md:py-28 bg-gray-50" id="tools">
         <div className="container mx-auto px-6">

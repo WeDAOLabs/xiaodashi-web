@@ -14,7 +14,8 @@
   "dependencies": {
     "@fontsource/noto-sans-sc": "^5.2.6",
     "@fontsource/spline-sans": "^5.2.6",
-    "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e"
+    "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
+    "class-variance-authority": "^0.7.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.13",

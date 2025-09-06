@@ -12,13 +12,19 @@ export default function Home() {
     <div className="relative flex size-full min-h-screen flex-col overflow-x-hidden">
       <div className="flex h-full grow flex-col">
         <Header />
-        <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-16 sm:px-6 lg:px-8">
+        <main className="flex-1">
           <Hero />
-          <Features />
-          <Showcase />
-          <Pricing />
-          <Testimonials />
-          <Community />
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <Features />
+            <Showcase />
+            <Testimonials />
+          </div>
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <Pricing />
+          </div>
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <Community />
+          </div>
         </main>
         <Footer />
       </div>

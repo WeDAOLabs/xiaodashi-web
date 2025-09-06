@@ -47,7 +47,7 @@ const CommunityPage = () => {
     return (
         <div className="flex flex-col min-h-screen bg-white text-gray-800">
             <Header />
-            <main className="flex-grow">
+            <main className="flex-1">
                 <PageHero 
                     title="欢迎来到社区"
                     description="一个让用户建立连接、分享见解、并获得支持的中心。"
@@ -57,9 +57,9 @@ const CommunityPage = () => {
                     <CommunityFeatureSection key={feature.title} {...feature} />
                 ))}
 
-                <div className="bg-gray-50">
+                <section className="bg-gray-50">
                     <Faq title="常见问题解答" items={communityFaqItems} />
-                </div>
+                </section>
 
             </main>
             <Footer />

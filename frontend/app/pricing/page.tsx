@@ -1,7 +1,7 @@
-import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
-import PricingCard from '@/app/components/pricing/PricingCard';
+import Header from '@/app/components/Header';
 import ComparisonTable from '@/app/components/pricing/ComparisonTable';
+import PricingCard from '@/app/components/pricing/PricingCard';
 import Faq from '@/app/components/ui/Faq';
 import PageHero from '@/app/components/ui/PageHero';
 
@@ -67,18 +67,22 @@ const PricingPage = () => {
       <Header />
       <main className="flex-1">
         <PageHero 
-          title="适合您业务的定价方案。"
+          title="适合您业务的定价方案"
           description="从免费的基础版到功能强大的企业版，智商180的AI全域营销大师提供多种方案，助您实现营销目标。"
         />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {pricingPlans.map(plan => (
               <PricingCard key={plan.planName} {...plan} />
             ))}
           </div>
           <ComparisonTable />
-          <Faq title="常见问题" items={pricingFaqItems} />
-        </div>
+        </section>
+        <section className="bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <Faq title="常见问题" items={pricingFaqItems} />
+            </div>
+        </section>
       </main>
       <Footer />
     </div>

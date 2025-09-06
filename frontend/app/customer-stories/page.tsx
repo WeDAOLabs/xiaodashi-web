@@ -1,6 +1,6 @@
+import FeatureSection from '@/app/components/FeatureSection';
 import Footer from '@/app/components/Footer';
 import Header from '@/app/components/Header';
-import FeatureSection from '@/app/components/FeatureSection';
 import Testimonial from '@/app/components/customer-stories/Testimonial';
 import PageHero from '@/app/components/ui/PageHero';
 
@@ -72,7 +72,7 @@ const CustomerStoriesPage = () => {
         <Header />
         <main className="flex-1">
           <PageHero
-            title={<>客户的成功，<br />我们的动力。</>}
+            title={<>客户的成功，我们的动力</>}
             description="各行各业的领先企业通过智商180的AI全域营销大师实现营销目标，探索他们的故事。"
           />
 

@@ -8,7 +8,7 @@ export default function ProductsPage() {
     <div className="relative flex size-full min-h-screen flex-col overflow-x-hidden">
       <div className="flex h-full grow flex-col">
         <Header />
-        <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-16 sm:px-6 lg:px-8">
+        <main className="flex-1">
           <Tools />
         </main>
         <Footer />
