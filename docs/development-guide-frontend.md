@@ -73,6 +73,32 @@
 
 ---
 
+## 依赖管理 (npm Workspaces)
+
+**核心要求**: **所有前端相关的依赖项**都必须安装到 `frontend` 工作区中，而不是项目的根目录。
+
+本项目使用 npm Workspaces 管理 monorepo。为了保持 `frontend` 工作区依赖的清晰和独立，请遵循以下规范：
+
+-   **错误的做法**: 在项目根目录直接运行 `npm install <package-name>`。
+-   **正确的做法**: 使用 `--workspace=frontend` 参数来指定依赖的安装位置。
+
+#### 命令示例
+
+如果你要为前端项目添加一个新的依赖包，你应该在**项目根目录**下运行以下命令：
+
+```bash
+# 为 frontend 工作区安装一个生产依赖
+npm install <package-name> --workspace=frontend
+
+# 为 frontend 工作区安装一个开发依赖
+npm install <package-name> --save-dev --workspace=frontend
+```
+
+**效果**:
+执行上述命令后，依赖项会被正确地添加到 `frontend/package.json` 文件中。这可以确保依赖关系的清晰，并避免在部署时（如Vercel）出现“模块未找到”的错误。
+
+---
+
 ## 组件导入规范
 
 - **路径别名 (Path Aliases):** 本项目前端使用 `@/` 作为 `frontend/` 目录的别名。所有组件和模块的导入都应优先使用此别名，以保证路径的一致性。例如，`@/app/components/Header`。在引用前，请确认 `tsconfig.json` 中 `paths` 的具体配置。
