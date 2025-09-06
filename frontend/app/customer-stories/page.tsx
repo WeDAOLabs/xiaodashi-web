@@ -2,6 +2,7 @@ import Footer from '@/app/components/Footer';
 import Header from '@/app/components/Header';
 import FeatureSection from '@/app/components/FeatureSection';
 import Testimonial from '@/app/components/customer-stories/Testimonial';
+import PageHero from '@/app/components/ui/PageHero';
 
 const stories = [
   {
@@ -70,16 +71,10 @@ const CustomerStoriesPage = () => {
       <div className="layout-container flex h-full grow flex-col">
         <Header />
         <main className="flex-1">
-          <section className="py-20 text-center sm:py-32">
-            <div className="container mx-auto px-6">
-              <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                客户的成功，我们的动力。
-              </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-xl text-gray-700 sm:text-2xl">
-                各行各业的领先企业通过智商180的AI全域营销大师实现营销目标，探索他们的故事。
-              </p>
-            </div>
-          </section>
+          <PageHero
+            title={<>客户的成功，<br />我们的动力。</>}
+            description="各行各业的领先企业通过智商180的AI全域营销大师实现营销目标，探索他们的故事。"
+          />
 
           <section className="pb-20 sm:pb-32">
             <div className="container mx-auto px-6">

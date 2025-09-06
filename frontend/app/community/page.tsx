@@ -2,6 +2,7 @@ import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import CommunityFeatureSection from '@/app/components/community/CommunityFeatureSection';
 import Faq from '@/app/components/ui/Faq';
+import PageHero from '@/app/components/ui/PageHero';
 
 const communityFeatures = [
     {
@@ -47,12 +48,10 @@ const CommunityPage = () => {
         <div className="flex flex-col min-h-screen bg-white text-gray-800">
             <Header />
             <main className="flex-grow">
-                <section className="text-center py-20 lg:py-32">
-                    <div className="container mx-auto px-6">
-                        <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-4">欢迎来到社区</h2>
-                        <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">一个让用户建立连接、分享见解、并获得支持的中心。</p>
-                    </div>
-                </section>
+                <PageHero 
+                    title="欢迎来到社区"
+                    description="一个让用户建立连接、分享见解、并获得支持的中心。"
+                />
                 
                 {communityFeatures.map(feature => (
                     <CommunityFeatureSection key={feature.title} {...feature} />

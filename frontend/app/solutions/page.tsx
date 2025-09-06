@@ -1,9 +1,9 @@
 
-import Image from 'next/image';
-import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
+import Header from '@/app/components/Header';
 import ChevronRightIcon from '@/app/components/ChevronRightIcon';
 import FeatureSection from '@/app/components/FeatureSection';
+import PageHero from '@/app/components/ui/PageHero';
 
 export default function SolutionsPage() {
   return (
@@ -11,16 +11,10 @@ export default function SolutionsPage() {
       <div className="flex h-full grow flex-col">
         <Header />
         <main className="flex-1">
-          <section className="py-20 text-center sm:py-32">
-            <div className="container mx-auto px-6">
-              <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                强大功能，为您的营销赋能
-              </h1>
-              <p className="mx-auto mt-6 max-w-2xl text-xl text-gray-700 sm:text-2xl">
-                探索 智商180的AI全域营销大师 平台的各项核心功能，了解我们如何通过技术创新，帮助您实现营销目标。
-              </p>
-            </div>
-          </section>
+          <PageHero
+            title="强大功能，为您的营销赋能"
+            description="探索 智商180的AI全域营销大师 平台的各项核心功能，了解我们如何通过技术创新，帮助您实现营销目标。"
+          />
 
           <section className="pb-20 sm:pb-32">
             <div className="container mx-auto px-6">
