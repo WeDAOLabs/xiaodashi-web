@@ -1,7 +1,7 @@
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
-import Showcase from './components/Showcase';
+import RecommendedTools from './components/RecommendedTools';
 import Pricing from './components/Pricing';
 import Testimonials from './components/Testimonials';
 import Community from './components/Community';
@@ -16,7 +16,7 @@ export default function Home() {
           <Hero />
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <Features />
-            <Showcase />
+            <RecommendedTools />
             <Testimonials />
           </div>
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
