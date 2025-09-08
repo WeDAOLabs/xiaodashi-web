@@ -4,6 +4,12 @@
   --font-sans: var(--font-noto-sans-sc), var(--font-spline-sans), sans-serif;
 }
 
+@layer components {
+  .label-style {
+    @apply text-xs font-semibold uppercase tracking-wider text-gray-500;
+  }
+}
+
 :root {
     --primary-color: #0071e3;
     --secondary-color: #1d1d1f;

@@ -33,9 +33,9 @@ const ShowcaseCard = ({ category, name, description, imageUrl }: ShowcaseCardPro
       style={{ backgroundImage: `url("${imageUrl}")` }}
     ></div>
     <div className="mt-4 text-center">
-      <p className="text-sm font-medium text-[var(--primary-color)]">{category}</p>
-      <p className="mt-1 text-xl font-bold text-[var(--text-primary)]">{name}</p>
-      <p className="mt-2 text-base text-[var(--text-secondary)]">{description}</p>
+      <p className="label-style">{category}</p>
+      <p className="mt-2 text-xl font-bold text-[var(--text-primary)]">{name}</p>
+      <p className="mt-1 text-base text-[var(--text-secondary)]">{description}</p>
     </div>
   </div>
 );
