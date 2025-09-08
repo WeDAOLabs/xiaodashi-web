@@ -5,10 +5,12 @@ import { usePathname } from 'next/navigation';
 import { SVGProps, useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/ui/Button';
+import ContactSalesModal from './ContactSalesModal';
 
 const Header = () => {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSalesModalOpen, setIsSalesModalOpen] = useState(false);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -38,7 +40,7 @@ const Header = () => {
             <Icon />
           </div>
           <h2 className="text-xl font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
-            智商180的AI全域营销大师
+            智赢·全域营销大师
           </h2>
         </Link>
         <nav className="hidden items-center gap-8 lg:flex">
@@ -58,7 +60,7 @@ const Header = () => {
           ))}
         </nav>
         <div className="hidden items-center gap-4 md:flex">
-          <Button href="#" size="sm">免费试用</Button>
+          <Button onClick={() => setIsSalesModalOpen(true)} size="sm">免费试用</Button>
           <Button href="#" size="sm" variant="ghost">登录</Button>
         </div>
         <button
@@ -90,6 +92,7 @@ const Header = () => {
           </nav>
         </div>
       )}
+      {isSalesModalOpen && <ContactSalesModal onClose={() => setIsSalesModalOpen(false)} />}
     </>
   );
 };

@@ -22,8 +22,8 @@ const spline_sans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: '智商180的AI全域营销大师',
-  description: '智能营销，重塑增长',
+  title: '智赢·全域营销大师',
+  description: '智赢，智商180的AI全域营销大师',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
