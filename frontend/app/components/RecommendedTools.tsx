@@ -3,19 +3,19 @@ const recommendedTools = [
     category: "图像工具",
     name: "即梦",
     description: "输入一句话，即刻将您的想象力变为专业级画作与设计稿。",
-    imageUrl: "/showcase-1.png"
+    imageUrl: "/jimeng-logo.png"
   },
   {
     category: "视频工具",
     name: "可灵AI",
     description: "仅用文字描述，即可生成电影质感的AI视频，颠覆传统视频创作流程。",
-    imageUrl: "/showcase-2.png"
+    imageUrl: "/klingai-logo.png"
   },
   {
     category: "音频工具",
     name: "Suno",
     description: "无需任何乐理知识，轻松创作旋律、歌曲和人声，让人人都是音乐家。",
-    imageUrl: "/showcase-3.png"
+    imageUrl: "/suno-logo.png"
   }
 ];
 
@@ -29,7 +29,7 @@ interface ShowcaseCardProps {
 const ShowcaseCard = ({ category, name, description, imageUrl }: ShowcaseCardProps) => (
   <div>
     <div
-      className="w-full aspect-video rounded-2xl bg-cover bg-center bg-gray-100 shadow-lg"
+      className="w-full aspect-video rounded-2xl bg-cover bg-center bg-gray-100"
       style={{ backgroundImage: `url("${imageUrl}")` }}
     ></div>
     <div className="mt-4 text-center">
