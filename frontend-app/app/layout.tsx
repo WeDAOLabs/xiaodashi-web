@@ -63,7 +63,10 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="zh-CN">
-      <body className={`${notoSansSC.variable} ${splineSans.variable}`}>
+      <body 
+        className={`${notoSansSC.variable} ${splineSans.variable}`}
+        suppressHydrationWarning={true}
+      >
         {children}
       </body>
     </html>
