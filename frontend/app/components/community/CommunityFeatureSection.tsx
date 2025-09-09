@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import { Button } from '@/app/components/ui/Button';
 import ChevronRightIcon from '@/app/components/ChevronRightIcon';
+import { Button } from '@/app/components/ui/Button';
+import Image from 'next/image';
 
 interface CommunityFeatureSectionProps {
   title: string;
@@ -28,7 +28,7 @@ const CommunityFeatureSection: React.FC<CommunityFeatureSectionProps> = ({ title
               ))}
             </div>
           </div>
-          <div className={`bg-[var(--background-color)] rounded-2xl p-8 shadow-sm ${reverse ? 'md:order-1' : ''}`}>
+          <div className={`bg-[var(--background-color)] rounded-2xl p-8 ${reverse ? 'md:order-1' : ''}`}>
             <Image alt={imageAlt} className="w-full h-auto rounded-lg" src={imageUrl} width={500} height={300} />
           </div>
         </div>

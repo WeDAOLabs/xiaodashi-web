@@ -1,3 +1,5 @@
+import { Button } from '@/app/components/ui/Button';
+
 const Testimonials = () => (
   <section className="py-24">
     <h2 className="mb-12 text-center text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)]">
@@ -22,6 +24,11 @@ const Testimonials = () => (
         description="领先的在线教育平台采用我们的智能投放与内容策略，精准锁定潜在学员，有效降低了获客成本，并显著提升了线上课程的报名转化率。"
         imageUrl="/testimonial-3.png"
       />
+    </div>
+    <div className="mt-12 flex justify-center">
+      <Button href="/customer-stories" variant="primary">
+        探索更多案例
+      </Button>
     </div>
   </section>
 );

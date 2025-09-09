@@ -5,60 +5,100 @@ import Testimonial from '@/app/components/customer-stories/Testimonial';
 import PageHero from '@/app/components/ui/PageHero';
 
 const stories = [
+  // 首页行业案例
+  {
+    tag: '医药行业',
+    title: 'AI赋能销售代表，核心药品销售额增长35%',
+    description: '通过我们的AI销售助手，某跨国药企的销售团队能够智能规划拜访路线、获取实时数据洞察，并为每一次客户互动提供个性化沟通策略。最终，其核心产品线的销售额在半年内实现了35%的同比增长。',
+    features: [
+      '<strong>挑战:</strong> 跨国药企销售团队面临拜访路线规划困难，缺乏实时数据洞察，客户互动缺乏个性化策略。',
+      '<strong>解决方案:</strong> 采用AI销售助手智能规划拜访路线，提供实时数据洞察，为每次客户互动制定个性化沟通策略。',
+      '<strong>成果:</strong> 核心产品线销售额在半年内实现35%同比增长，销售效率和客户满意度显著提升。',
+    ],
+    image: '/testimonial-1.png',
+    imageAlt: '医药行业AI销售助手',
+  },
+  {
+    tag: '餐饮连锁行业',
+    title: '连锁品牌复购率翻倍，单店营收平均增长25%',
+    description: '一家全国性餐饮连锁品牌，通过我们的私域运营工具与会员分析系统，实现了精细化用户管理，会员复购率在半年内翻倍。',
+    features: [
+      '<strong>挑战:</strong> 全国性餐饮连锁品牌面临用户管理粗放，会员复购率低，单店营收增长乏力的问题。',
+      '<strong>解决方案:</strong> 部署私域运营工具与会员分析系统，实现精细化用户管理和个性化营销策略。',
+      '<strong>成果:</strong> 会员复购率在半年内翻倍，单店营收平均增长25%，品牌忠诚度大幅提升。',
+    ],
+    image: '/testimonial-2.png',
+    imageAlt: '餐饮连锁品牌',
+    reverse: true,
+  },
+  {
+    tag: '教育培训',
+    title: '获客成本降低40%，线上课程转化率显著提升',
+    description: '领先的在线教育平台采用我们的智能投放与内容策略，精准锁定潜在学员，有效降低了获客成本，并显著提升了线上课程的报名转化率。',
+    features: [
+      '<strong>挑战:</strong> 在线教育平台获客成本持续上升，线上课程转化率低，营销投放效果不佳。',
+      '<strong>解决方案:</strong> 采用智能投放与内容策略，精准锁定潜在学员，优化营销渠道和内容创作。',
+      '<strong>成果:</strong> 获客成本降低40%，线上课程转化率显著提升，营销ROI大幅改善。',
+    ],
+    image: '/testimonial-3.png',
+    imageAlt: '在线教育平台',
+  },
+  // 原有案例
   {
     tag: '科技行业',
     title: '提升用户参与度',
-    description: '一家领先的科技公司难以在社交媒体上有效吸引目标受众，导致用户增长停滞。通过智商180的AI全域营销大师的内容优化和精准受众定位，该企业能够推送更具相关性的内容，并在最佳时间与用户互动。',
+    description: '一家领先的科技公司难以在社交媒体上有效吸引目标受众，导致用户增长停滞。通过智赢的内容优化和精准受众定位，该企业能够推送更具相关性的内容，并在最佳时间与用户互动。',
     features: [
       '<strong>挑战:</strong> 一家领先的科技公司难以在社交媒体上有效吸引目标受众，导致用户增长停滞。',
-      '<strong>解决方案:</strong> 通过智商180的AI全域营销大师的内容优化和精准受众定位，该企业能够推送更具相关性的内容，并在最佳时间与用户互动。',
+      '<strong>解决方案:</strong> 通过智赢的内容优化和精准受众定位，该企业能够推送更具相关性的内容，并在最佳时间与用户互动。',
       '<strong>成果:</strong> 在短短三个月内，用户参与率提升了40%，潜在客户开发增加了25%，显著增强了品牌影响力。',
     ],
     image: '/customer-story-1.png',
     imageAlt: '科技创新企业',
+    reverse: true,
   },
   {
     tag: '电子商务',
     title: '推动销售额增长',
-    description: '一家在线零售商面临高网站流量但转化率低下的问题，无法有效将访客转化为付费客户。利用智商180的AI全域营销大师的个性化产品推荐引擎和自动化电子邮件营销，根据用户行为推送定制化营销信息。',
+    description: '一家在线零售商面临高网站流量但转化率低下的问题，无法有效将访客转化为付费客户。利用智赢的个性化产品推荐引擎和自动化电子邮件营销，根据用户行为推送定制化营销信息。',
     features: [
         '<strong>挑战:</strong> 一家在线零售商面临高网站流量但转化率低下的问题，无法有效将访客转化为付费客户。',
-        '<strong>解决方案:</strong> 利用智商180的AI全域营销大师的个性化产品推荐引擎和自动化电子邮件营销，根据用户行为推送定制化营销信息。',
+        '<strong>解决方案:</strong> 利用智赢的个性化产品推荐引擎和自动化电子邮件营销，根据用户行为推送定制化营销信息。',
         '<strong>成果:</strong> 实现了转化率提高30%，平均订单价值增长了20%，为公司带来了可观的收入增长。',
     ],
     image: '/customer-story-2.png',
     imageAlt: '电商零售商',
-    reverse: true,
   },
   {
     tag: '金融服务',
     title: '优化营销投资回报',
-    description: '一家金融服务公司希望在不增加预算的情况下，提高营销活动的效率和获客质量。采用智商180的AI全域营销大师的预测分析功能，精准识别高价值客户群体，并优化广告投放策略，最大化预算效益。',
+    description: '一家金融服务公司希望在不增加预算的情况下，提高营销活动的效率和获客质量。采用智赢的预测分析功能，精准识别高价值客户群体，并优化广告投放策略，最大化预算效益。',
     features: [
         '<strong>挑战:</strong> 一家金融服务公司希望在不增加预算的情况下，提高营销活动的效率和获客质量。',
-        '<strong>解决方案:</strong> 采用智商180的AI全域营销大师的预测分析功能，精准识别高价值客户群体，并优化广告投放策略，最大化预算效益。',
+        '<strong>解决方案:</strong> 采用智赢的预测分析功能，精准识别高价值客户群体，并优化广告投放策略，最大化预算效益。',
         '<strong>成果:</strong> 在保持潜在客户流量稳定的同时，成功将每次获客成本降低了15%，显著提升了营销投资回报率。',
     ],
     image: '/customer-story-3.png',
     imageAlt: '金融服务公司',
+    reverse: true,
   },
 ];
 
 const testimonials = [
   {
-    quote: '“智商180的AI全域营销大师彻底改变了我们的营销策略。其洞察力和自动化功能显著提高了我们的活动表现和投资回报率。”',
+    quote: '"智赢彻底改变了我们的营销策略。其洞察力和自动化功能显著提高了我们的活动表现和投资回报率。"',
     author: '陈莎拉',
     title: '市场总监, 科技创新公司',
     avatarUrl: '/testimonial-4.png',
   },
   {
-    quote: '“智商180的AI全域营销大师提供的AI工具对我们销售增长起到了关键作用。我们看到了切实的成果和更高效的营销流程。”',
+    quote: '"智赢提供的AI工具对我们销售增长起到了关键作用。我们看到了切实的成果和更高效的营销流程。"',
     author: '李大卫',
     title: '首席执行官, 电商零售有限公司',
     avatarUrl: '/testimonial-5.png',
   },
   {
-    quote: '“借助智商180的AI全域营销大师，我们得以优化营销支出并取得更好的成果。他们的预测分析对我们的业务来说是一个颠覆性的改变。”',
+    quote: '"借助智赢，我们得以优化营销支出并取得更好的成果。他们的预测分析对我们的业务来说是一个颠覆性的改变。"',
     author: '王艾米丽',
     title: '市场部主管, 金融服务集团',
     avatarUrl: '/testimonial-6.png',
@@ -73,11 +113,11 @@ const CustomerStoriesPage = () => {
         <main className="flex-1">
           <PageHero
             title={<>客户的成功，我们的动力</>}
-            description="各行各业的领先企业通过智商180的AI全域营销大师实现营销目标，探索他们的故事。"
+            description="各行各业的领先企业通过智赢实现营销目标，探索他们的故事。"
           />
 
           <section className="pb-20 sm:pb-32">
-            <div className="container mx-auto px-6">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="space-y-24">
                 {stories.map((story) => (
                   <FeatureSection key={story.title} {...story} />
@@ -87,15 +127,17 @@ const CustomerStoriesPage = () => {
           </section>
 
           <div className="py-24 md:py-32">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter">
-                听听我们的客户怎么说
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
-              {testimonials.map((testimonial) => (
-                <Testimonial key={testimonial.author} {...testimonial} />
-              ))}
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tighter">
+                  听听我们的客户怎么说
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {testimonials.map((testimonial) => (
+                  <Testimonial key={testimonial.author} {...testimonial} />
+                ))}
+              </div>
             </div>
           </div>
         </main>

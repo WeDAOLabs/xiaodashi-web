@@ -58,7 +58,7 @@ export default function FeatureSection({
       <div className={`w-full ${reverse ? 'lg:order-1' : ''}`}>
         <Image
           alt={imageAlt}
-          className="h-auto w-full rounded-3xl shadow-2xl"
+          className="h-auto w-full rounded-3xl"
           src={image}
           width={600}
           height={400}
