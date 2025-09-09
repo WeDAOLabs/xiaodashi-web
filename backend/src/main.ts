@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
@@ -11,7 +11,7 @@ async function bootstrap() {
   // 仅在非生产环境启用 Swagger
   if (process.env.NODE_ENV !== 'production') {
     const config = new DocumentBuilder()
-      .setTitle('肖大师 API')
+      .setTitle('智赢 API')
       .setDescription('智商180的AI全域营销大师 Web 应用 API 文档')
       .setVersion('1.0')
       .addBearerAuth() // 支持 JWT Bearer Token

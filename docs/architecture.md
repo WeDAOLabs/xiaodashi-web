@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-肖大师 Web 是一个基于 Next.js 的前后端分离项目，采用现代化的技术栈和架构模式，遵循 KISS 原则（Keep It Simple, Stupid）。
+智赢 Web 是一个基于 Next.js 的前后端分离项目，采用现代化的技术栈和架构模式，遵循 KISS 原则（Keep It Simple, Stupid）。前端部分为智赢官网，提供产品展示、用户注册、定价方案等官方网站功能。
 
 ## 整体架构
 
@@ -20,8 +20,8 @@
 
 ## 技术栈选择
 
-### 前端技术栈
-- **Next.js 14**: React 全栈框架，支持 SSR/SSG
+### 前端技术栈（官网）
+- **Next.js 14**: React 全栈框架，支持 SSR/SSG，用于构建智赢官方网站
 - **React 18**: 用户界面库
 - **TypeScript**: 类型安全的 JavaScript
 - **Tailwind CSS**: 实用优先的 CSS 框架
@@ -44,28 +44,27 @@
 
 ## 项目结构
 
-### 前端结构 (Next.js)
+### 前端结构 (Next.js 官网)
 ```
 frontend/
 ├── src/
 │   ├── app/                 # App Router (Next.js 13+)
-│   │   ├── (auth)/         # 认证相关页面
-│   │   ├── dashboard/      # 仪表板
-│   │   ├── api/           # API 路由 (可选)
-│   │   ├── globals.css    # 全局样式
-│   │   └── layout.tsx     # 根布局
+│   │   ├── /                   # 首页
+│   │   ├── pricing/           # 定价页面
+│   │   ├── products/          # 产品介绍页面
+│   │   ├── solutions/         # 解决方案页面
+│   │   ├── community/         # 社区页面
+│   │   ├── customer-stories/  # 客户案例页面
+│   │   ├── globals.css        # 全局样式
+│   │   └── layout.tsx         # 根布局
 │   ├── components/         # 可复用组件
-│   │   ├── ui/            # 基础 UI 组件
-│   │   ├── forms/         # 表单组件
-│   │   └── layout/        # 布局组件
+│   │   ├── ui/                # 基础 UI 组件
+│   │   ├── pricing/           # 定价相关组件
+│   │   ├── community/         # 社区相关组件
+│   │   └── Header.tsx         # 头部组件
 │   ├── lib/               # 工具函数
-│   │   ├── api.ts         # API 客户端
-│   │   ├── auth.ts        # 认证工具
-│   │   └── utils.ts       # 通用工具
-│   ├── hooks/             # 自定义 Hooks
-│   ├── store/             # 状态管理
-│   ├── types/             # TypeScript 类型定义
-│   └── styles/            # 样式文件
+│   │   └── utils.ts           # 通用工具
+│   └── types/             # TypeScript 类型定义
 ├── public/                # 静态资源
 ├── package.json
 ├── tailwind.config.js
@@ -101,26 +100,29 @@ backend/
 
 ## 核心功能模块
 
-### 1. 用户认证模块
-- 用户注册/登录
-- JWT Token 管理
-- 权限控制
-- 密码重置
+### 1. 官网展示模块
+- 产品介绍和特性展示
+- 解决方案介绍
+- 定价方案展示
+- 客户成功案例
 
-### 2. 用户管理模块
-- 用户信息管理
-- 用户角色管理
-- 用户状态管理
+### 2. 用户交互模块
+- 联系销售表单
+- 产品试用申请
+- 用户反馈收集
+- 邮件订阅
 
-### 3. 业务核心模块
-- 根据具体业务需求定义
-- 数据 CRUD 操作
-- 业务逻辑处理
+### 3. 内容管理模块
+- 博客文章展示
+- 社区动态
+- 工具推荐
+- 教程和文档
 
-### 4. 系统管理模块
-- 系统配置
-- 日志管理
-- 监控统计
+### 4. SEO 优化模块
+- 页面元数据管理
+- 结构化数据
+- 站点地图生成
+- 性能优化
 
 ## API 设计原则
 
