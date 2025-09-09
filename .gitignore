@@ -9,6 +9,10 @@
 /out
 /backend/dist
 
+# Next.js
+.next/
+**/.next/
+
 # TypeScript
 *.tsbuildinfo
 

@@ -21,6 +21,6 @@ async function bootstrap() {
   }
 
   app.enableCors(); // 启用 CORS
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 2900);
 }
 bootstrap();
