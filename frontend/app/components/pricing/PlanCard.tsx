@@ -13,7 +13,7 @@ export interface PlanProps {
 
 const PlanCard = ({ name, price, period, description, features, isRecommended, onSelectPlan }: PlanProps) => {
   const cardClasses = [
-    'relative flex flex-col gap-6 rounded-2xl p-8 bg-[var(--background-color)] transition-transform duration-300 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl',
+    'relative flex flex-col gap-6 rounded-2xl p-6 sm:p-8 bg-[var(--background-color)] transition-transform duration-300 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl',
     isRecommended 
       ? 'border-2 border-[var(--primary-color)] shadow-2xl shadow-blue-600/20' 
       : 'border border-[var(--border-color)]'
@@ -22,8 +22,8 @@ const PlanCard = ({ name, price, period, description, features, isRecommended, o
   return (
     <div className={cardClasses}>
       {isRecommended && (
-        <div className="absolute top-0 right-8 -translate-y-1/2">
-          <p className="text-white text-xs font-bold uppercase tracking-wider rounded-full bg-[var(--primary-color)] px-4 py-1">
+        <div className="absolute top-0 right-4 sm:right-8 -translate-y-1/2">
+          <p className="text-white text-xs font-bold uppercase tracking-wider rounded-full bg-[var(--primary-color)] px-3 sm:px-4 py-1">
             最受欢迎
           </p>
         </div>
