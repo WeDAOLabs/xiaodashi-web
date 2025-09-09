@@ -52,7 +52,7 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="rounded-2xl bg-gray-50 p-8 sm:p-12">
+    <section className="section-container bg-gray-50">
       <div className="text-center">
         <h2 className="text-3xl font-bold leading-tight tracking-tighter text-gray-900 sm:text-4xl">
           选择适合您的方案

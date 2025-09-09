@@ -1,8 +1,8 @@
 
-import Footer from '@/app/components/Footer';
-import Header from '@/app/components/Header';
 import ChevronRightIcon from '@/app/components/ChevronRightIcon';
 import FeatureSection from '@/app/components/FeatureSection';
+import Footer from '@/app/components/Footer';
+import Header from '@/app/components/Header';
 import PageHero from '@/app/components/ui/PageHero';
 
 export default function SolutionsPage() {
@@ -72,7 +72,7 @@ export default function SolutionsPage() {
                   立即开始，亲身体验 智商180的AI全域营销大师 如何为您的业务带来变革。申请免费演示，开启智能营销新篇章。
                 </p>
                 <div className="mt-10">
-                  <button className="inline-flex items-center justify-center rounded-full bg-blue-600 px-8 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700">
+                  <button className="inline-flex items-center justify-center rounded-full bg-[var(--primary-color)] px-8 py-3 text-base font-medium text-white transition-colors hover:bg-[var(--accent-color)]">
                     <span>申请产品演示</span>
                     <ChevronRightIcon className="ml-2 h-5 w-5" />
                   </button>

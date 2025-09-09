@@ -1,5 +1,5 @@
-import CheckIcon from '@/app/components/ui/CheckIcon';
 import { Button } from '@/app/components/ui/Button';
+import CheckIcon from '@/app/components/ui/CheckIcon';
 
 interface PricingCardProps {
   planName: string;
@@ -15,7 +15,7 @@ interface PricingCardProps {
 const PricingCard: React.FC<PricingCardProps> = ({ planName, price, pricePeriod, description, features, buttonText, isPopular = false, isCustom = false }) => {
   const cardClasses = [
     'relative flex flex-col gap-6 rounded-2xl p-8 bg-[var(--background-color)] border border-[var(--border-color)] transition-transform duration-300 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl',
-    isPopular ? 'border-2 border-[var(--primary-color)] shadow-2xl shadow-blue-600/20' : '',
+    isPopular ? 'border-2 border-[var(--primary-color)] shadow-2xl shadow-[var(--primary-color)]/20' : '',
   ].join(' ');
 
   return (

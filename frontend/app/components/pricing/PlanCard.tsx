@@ -15,7 +15,7 @@ const PlanCard = ({ name, price, period, description, features, isRecommended, o
   const cardClasses = [
     'relative flex flex-col gap-6 rounded-2xl p-6 sm:p-8 bg-[var(--background-color)] transition-transform duration-300 ease-in-out hover:transform hover:-translate-y-1 hover:shadow-2xl',
     isRecommended 
-      ? 'border-2 border-[var(--primary-color)] shadow-2xl shadow-blue-600/20' 
+      ? 'border-2 border-[var(--primary-color)] shadow-2xl shadow-[var(--primary-color)]/20' 
       : 'border border-[var(--border-color)]'
   ].join(' ');
 
