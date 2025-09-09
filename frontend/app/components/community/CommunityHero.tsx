@@ -1,9 +1,21 @@
+'use client';
+
+import ContactSalesModal from '@/app/components/ContactSalesModal';
 import { Button } from '@/app/components/ui/Button';
-import React from 'react';
+import React, { useState } from 'react';
 
 // Community-specific hero component that extends PageHero functionality
 // Following KISS principle with proper layout and typography
 const CommunityHero: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleButtonClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <section className="w-full text-center py-20 md:py-32 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -27,6 +39,7 @@ const CommunityHero: React.FC = () => {
           {/* CTA Button with proper centering */}
           <div className="flex justify-center">
             <Button 
+              onClick={handleButtonClick}
               className="bg-gradient-to-r from-[var(--primary-color)] to-[var(--accent-color)] text-white font-semibold px-10 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
             >
               立即登岛，开启共创之旅
@@ -34,6 +47,11 @@ const CommunityHero: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Contact Sales Modal */}
+      {isModalOpen && (
+        <ContactSalesModal onClose={handleCloseModal} />
+      )}
     </section>
   );
 };

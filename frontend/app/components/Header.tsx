@@ -1,10 +1,10 @@
 'use client';
 
+import { Button } from '@/app/components/ui/Button';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SVGProps, useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/app/components/ui/Button';
+import { SVGProps, useEffect, useState } from 'react';
 import ContactSalesModal from './ContactSalesModal';
 
 const Header = () => {
@@ -61,7 +61,7 @@ const Header = () => {
         </nav>
         <div className="hidden items-center gap-4 md:flex">
           <Button onClick={() => setIsSalesModalOpen(true)} size="sm">免费试用</Button>
-          <Button href="#" size="sm" variant="ghost">登录</Button>
+          <Button onClick={() => setIsSalesModalOpen(true)} size="sm" variant="ghost">登录</Button>
         </div>
         <button
           className="z-50 p-2 lg:hidden"
