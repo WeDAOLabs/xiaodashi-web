@@ -37,6 +37,8 @@ yarn-error.log*
 .idea/
 .vscode/
 *.swp
+.qoder/
+.project
 
 # OS-specific
 .DS_Store

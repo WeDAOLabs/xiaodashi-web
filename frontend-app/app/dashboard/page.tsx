@@ -8,11 +8,11 @@ import BriefingCard from '@/components/dashboard/BriefingCard';
 import TrendCard from '@/components/dashboard/TrendCard';
 import ToolCard from '@/components/dashboard/ToolCard';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import FileTextIcon from '@/components/icons/FileTextIcon';
 import ImageIcon from '@/components/icons/ImageIcon';
 import VideoIcon from '@/components/icons/VideoIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
-import { cn } from '@/lib/utils';
 
 const competitorPosts = [
     { imageUrl: '/images/dashboard/competitor-post-1.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
@@ -62,22 +62,36 @@ const DashboardPage: React.FC = () => {
             <h2 className="dashboard-section-title">今日简报</h2>
             <h3 className="dashboard-subsection-title">核心竞争对手分析</h3>
             
-            <div className="pb-3">
-              <div className="flex border-b border-[var(--border-secondary)] px-4 gap-8">
-                <Link className={cn('dashboard-tab', 'dashboard-tab-active')} href="#">
-                  <p>小红书</p>
-                </Link>
-                <Link className={cn('dashboard-tab', 'dashboard-tab-inactive')} href="#">
-                  <p>抖音</p>
-                </Link>
-              </div>
-            </div>
-
-            <div className="card-grid">
-                {competitorPosts.map((post, index) => (
+            <Tabs defaultValue="xiaohongshu" className="w-full pb-3">
+              <TabsList className="grid w-full grid-cols-2 bg-transparent border-b border-[var(--border-secondary)] rounded-none h-auto p-0">
+                <TabsTrigger 
+                  value="xiaohongshu" 
+                  className="dashboard-tab-trigger"
+                >
+                  小红书
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="douyin" 
+                  className="dashboard-tab-trigger"
+                >
+                  抖音
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="xiaohongshu">
+                <div className="card-grid">
+                  {competitorPosts.map((post, index) => (
                     <BriefingCard key={index} {...post} />
-                ))}
-            </div>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="douyin">
+                <div className="card-grid">
+                  {competitorPosts.map((post, index) => (
+                    <BriefingCard key={index} {...post} />
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
 
             <h3 className="dashboard-subsection-title">行业趋势速览</h3>
             {trends.map((trend, index) => (
