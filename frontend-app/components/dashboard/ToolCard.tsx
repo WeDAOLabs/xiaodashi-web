@@ -1,6 +1,5 @@
-
+import { BorderlessCard, BorderlessCardContent } from '@/components/ui/borderless-card';
 import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface ToolCardProps {
   icon: React.ElementType;
@@ -9,12 +8,12 @@ interface ToolCardProps {
 
 const ToolCard: React.FC<ToolCardProps> = ({ icon: Icon, title }) => {
   return (
-    <Card className="border-[var(--border-secondary)] shadow-none">
-      <CardContent className="flex flex-1 gap-3 items-center p-4">
-        <Icon className="size-6 text-[var(--text-primary)]" />
+    <BorderlessCard variant="default">
+      <BorderlessCardContent direction="row">
+        <Icon className="size-6 text-[var(--text-primary)] shrink-0" />
         <h2 className="text-base font-bold leading-tight text-[var(--text-primary)]">{title}</h2>
-      </CardContent>
-    </Card>
+      </BorderlessCardContent>
+    </BorderlessCard>
   );
 };
 
