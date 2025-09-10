@@ -1,0 +1,51 @@
+/* ==== Tailwind v4 主题配置 ==== */
+@theme {
+    /* 字体系统 */
+    --font-sans: var(--font-noto-sans-sc), var(--font-spline-sans), sans-serif;
+
+    /* 主色彩系统 - 使用正确的 v4 命名约定 */
+    --color-primary-50: #eff8ff;
+    --color-primary-100: #dbeeff;
+    --color-primary-500: #0071e3;
+    --color-primary-600: #005bb8;
+    --color-primary-700: #1a7ef3;
+
+    --color-accent: #0077ed;
+
+    /* 中性色调色板 */
+    --color-neutral-50: #f9fafb;
+    --color-neutral-100: #f3f4f6;
+    --color-neutral-200: #e5e7eb;
+    --color-neutral-300: #d1d5db;
+    --color-neutral-400: #9ca3af;
+    --color-neutral-500: #6b7280;
+    --color-neutral-600: #4b5563;
+    --color-neutral-700: #374151;
+    --color-neutral-800: #1f2937;
+    --color-neutral-900: #111827;
+
+    /* 辅助色彩 */
+    --color-info-50: #eff8ff;
+    --color-info-100: #dbeeff;
+    --color-info-600: #0077ed;
+
+    --color-warning-50: #fffbeb;
+    --color-warning-100: #fef3c7;
+    --color-warning-600: #d97706;
+
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-600: #16a34a;
+
+    /* 自定义断点 */
+    --breakpoint-3xl: 120rem;
+
+    /* 动画缓动函数 */
+    --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+    --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* 自定义阴影 */
+    --shadow-elevation-low: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-elevation-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-elevation-high: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}

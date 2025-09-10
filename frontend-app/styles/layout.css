@@ -1,0 +1,64 @@
+/* ==== 布局组件样式 ==== */
+@layer components {
+
+    /* Header 组件 */
+    .app-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+        border-bottom: 1px solid var(--border-secondary);
+        padding: 0.75rem 2.5rem;
+        /* 12px 40px */
+        height: 76px;
+        /* Fixed height for consistent layout */
+        background-color: var(--bg-primary);
+    }
+
+    /* Sidebar 组件 */
+    .app-sidebar {
+        display: none;
+        flex-direction: column;
+        width: 20rem;
+        /* 320px */
+        height: 100%;
+        /* Full height for fixed sidebar */
+        background-color: var(--bg-primary);
+        border-right: 1px solid var(--border-secondary);
+    }
+
+    @media (min-width: 1024px) {
+
+        /* lg */
+        .app-sidebar {
+            display: flex;
+        }
+    }
+
+    /* Sidebar 链接状态 */
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        /* 12px */
+        padding: 0.5rem 0.75rem;
+        /* 8px 12px */
+        border-radius: 0.5rem;
+        /* 8px */
+        color: var(--text-primary);
+        font-size: 0.875rem;
+        /* 14px */
+        font-weight: 500;
+        line-height: 1.25rem;
+        /* 20px */
+        transition: background-color 0.2s ease;
+    }
+
+    .sidebar-link-active {
+        background-color: var(--bg-secondary);
+    }
+
+    .sidebar-link:hover {
+        background-color: var(--bg-secondary);
+    }
+}
