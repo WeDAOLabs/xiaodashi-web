@@ -1,0 +1,52 @@
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import LogoIcon from '@/components/icons/LogoIcon';
+import BellIcon from '@/components/icons/BellIcon';
+
+const AppHeader: React.FC = () => {
+  return (
+    <header className="app-header">
+      <div className="flex items-center gap-4 text-[var(--text-primary)]">
+        <div className="size-4">
+          <LogoIcon />
+        </div>
+        <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">智赢</h2>
+      </div>
+      <div className="flex flex-1 justify-end gap-8">
+        <div className="hidden lg:flex items-center gap-9">
+          <Link className="text-sm font-medium leading-normal" href="#">
+            首页
+          </Link>
+          <Link className="text-sm font-medium leading-normal" href="#">
+            战略与决策中枢
+          </Link>
+          <Link className="text-sm font-medium leading-normal" href="#">
+            品牌与创意资产
+          </Link>
+          <Link className="text-sm font-medium leading-normal" href="#">
+            增长与运营执行
+          </Link>
+          <Link className="text-sm font-medium leading-normal" href="#">
+            赋能与效率提升
+          </Link>
+        </div>
+        <div className="flex items-center gap-2">
+            <button className="flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg bg-[var(--bg-secondary)] px-2.5 text-sm font-bold leading-normal tracking-[0.015em]">
+                <BellIcon className="size-5" />
+            </button>
+            <div className="relative size-10">
+                <Image
+                    src="/images/zhiying/avatar.png"
+                    alt="User Avatar"
+                    fill
+                    className="rounded-full object-cover"
+                />
+            </div>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default AppHeader;
