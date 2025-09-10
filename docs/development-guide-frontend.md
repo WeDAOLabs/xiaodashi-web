@@ -73,6 +73,54 @@
 
 ---
 
+## UI 组件规范 (shadcn/ui)
+
+本项目使用 `shadcn/ui` 作为 UI 组件的基础。它并非传统的组件库，而是一套可复用的组件代码集合，通过 CLI 添加到项目中。
+
+### 核心理念
+
+- **非依赖包**: `shadcn/ui` 不是一个 npm 包。你拥有组件的全部代码，可以自由修改。
+- **基于 Radix UI**: 底层使用功能强大、无障碍性优秀的 Radix UI 无头组件。
+- **Tailwind CSS 造型**: 样式完全由 Tailwind CSS 实现，与项目设计系统无缝集成。
+
+### 使用流程
+
+1.  **添加新组件**:
+    - 在 `frontend-app` 目录下，运行 CLI 命令添加新组件。
+    - 组件代码会自动生成在 `frontend-app/components/ui` 目录下。
+    ```bash
+    # 示例：添加一个 Checkbox 组件
+    cd frontend-app
+    npx shadcn@latest add checkbox
+    ```
+
+2.  **自定义样式 (最佳实践)**:
+    - **优先使用 `variant`**: 当需要为组件创建不同风格时，应优先修改组件文件 (`*.tsx`) 中的 `cva` (Class Variance Authority) 配置，为其添加新的 `variant`。
+    - **避免直接覆盖**: 不要用外部 CSS 类或行内样式去覆盖组件的基础样式。通过 `variant` 扩展组件，是 `shadcn/ui` 的核心优势。
+
+    ```tsx
+    // 示例：在 button.tsx 中添加一个名为 "help" 的新变体
+    const buttonVariants = cva(
+      // ... base styles
+      {
+        variants: {
+          variant: {
+            default: "...",
+            destructive: "...",
+            help: "bg-[#0d8ca5] text-white hover:bg-[#0b7a93]", // 新增变体
+          },
+          // ...
+        },
+      }
+    )
+
+    // 在页面中使用
+    import { Button } from "@/components/ui/button"
+    <Button variant="help">帮助中心</Button>
+    ```
+
+---
+
 ## 依赖管理 (npm Workspaces)
 
 **核心要求**: **所有前端相关的依赖项**都必须安装到 `frontend` 工作区中，而不是项目的根目录。

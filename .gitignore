@@ -9,6 +9,9 @@
 /out
 /backend/dist
 
+# MCP
+.playwright-mcp/
+
 # Next.js
 .next/
 **/.next/

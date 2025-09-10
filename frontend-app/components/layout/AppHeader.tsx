@@ -37,7 +37,7 @@ const AppHeader: React.FC = () => {
             </button>
             <div className="relative size-10">
                 <Image
-                    src="/images/zhiying/avatar.png"
+                    src="/images/dashboard/avatar.png"
                     alt="User Avatar"
                     fill
                     className="rounded-full object-cover"

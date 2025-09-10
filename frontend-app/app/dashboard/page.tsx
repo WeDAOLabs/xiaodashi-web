@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,6 +7,7 @@ import AppSidebar from '@/components/layout/AppSidebar';
 import BriefingCard from '@/components/dashboard/BriefingCard';
 import TrendCard from '@/components/dashboard/TrendCard';
 import ToolCard from '@/components/dashboard/ToolCard';
+import { Button } from '@/components/ui/button';
 import FileTextIcon from '@/components/icons/FileTextIcon';
 import ImageIcon from '@/components/icons/ImageIcon';
 import VideoIcon from '@/components/icons/VideoIcon';
@@ -13,16 +15,16 @@ import QuestionIcon from '@/components/icons/QuestionIcon';
 import { cn } from '@/lib/utils';
 
 const competitorPosts = [
-    { imageUrl: '/images/zhiying/competitor-post-1.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
-    { imageUrl: '/images/zhiying/competitor-post-2.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
-    { imageUrl: '/images/zhiying/competitor-post-3.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
-    { imageUrl: '/images/zhiying/competitor-post-4.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
+    { imageUrl: '/images/dashboard/competitor-post-1.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
+    { imageUrl: '/images/dashboard/competitor-post-2.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
+    { imageUrl: '/images/dashboard/competitor-post-3.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
+    { imageUrl: '/images/dashboard/competitor-post-4.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
 ];
 
 const trends = [
-    { imageUrl: '/images/zhiying/trend-1.png', title: '智能家居市场快速增长', description: '智能家居产品需求激增，新兴品牌崛起。' },
-    { imageUrl: '/images/zhiying/trend-2.png', title: '消费电子行业趋势向好', description: '消费电子行业整体趋势向好，智能家居产品需求激增，新兴品牌崛起。' },
-    { imageUrl: '/images/zhiying/trend-3.png', title: '竞争对手“TechGenius”推出新款智能手表', description: '竞争对手“TechGenius”推出新款智能手表，主打健康监测功能，市场反响热烈。' },
+    { imageUrl: '/images/dashboard/trend-1.png', title: '智能家居市场快速增长', description: '智能家居产品需求激增，新兴品牌崛起。' },
+    { imageUrl: '/images/dashboard/trend-2.png', title: '消费电子行业趋势向好', description: '消费电子行业整体趋势向好，智能家居产品需求激增，新兴品牌崛起。' },
+    { imageUrl: '/images/dashboard/trend-3.png', title: '竞争对手“TechGenius”推出新款智能手表', description: '竞争对手“TechGenius”推出新款智能手表，主打健康监测功能，市场反响热烈。' },
 ];
 
 const copywritingTools = [
@@ -87,7 +89,7 @@ const DashboardPage: React.FC = () => {
                 <div className="w-full gap-1 overflow-hidden bg-white @[480px]:gap-2 aspect-[3/2] flex">
                     <div className="relative w-full aspect-auto rounded-none flex-1">
                         <Image
-                            src="/images/zhiying/knowledge-graph.png"
+                            src="/images/dashboard/knowledge-graph.png"
                             alt="科学营销知识图谱与功能导航"
                             fill
                             className="object-cover"
@@ -120,10 +122,10 @@ const DashboardPage: React.FC = () => {
             </div>
 
             <div className="flex justify-end overflow-hidden px-5 pb-5">
-              <button className="help-button">
+              <Button variant="help">
                 <QuestionIcon className="size-6" />
                 <span className="truncate">帮助中心</span>
-              </button>
+              </Button>
             </div>
 
             <p className="text-center text-sm font-normal leading-normal text-[var(--text-secondary)] pb-3 pt-1 px-4">© 2023 智赢. 所有权利。|隐私政策|用户协议</p>
