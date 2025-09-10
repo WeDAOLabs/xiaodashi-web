@@ -28,6 +28,19 @@
     --color-neutral-800: #1f2937;
     --color-neutral-900: #111827;
 
+    /* 辅助色彩 */
+    --color-info-50: #eff8ff;
+    --color-info-100: #dbeeff;
+    --color-info-600: #0077ed;
+    
+    --color-warning-50: #fffbeb;
+    --color-warning-100: #fef3c7;
+    --color-warning-600: #d97706;
+    
+    --color-success-50: #f0fdf4;
+    --color-success-100: #dcfce7;
+    --color-success-600: #16a34a;
+
     /* 自定义断点 */
     --breakpoint-3xl: 120rem;
 }
@@ -50,6 +63,23 @@
 
     --border-primary: #d2d2d7;
     --border-secondary: var(--color-neutral-200);
+
+    /* 辅助色彩语义化映射 */
+    --info-color: var(--color-info-600);
+    --info-bg: var(--color-info-50);
+    --info-border: var(--color-info-100);
+    
+    --warning-color: var(--color-warning-600);
+    --warning-bg: var(--color-warning-50);
+    --warning-border: var(--color-warning-100);
+    
+    --success-color: var(--color-success-600);
+    --success-bg: var(--color-success-50);
+    --success-border: var(--color-success-100);
+    
+    /* 特殊组件颜色 */
+    --help-button-bg: #0d8ca5;
+    --help-button-hover: #0b7a93;
 
     /* 向后兼容的变量 */
     --background-color: var(--bg-primary);
@@ -99,6 +129,9 @@
         border-bottom: 1px solid var(--border-secondary);
         padding: 0.75rem 2.5rem;
         /* 12px 40px */
+        height: 76px;
+        /* Fixed height for consistent layout */
+        background-color: var(--bg-primary);
     }
 
     .app-sidebar {
@@ -106,6 +139,10 @@
         flex-direction: column;
         width: 20rem;
         /* 320px */
+        height: 100%;
+        /* Full height for fixed sidebar */
+        background-color: var(--bg-primary);
+        border-right: 1px solid var(--border-secondary);
     }
 
     @media (min-width: 1024px) {
@@ -140,9 +177,11 @@
     .dashboard-main-content {
         display: flex;
         flex-direction: column;
-        max-width: 60rem;
-        /* 960px */
+        max-width: none;
+        /* Remove max-width constraint for full width */
         flex: 1;
+        padding: 0;
+        /* Remove default padding for scrollable content */
     }
 
     .dashboard-section-title {
@@ -194,6 +233,48 @@
         gap: 0.75rem;
         /* 12px */
         padding: 1rem;
+    }
+
+    /* ==== 页面级通用样式类 ==== */
+    .page-container {
+        max-width: 96rem;
+        /* 1536px - 6xl */
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        /* 24px */
+        width: 95%;
+    }
+
+    .feature-grid {
+        display: grid;
+        gap: 1.5rem;
+        /* 24px */
+        padding: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .content-section {
+        margin-bottom: 2rem;
+        /* 32px */
+    }
+
+    .section-header {
+        color: var(--text-primary);
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        padding: 1.25rem 1rem 0.75rem 1rem;
+    }
+
+    .subsection-header {
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        /* 18px */
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        padding: 1rem 1rem 0.5rem 1rem;
     }
 
     /* shadcn Tabs 样式覆盖 - 精确匹配设计图效果 */

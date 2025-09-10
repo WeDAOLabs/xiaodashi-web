@@ -39,6 +39,7 @@ yarn-error.log*
 *.swp
 .qoder/
 .project
+.ai-progress
 
 # OS-specific
 .DS_Store

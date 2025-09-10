@@ -18,7 +18,7 @@ const borderlessCardVariants = cva(
         lg: "p-6",
       },
       interactive: {
-        true: "cursor-pointer hover:bg-gray-50/50",
+        true: "cursor-pointer hover:bg-[var(--bg-secondary)]/50",
         false: "",
       },
     },
