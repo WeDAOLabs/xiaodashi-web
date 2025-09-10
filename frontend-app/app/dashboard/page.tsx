@@ -1,18 +1,18 @@
 
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import AppHeader from '@/components/layout/AppHeader';
-import AppSidebar from '@/components/layout/AppSidebar';
 import BriefingCard from '@/components/dashboard/BriefingCard';
-import TrendCard from '@/components/dashboard/TrendCard';
 import ToolCard from '@/components/dashboard/ToolCard';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import TrendCard from '@/components/dashboard/TrendCard';
 import FileTextIcon from '@/components/icons/FileTextIcon';
 import ImageIcon from '@/components/icons/ImageIcon';
-import VideoIcon from '@/components/icons/VideoIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
+import VideoIcon from '@/components/icons/VideoIcon';
+import AppHeader from '@/components/layout/AppHeader';
+import AppSidebar from '@/components/layout/AppSidebar';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
 
 const competitorPosts = [
     { imageUrl: '/images/dashboard/competitor-post-1.png', title: '夏日清新妆容教程', author: '化妆师安娜', stats: '1.2万浏览 | 500点赞' },
@@ -63,7 +63,7 @@ const DashboardPage: React.FC = () => {
             <h3 className="dashboard-subsection-title">核心竞争对手分析</h3>
             
             <Tabs defaultValue="xiaohongshu" className="w-full pb-3">
-              <TabsList className="grid w-full grid-cols-2 bg-transparent border-b border-[var(--border-secondary)] rounded-none h-auto p-0">
+              <TabsList className="dashboard-tabs-list">
                 <TabsTrigger 
                   value="xiaohongshu" 
                   className="dashboard-tab-trigger"
