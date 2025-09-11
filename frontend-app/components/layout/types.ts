@@ -12,3 +12,7 @@ export interface DashboardLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
     className?: string;
 }
+
+export interface AppSidebarProps {
+    isCollapsed: boolean;
+}

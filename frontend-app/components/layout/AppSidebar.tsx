@@ -24,6 +24,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { AppSidebarProps } from './types';
 
 const navItems = [
   {
@@ -68,7 +69,7 @@ const bottomNavItems = [
     { name: '帮助与支持', icon: QuestionIcon, href: '/support' },
 ]
 
-const AppSidebar: React.FC = () => {
+const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   const pathname = usePathname();
 
   return (
@@ -83,7 +84,7 @@ const AppSidebar: React.FC = () => {
                   <AccordionItem value={item.name} key={item.name}>
                     <AccordionTrigger className="sidebar-link justify-start">
                       <Icon className="size-6" />
-                      <p>{item.name}</p>
+                      <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>
                     </AccordionTrigger>
                     <AccordionContent className="">
                       {item.subItems.map((subItem) => {
@@ -98,7 +99,7 @@ const AppSidebar: React.FC = () => {
                             )}
                           >
                             <span className="size-6" />
-                            <p>{subItem.name}</p>
+                            <p className={cn(isCollapsed && 'hidden')}>{subItem.name}</p>
                           </Link>
                         );
                       })}
@@ -117,7 +118,7 @@ const AppSidebar: React.FC = () => {
                     )}
                   >
                     <Icon className="size-6" />
-                    <p>{item.name}</p>
+                    <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>
                   </Link>
                 );
               }
@@ -134,7 +135,7 @@ const AppSidebar: React.FC = () => {
                         href={item.href}
                         className={cn('sidebar-link', isActive && 'sidebar-link-active')}>
                         <Icon className="size-6" />
-                        <p>{item.name}</p>
+                        <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>
                     </Link>
                 );
             })}

@@ -77,6 +77,11 @@
 
 本项目使用 `shadcn/ui` 作为 UI 组件的基础。它并非传统的组件库，而是一套可复用的组件代码集合，通过 CLI 添加到项目中。
 
+### 安装命令
+```
+cd frontend-app && npx shadcn@latest add button
+```
+
 ### 项目特定规范
 
 **重要**: 对于 `frontend-app` 项目，**必须优先使用 shadcn/ui 组件实现页面**。这确保了整个应用的设计系统一致性和组件可维护性。

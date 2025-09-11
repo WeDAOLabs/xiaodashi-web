@@ -24,7 +24,6 @@
         height: 100%;
         /* Full height for fixed sidebar */
         background-color: var(--bg-primary);
-        border-right: 1px solid var(--border-secondary);
     }
 
     @media (min-width: 1024px) {

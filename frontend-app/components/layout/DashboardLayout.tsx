@@ -1,3 +1,9 @@
+'use client';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import { cn } from '@/lib/utils';
 import React from 'react';
 import AppHeader from './AppHeader';
@@ -13,6 +19,8 @@ const DashboardLayout = React.memo<DashboardLayoutProps>(({
   breadcrumbs,
   className 
 }) => {
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+
   return (
     <ProtectedRoute>
       <div className="flex h-screen bg-white overflow-hidden">
@@ -22,30 +30,48 @@ const DashboardLayout = React.memo<DashboardLayoutProps>(({
         </div>
         
         <div className="flex flex-1 pt-[76px]">
-          {/* Fixed Sidebar */}
-          <div className="fixed left-0 top-[76px] bottom-0 z-10 bg-white">
-            <AppSidebar />
-          </div>
-          
-          {/* Scrollable Main Content */}
-          <main className="flex-1 ml-80 overflow-y-auto">
-            <div className={cn("page-container", className)}>
-              {/* Breadcrumb Navigation */}
-              {breadcrumbs && breadcrumbs.length > 0 && (
-                <BreadcrumbNav items={breadcrumbs} />
-              )}
-              
-              {/* Page Title */}
-              {title && (
-                <h1 className="dashboard-section-title">{title}</h1>
-              )}
-              
-              {/* Page Content */}
-              <ErrorBoundary>
-                {children}
-              </ErrorBoundary>
-            </div>
-          </main>
+          <ResizablePanelGroup
+            direction="horizontal"
+            className="w-full"
+            onLayout={(sizes: number[]) => {
+              document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`
+            }}
+          >
+            <ResizablePanel
+              defaultSize={14}
+              minSize={5}
+              maxSize={25}
+              collapsible={true}
+              collapsedSize={5}
+              onCollapse={() => setIsCollapsed(true)}
+              onExpand={() => setIsCollapsed(false)}
+              className={cn(isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out")}
+            >
+              <AppSidebar isCollapsed={isCollapsed} />
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={80}>
+              {/* Scrollable Main Content */}
+              <main className="flex-1 overflow-y-auto">
+                <div className={cn("page-container", className)}>
+                  {/* Breadcrumb Navigation */}
+                  {breadcrumbs && breadcrumbs.length > 0 && (
+                    <BreadcrumbNav items={breadcrumbs} />
+                  )}
+                  
+                  {/* Page Title */}
+                  {title && (
+                    <h1 className="dashboard-section-title">{title}</h1>
+                  )}
+                  
+                  {/* Page Content */}
+                  <ErrorBoundary>
+                    {children}
+                  </ErrorBoundary>
+                </div>
+              </main>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       </div>
     </ProtectedRoute>
