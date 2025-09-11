@@ -50,7 +50,7 @@ const DashboardLayout = React.memo<DashboardLayoutProps>(({
               <AppSidebar isCollapsed={isCollapsed} />
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel defaultSize={80}>
+            <ResizablePanel defaultSize={80} className="flex flex-col">
               {/* Scrollable Main Content */}
               <main className="flex-1 overflow-y-auto">
                 <div className={cn("page-container", className)}>
