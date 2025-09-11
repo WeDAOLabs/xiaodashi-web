@@ -24,29 +24,43 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  href?: string;
-}
+export type ButtonProps = VariantProps<typeof buttonVariants> & {
+  children?: React.ReactNode;
+  className?: string;
+} & (
+    | ({ href?: undefined } & React.ButtonHTMLAttributes<HTMLButtonElement>)
+    | ({ href: string } & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'>)
+  );
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, href, children, ...props }, ref) => {
-    const classes = cn(buttonVariants({ variant, size, className }));
+const Button = React.forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  ButtonProps
+>(({ className, variant, size, href, children, ...props }, ref) => {
+  const classes = cn(buttonVariants({ variant, size, className }));
 
-    if (href) {
-      return (
-        <Link href={href} className={classes} ref={ref as React.Ref<HTMLAnchorElement>} {...props}>
-          {children}
-        </Link>
-      );
-    }
-
+  if (href) {
     return (
-      <button className={classes} ref={ref} {...props}>
+      <Link
+        href={href}
+        className={classes}
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
         {children}
-      </button>
+      </Link>
     );
   }
-);
+
+  return (
+    <button
+      className={classes}
+      ref={ref as React.Ref<HTMLButtonElement>}
+      {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
+      {children}
+    </button>
+  );
+});
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
