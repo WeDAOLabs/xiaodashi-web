@@ -26,23 +26,6 @@ const AppHeader: React.FC = () => {
         <h2 className="text-lg font-bold leading-tight tracking-[-0.015em]">智赢</h2>
       </div>
       <div className="flex flex-1 justify-end gap-8">
-        <div className="hidden lg:flex items-center gap-9">
-          <Link className="text-sm font-medium leading-normal" href="#">
-            首页
-          </Link>
-          <Link className="text-sm font-medium leading-normal" href="#">
-            战略与决策中枢
-          </Link>
-          <Link className="text-sm font-medium leading-normal" href="#">
-            品牌与创意资产
-          </Link>
-          <Link className="text-sm font-medium leading-normal" href="#">
-            增长与运营执行
-          </Link>
-          <Link className="text-sm font-medium leading-normal" href="#">
-            赋能与效率提升
-          </Link>
-        </div>
         <div className="flex items-center gap-2">
             <button className="flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg bg-[var(--bg-secondary)] px-2.5 text-sm font-bold leading-normal tracking-[0.015em]">
                 <BellIcon className="size-5" />
