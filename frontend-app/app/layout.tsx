@@ -1,7 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import type { Viewport } from "next";
 
 const notoSansSC = localFont({
   src: [
@@ -56,7 +55,7 @@ export const metadata: Metadata = {
   title: "小大师 AI 营销平台 - 应用产品平台",
   description: "智能营销解决方案，助力企业数字化转型",
   icons: {
-    icon: [{ url: "/favicon.ico" }],
+    icon: "/icon.svg",
   },
 };
 
