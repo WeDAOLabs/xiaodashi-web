@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/components/layout/AuthContext";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -74,7 +75,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`${notoSansSC.variable} ${splineSans.variable}`}
         suppressHydrationWarning={true}
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

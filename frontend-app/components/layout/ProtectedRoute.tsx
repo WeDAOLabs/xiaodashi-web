@@ -2,19 +2,18 @@
 
 import { useAuth } from '@/components/layout/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
-export default function Home() {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // If user is logged in, redirect to dashboard
-    if (!isLoading && user) {
-      router.push('/dashboard');
-    }
-    
-    // If not logged in, redirect to login page
+    // If not loading and no user, redirect to login
     if (!isLoading && !user) {
       router.push('/login');
     }
@@ -26,12 +25,19 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[var(--primary-color)] mb-4"></div>
-          <p className="text-gray-600">加载中...</p>
+          <p className="text-gray-600">验证身份中...</p>
         </div>
       </div>
     );
   }
 
-  // If we reach here, it means we're redirecting
-  return null;
-}
+  // If no user and not loading, don't render children
+  if (!user && !isLoading) {
+    return null;
+  }
+
+  // If user exists, render children
+  return <>{children}</>;
+};
+
+export default ProtectedRoute;
