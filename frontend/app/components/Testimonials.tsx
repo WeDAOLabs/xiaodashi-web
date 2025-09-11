@@ -3,7 +3,7 @@ import { Button } from '@/app/components/ui/Button';
 const Testimonials = () => (
   <section className="py-24">
     <h2 className="mb-12 text-center text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)]">
-      客户成功案例
+      行业案例
     </h2>
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
       <TestimonialCard

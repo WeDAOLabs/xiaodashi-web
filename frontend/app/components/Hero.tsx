@@ -3,14 +3,13 @@
 import { Button } from '@/app/components/ui/Button';
 import { useState } from 'react';
 import ContactSalesModal from './ContactSalesModal';
-import AIMarketingAnimation from './ui/AIMarketingAnimation';
 
 const Hero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <section className="w-full text-center py-20 md:py-32">
+      <section className="w-full text-center min-h-screen flex items-center justify-center">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center gap-8">
             <div className="max-w-4xl">
@@ -24,9 +23,6 @@ const Hero = () => {
             <div className="flex gap-4">
               <Button onClick={() => setIsModalOpen(true)}>立即免费试用</Button>
               <Button onClick={() => setIsModalOpen(true)} variant="secondary">联系销售</Button>
-            </div>
-            <div className="relative mt-12 w-full max-h-[600px] overflow-hidden rounded-2xl">
-              <AIMarketingAnimation className="h-[500px] md:h-[600px]" />
             </div>
           </div>
         </div>
