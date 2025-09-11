@@ -1,18 +1,11 @@
 'use client';
 
-import CalendarIcon from '@/components/icons/CalendarIcon';
 import ChartLineIcon from '@/components/icons/ChartLineIcon';
 import FileTextIcon from '@/components/icons/FileTextIcon';
 import GearIcon from '@/components/icons/GearIcon';
-import ImageIcon from '@/components/icons/ImageIcon';
-import LayoutIcon from '@/components/icons/LayoutIcon';
-import MagnifyingGlassIcon from '@/components/icons/MagnifyingGlassIcon';
-import MegaphoneIcon from '@/components/icons/MegaphoneIcon';
 import PresentationChartIcon from '@/components/icons/PresentationChartIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
-import UsersThreeIcon from '@/components/icons/UsersThreeIcon';
-import VideoIcon from '@/components/icons/VideoIcon';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -79,49 +72,32 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
           <Accordion type="multiple" className="w-full" defaultValue={['战略与决策中枢']}>
             {navItems.map((item) => {
               const Icon = item.icon;
-              if (item.subItems) {
-                return (
-                  <AccordionItem value={item.name} key={item.name}>
-                    <AccordionTrigger className="sidebar-link justify-start">
-                      <Icon className="size-6" />
-                      <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>
-                    </AccordionTrigger>
-                    <AccordionContent className="">
-                      {item.subItems.map((subItem) => {
-                        const isActive = pathname === subItem.href;
-                        return (
-                          <Link
-                            key={subItem.name}
-                            href={subItem.href}
-                            className={cn(
-                              'sidebar-link justify-start',
-                              isActive && 'sidebar-link-active'
-                            )}
-                          >
-                            <span className="size-6" />
-                            <p className={cn(isCollapsed && 'hidden')}>{subItem.name}</p>
-                          </Link>
-                        );
-                      })}
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              } else {
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href!}
-                    className={cn(
-                      'sidebar-link justify-start',
-                      isActive && 'sidebar-link-active'
-                    )}
-                  >
+              return (
+                <AccordionItem value={item.name} key={item.name}>
+                  <AccordionTrigger className="sidebar-link justify-start">
                     <Icon className="size-6" />
                     <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>
-                  </Link>
-                );
-              }
+                  </AccordionTrigger>
+                  <AccordionContent className="">
+                    {item.subItems.map((subItem) => {
+                      const isActive = pathname === subItem.href;
+                      return (
+                        <Link
+                          key={subItem.name}
+                          href={subItem.href}
+                          className={cn(
+                            'sidebar-link justify-start',
+                            isActive && 'sidebar-link-active'
+                          )}
+                        >
+                          <span className="size-6" />
+                          <p className={cn(isCollapsed && 'hidden')}>{subItem.name}</p>
+                        </Link>
+                      );
+                    })}
+                  </AccordionContent>
+                </AccordionItem>
+              );
             })}
           </Accordion>
         </div>

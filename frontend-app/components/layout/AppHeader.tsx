@@ -4,7 +4,6 @@ import BellIcon from '@/components/icons/BellIcon';
 import LogoIcon from '@/components/icons/LogoIcon';
 import { useAuth } from '@/components/layout/AuthContext';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
