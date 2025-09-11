@@ -1,10 +1,11 @@
 /* ==== 语义化CSS变量系统 ==== */
 :root {
     /* 语义化颜色映射 - 使用 Tailwind v4 生成的变量 */
-    --primary-color: var(--color-primary-500);
-    --primary-hover: var(--color-primary-600);
-    --primary-light: var(--color-primary-700);
-    --accent-color: var(--color-accent);
+    --primary-color: #007A7A;
+    --primary-hover: #006666;
+    --primary-light: #008888;
+    --primary-color-focus-ring: #B2DFDB;
+    --accent-color: #0077ed;
 
     /* 文本颜色语义化 */
     --text-primary: #1d1d1f;
@@ -34,8 +35,8 @@
     --success-border: var(--color-success-100);
 
     /* 特殊组件颜色 */
-    --help-button-bg: #0d8ca5;
-    --help-button-hover: #0b7a93;
+    --help-button-bg: #0071e3;
+    --help-button-hover: #005bb8;
 
     /* 向后兼容的shadcn变量 */
     --background-color: var(--bg-primary);
