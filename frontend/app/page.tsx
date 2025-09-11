@@ -1,5 +1,5 @@
 import Header from './components/Header';
-import Hero from './components/Hero';
+import HomepageHero from './components/HomepageHero';
 import Features from './components/Features';
 import RecommendedTools from './components/RecommendedTools';
 import Pricing from './components/Pricing';
@@ -13,7 +13,7 @@ export default function Home() {
       <div className="flex h-full grow flex-col">
         <Header />
         <main className="flex-1">
-          <Hero />
+          <HomepageHero />
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <Features />
             <RecommendedTools />
