@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const recommendedTools = [
   {
     category: "图像工具",
@@ -29,9 +31,15 @@ interface ShowcaseCardProps {
 const ShowcaseCard = ({ category, name, description, imageUrl }: ShowcaseCardProps) => (
   <div>
     <div
-      className="w-full aspect-video rounded-2xl bg-cover bg-center bg-gray-100"
-      style={{ backgroundImage: `url("${imageUrl}")` }}
-    ></div>
+      className="relative w-full aspect-video rounded-2xl bg-gray-100 overflow-hidden"
+    >
+      <Image
+        src={imageUrl}
+        alt={name}
+        fill
+        className="object-cover"
+      />
+    </div>
     <div className="mt-4 text-center">
       <p className="label-style">{category}</p>
       <p className="mt-2 text-xl font-bold text-[var(--text-primary)]">{name}</p>
