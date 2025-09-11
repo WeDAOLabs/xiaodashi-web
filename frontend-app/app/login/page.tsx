@@ -64,19 +64,19 @@ const LoginPage: React.FC = () => {
         <div>
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             <input name="remember" type="hidden" value="true" />
-            {/* 邮箱/手机号和密码输入框组 */}
+            {/* 用户名/手机号/邮箱和密码输入框组 */}
             <div className="rounded-md shadow-sm -space-y-px">
               <div>
                 <Label htmlFor="email" className="sr-only">
-                  手机号/邮箱
+                  用户名/手机号/邮箱
                 </Label>
                 <Input
                   id="email"
                   name="email"
-                  type="email"
-                  autoComplete="email"
+                  type="text"
+                  autoComplete="username"
                   required
-                  placeholder="手机号/邮箱"
+                  placeholder="用户名/手机号/邮箱"
                   value={formData.email}
                   onChange={handleInputChange}
                   className="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[var(--primary-color-focus-ring)] focus:border-[var(--primary-color)] focus:z-10 sm:text-sm"
