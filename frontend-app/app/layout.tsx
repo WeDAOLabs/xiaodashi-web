@@ -53,7 +53,7 @@ const splineSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "小大师 AI 营销平台 - 应用产品平台",
+  title: "智赢 AI 营销平台 - 应用产品平台",
   description: "智能营销解决方案，助力企业数字化转型",
   icons: {
     icon: "/icon.svg",

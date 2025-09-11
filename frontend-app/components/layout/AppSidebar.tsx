@@ -18,19 +18,49 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
 
-const sidebarNavItems = [
-  { name: '概览/仪表盘', icon: LayoutIcon, href: '/dashboard' },
-  { name: '数据报告', icon: PresentationChartIcon, href: '/reports' },
-  { name: '文案', icon: FileTextIcon, href: '/copywriting' },
-  { name: '生图', icon: ImageIcon, href: '/image-generation' },
-  { name: '生视频', icon: VideoIcon, href: '/video-generation' },
-  { name: '数据分析', icon: ChartLineIcon, href: '/analytics' },
-  { name: '广告管理', icon: MegaphoneIcon, href: '/advertising' },
-  { name: '社交媒体管理', icon: UsersIcon, href: '/social-media' },
-  { name: '客户关系管理', icon: UsersThreeIcon, href: '/crm' },
-  { name: '内容计划', icon: CalendarIcon, href: '/content-planning' },
-  { name: '品牌监测', icon: MagnifyingGlassIcon, href: '/brand-monitoring' },
-  { name: '市场调研', icon: PresentationChartIcon, href: '/market-research' },
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+const navItems = [
+  {
+    name: '战略与决策中枢',
+    icon: PresentationChartIcon,
+    subItems: [
+      { name: '智能业务与营销战略规划', href: '/strategic-planning' },
+      { name: '智能市场洞察与竞品分析', href: '/market-intelligence' },
+      { name: '智能营销效果评估与数据分析', href: '/marketing-analytics' },
+    ],
+  },
+  {
+    name: '品牌与创意资产',
+    icon: FileTextIcon,
+    subItems: [
+      { name: '智能品牌与IP资产管理', href: '/brand-management' },
+      { name: '智能内容创作与素材中心', href: '/content-creation' },
+    ],
+  },
+  {
+    name: '增长与运营执行',
+    icon: ChartLineIcon,
+    subItems: [
+      { name: '智能公域流量投放与优化', href: '/public-traffic' },
+      { name: '智能私域增长与运营', href: '/private-growth' },
+      { name: '智能电商运营与转化', href: '/ecommerce' },
+      { name: '智能销售赋能', href: '/sales-enablement' },
+    ],
+  },
+  {
+    name: '赋能与效率提升',
+    icon: UsersIcon,
+    subItems: [
+      { name: '智能知识库', href: '/knowledge-base' },
+      { name: '企业效率提升', href: '/efficiency-improvement' },
+    ],
+  },
 ];
 
 const bottomNavItems = [
@@ -40,25 +70,59 @@ const bottomNavItems = [
 
 const AppSidebar: React.FC = () => {
   const pathname = usePathname();
-  
+
   return (
     <aside className="app-sidebar">
       <div className="flex h-full min-h-[700px] flex-col justify-between bg-white p-4">
         <div className="flex flex-col gap-2">
-          {sidebarNavItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href || 
-                           (item.href !== '/dashboard' && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn('sidebar-link', isActive && 'sidebar-link-active')}>
-                <Icon className="size-6" />
-                <p>{item.name}</p>
-              </Link>
-            );
-          })}
+          <Accordion type="multiple" className="w-full" defaultValue={['战略与决策中枢']}>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              if (item.subItems) {
+                return (
+                  <AccordionItem value={item.name} key={item.name}>
+                    <AccordionTrigger className="sidebar-link justify-start">
+                      <Icon className="size-6" />
+                      <p>{item.name}</p>
+                    </AccordionTrigger>
+                    <AccordionContent className="">
+                      {item.subItems.map((subItem) => {
+                        const isActive = pathname === subItem.href;
+                        return (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className={cn(
+                              'sidebar-link justify-start',
+                              isActive && 'sidebar-link-active'
+                            )}
+                          >
+                            <span className="size-6" />
+                            <p>{subItem.name}</p>
+                          </Link>
+                        );
+                      })}
+                    </AccordionContent>
+                  </AccordionItem>
+                );
+              } else {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href!}
+                    className={cn(
+                      'sidebar-link justify-start',
+                      isActive && 'sidebar-link-active'
+                    )}
+                  >
+                    <Icon className="size-6" />
+                    <p>{item.name}</p>
+                  </Link>
+                );
+              }
+            })}
+          </Accordion>
         </div>
         <div className="flex flex-col gap-2">
             {bottomNavItems.map((item) => {
