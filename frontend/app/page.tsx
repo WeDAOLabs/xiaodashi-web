@@ -5,6 +5,7 @@ import GrowthWisdomSection from './components/GrowthWisdomSection';
 import Header from './components/Header';
 import HomepageHero from './components/HomepageHero';
 import Testimonials from './components/Testimonials';
+import BusinessTransformation from './components/business-transformation/BusinessTransformation';
 
 export default function Home() {
   return (
@@ -13,13 +14,16 @@ export default function Home() {
         <Header />
         <main className="flex-1">
           <HomepageHero />
+         
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
             <GrowthWisdomSection />
             <Features />
             <Testimonials />
+            <BusinessTransformation />
+            <Community />
           </div>
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-            <Community />
+            {/* Spacer div for consistent spacing before footer */}
           </div>
         </main>
         <Footer />

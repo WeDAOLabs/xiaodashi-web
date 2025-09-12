@@ -2,61 +2,63 @@ import Image from 'next/image';
 
 const Features = () => (
   <section className="py-24">
-    <div className="mx-auto max-w-4xl text-center">
-      <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl">
-        每个人都能拥有专家级的数字人营销团队
-      </h2>
-    </div>
-    <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2">
-      <FeatureCard
-        title="核心定位"
-        description="营销决策AI引擎与智能营销架构师"
-        imageUrl="/feature-analytics.png"
-        items={[
-          '营销决策引擎',
-          '智能营销架构设计',
-          '科学营销知识图谱',
-          'Web3社区共建',
-          '专家级外脑',
-        ]}
-      />
-      <FeatureCard
-        title="团队协作"
-        description="数字专家群与企业员工的“完美拍档”"
-        imageUrl="/feature-content-creation.png"
-        items={[
-          'AI营销专家团队',
-          '数字人自运行',
-          '人机完美搭档',
-          '全链路营销协作者',
-          '高价值创造',
-        ]}
-      />
-      <FeatureCard
-        title="部署模式"
-        description="灵活配置，无忧数据，即刻赋能"
-        imageUrl="/feature-social-media.png"
-        items={[
-          '敏捷可插拔',
-          '普惠化智能营销',
-          '一人公司适用',
-          '分段构建数据',
-          '降低门槛',
-          '定制化',
-        ]}
-      />
-      <FeatureCard
-        title="价值交付"
-        description="经验智用（Experience-Driven Utility, EDU）模式"
-        imageUrl="/feature-email-marketing.png"
-        items={[
-          '产品服务化',
-          '服务产品化',
-          '简化上手',
-          '重构业务流程',
-          '可信营销生态',
-        ]}
-      />
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl text-center">
+        <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl">
+          每个人都能拥有专家级的数字人营销团队
+        </h2>
+      </div>
+      <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2">
+        <FeatureCard
+          title="核心定位"
+          description="营销决策AI引擎与智能营销架构师"
+          imageUrl="/feature-analytics.png"
+          items={[
+            '营销决策引擎',
+            '智能营销架构设计',
+            '科学营销知识图谱',
+            'Web3社区共建',
+            '专家级外脑',
+          ]}
+        />
+        <FeatureCard
+          title="团队协作"
+          description="数字专家群与企业员工的“完美拍档”"
+          imageUrl="/feature-content-creation.png"
+          items={[
+            'AI营销专家团队',
+            '数字人自运行',
+            '人机完美搭档',
+            '全链路营销协作者',
+            '高价值创造',
+          ]}
+        />
+        <FeatureCard
+          title="部署模式"
+          description="灵活配置，无忧数据，即刻赋能"
+          imageUrl="/feature-social-media.png"
+          items={[
+            '敏捷可插拔',
+            '普惠化智能营销',
+            '一人公司适用',
+            '分段构建数据',
+            '降低门槛',
+            '定制化',
+          ]}
+        />
+        <FeatureCard
+          title="价值交付"
+          description="经验智用（Experience-Driven Utility, EDU）模式"
+          imageUrl="/feature-email-marketing.png"
+          items={[
+            '产品服务化',
+            '服务产品化',
+            '简化上手',
+            '重构业务流程',
+            '可信营销生态',
+          ]}
+        />
+      </div>
     </div>
   </section>
 );

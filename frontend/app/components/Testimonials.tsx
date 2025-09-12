@@ -1,6 +1,6 @@
 import { Button } from '@/app/components/ui/Button';
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 import AutoIcon from './icons/industries/AutoIcon';
 import ECommerceIcon from './icons/industries/ECommerceIcon';
 import EducationIcon from './icons/industries/EducationIcon';
@@ -115,25 +115,27 @@ const testimonialsData = [
 
 const Testimonials = () => (
   <section className="py-24">
-    <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl text-center mb-12">
-      岂止于高度定制和模块化，<br/>更有全模块无缝集成、全链路自动化流转的强大效能加持
-    </h2>
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-      {testimonialsData.map((testimonial, index) => (
-        <TestimonialCard
-          key={index}
-          industry={testimonial.industry}
-          title={testimonial.title}
-          imageUrl={testimonial.imageUrl}
-          stats={testimonial.stats}
-          icon={testimonial.icon}
-        />
-      ))}
-    </div>
-    <div className="mt-12 flex justify-center">
-      <Button href="/customer-stories" variant="primary">
-        探索更多案例
-      </Button>
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl text-center mb-12">
+        岂止于高度定制和模块化，<br/>更有全模块无缝集成、全链路自动化流转的强大效能加持
+      </h2>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        {testimonialsData.map((testimonial, index) => (
+          <TestimonialCard
+            key={index}
+            industry={testimonial.industry}
+            title={testimonial.title}
+            imageUrl={testimonial.imageUrl}
+            stats={testimonial.stats}
+            icon={testimonial.icon}
+          />
+        ))}
+      </div>
+      <div className="mt-12 flex justify-center">
+        <Button href="/customer-stories" variant="primary">
+          探索更多案例
+        </Button>
+      </div>
     </div>
   </section>
 );

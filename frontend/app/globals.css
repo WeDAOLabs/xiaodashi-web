@@ -78,3 +78,6 @@ body {
 .apple-link:hover {
   text-decoration: underline;
 }
+
+/* ==== Business Transformation Styles ==== */
+/* (Moved to ./components/business-transformation/BusinessTransformation.css) */

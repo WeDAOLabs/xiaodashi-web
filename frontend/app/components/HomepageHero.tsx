@@ -1,10 +1,10 @@
 'use client';
 
 import { Button } from '@/app/components/ui/Button';
-import { useState } from 'react';
-import ContactSalesModal from './ContactSalesModal';
-import Typewriter from 'typewriter-effect';
 import clsx from 'clsx';
+import { useState } from 'react';
+import Typewriter from 'typewriter-effect';
+import ContactSalesModal from './ContactSalesModal';
 
 const HomepageHero = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

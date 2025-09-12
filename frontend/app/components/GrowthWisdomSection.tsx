@@ -1,6 +1,5 @@
 'use client';
 
-
 const JarvisSection = () => {
   // 前四个优势
   const advantages = [
@@ -20,14 +19,14 @@ const JarvisSection = () => {
 
   return (
     <section className="py-16 md:py-24">
-      <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl">
-          增长需要的不仅是工具，而是智慧
-        </h2>
-      </div>
-      
-      <div className="mt-16">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl">
+            增长需要的不仅是工具，而是智慧
+          </h2>
+        </div>
+        
+        <div className="mt-16">
           {/* 前四个优势，每行两个 */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {advantages.map((advantage, index) => (
