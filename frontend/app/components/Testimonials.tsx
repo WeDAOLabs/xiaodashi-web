@@ -1,5 +1,6 @@
 import { Button } from '@/app/components/ui/Button';
 import React from 'react';
+import Image from 'next/image';
 import AutoIcon from './icons/industries/AutoIcon';
 import ECommerceIcon from './icons/industries/ECommerceIcon';
 import EducationIcon from './icons/industries/EducationIcon';
@@ -150,7 +151,7 @@ interface TestimonialCardProps {
 
 const TestimonialCard = ({ industry, title, imageUrl, stats, icon: Icon }: TestimonialCardProps) => (
     <div className="testimonial-card">
-        <img src={imageUrl} alt={title} className="testimonial-card__image" />
+        <Image src={imageUrl} alt={title} className="testimonial-card__image" width={400} height={200} />
         <div className="testimonial-card__content">
             <div className="card-title-iconic">
                 <Icon className="w-5 h-5 stroke-[var(--primary-color)]" />
