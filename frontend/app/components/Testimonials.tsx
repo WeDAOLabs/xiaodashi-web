@@ -1,29 +1,133 @@
 import { Button } from '@/app/components/ui/Button';
+import React from 'react';
+import PharmaIcon from './icons/industries/PharmaIcon';
+import NewRetailIcon from './icons/industries/NewRetailIcon';
+import ECommerceIcon from './icons/industries/ECommerceIcon';
+import EducationIcon from './icons/industries/EducationIcon';
+import FinanceIcon from './icons/industries/FinanceIcon';
+import HealthBeautyIcon from './icons/industries/HealthBeautyIcon';
+import AutoIcon from './icons/industries/AutoIcon';
+import LifestyleIcon from './icons/industries/LifestyleIcon';
+import SuperIndividualIcon from './icons/industries/SuperIndividualIcon';
+
+const testimonialsData = [
+  {
+    industry: '医药行业',
+    title: '应对高监管与渠道线上迁移，实现合规高效的数字化营销与用户管理。',
+    imageUrl: '/testimonial-1.png',
+    icon: PharmaIcon,
+    stats: [
+      { value: '20-35%', label: '线上销售额增长' },
+      { value: '30-50%', label: '内容审核效率提升' },
+      { value: '2x', label: '用户互动提升' },
+    ],
+  },
+  {
+    industry: '新零售',
+    title: '融合线上线下全渠道，提升门店运营效率和会员价值。',
+    imageUrl: '/testimonial-2.png',
+    icon: NewRetailIcon,
+    stats: [
+      { value: '15-25%', label: '全渠道销售额提升' },
+      { value: '10-18%', label: '会员复购率提升' },
+      { value: '20%', label: '门店效率提升' },
+    ],
+  },
+  {
+    industry: '电商行业',
+    title: '降低获客成本，提升商品管理效率，实现用户精细化运营。',
+    imageUrl: '/testimonial-3.png',
+    icon: ECommerceIcon,
+    stats: [
+      { value: '15-25%', label: '全链路转化率提升' },
+      { value: '10-20%', label: '营销ROI提升' },
+      { value: '3x', label: '选品效率提升' },
+    ],
+  },
+  {
+    industry: '教育行业',
+    title: '精准招生获客，提升学员转化率和续费率，优化教学管理。',
+    imageUrl: '/testimonial-1.png',
+    icon: EducationIcon,
+    stats: [
+        { value: '15-25%', label: '招生转化率提升' },
+        { value: '20-30%', label: '学员续费率增长' },
+        { value: '80%', label: '教育IP打造' },
+    ],
+  },
+  {
+    industry: '金融行业',
+    title: '精准获客，提升客户匹配度与风险控制，优化金融产品服务。',
+    imageUrl: '/testimonial-2.png',
+    icon: FinanceIcon,
+    stats: [
+      { value: '15-25%', label: '客户获取成本降低' },
+      { value: '15-20%', label: '客户LTV增长' },
+      { value: '5x', label: '智能风控识别' },
+    ],
+  },
+  {
+    industry: '健康美业',
+    title: '降低获客成本，提升服务体验，建立品牌信任度与口碑。',
+    imageUrl: '/testimonial-3.png',
+    icon: HealthBeautyIcon,
+    stats: [
+      { value: '15-25%', label: '获客转化率提升' },
+      { value: '15-20%', label: '客户LTV增长' },
+      { value: '90%', label: '服务运营效率优化' },
+    ],
+  },
+  {
+    industry: '汽车行业',
+    title: '提升获客效率，优化销售线索转化，构建客户全生命周期价值。',
+    imageUrl: '/testimonial-1.png',
+    icon: AutoIcon,
+    stats: [
+      { value: '15-25%', label: '获客转化率提升' },
+      { value: '20-35%', label: '电商GMV增长' },
+      { value: '3x', label: '销售线索转化' },
+    ],
+  },
+  {
+    industry: '生活服务行业',
+    title: '降低获客成本，提升客户复购率与LTV，优化线下门店运营效率。',
+    imageUrl: '/testimonial-2.png',
+    icon: LifestyleIcon,
+    stats: [
+      { value: '15-25%', label: '线上线索转化率提升' },
+      { value: '20-35%', label: '电商GMV增长' },
+      { value: '95%', label: '多门店协同效率' },
+    ],
+  },
+  {
+    industry: '超级个体',
+    title: '突破专业知识到内容产出的鸿沟，系统化打造个人IP与提升变现效率。',
+    imageUrl: '/testimonial-3.png',
+    icon: SuperIndividualIcon,
+    stats: [
+      { value: '30-50%', label: '内容生产效率提升' },
+      { value: '20-35%', label: '私域转化率提升' },
+      { value: '10x', label: '个人IP影响力' },
+    ],
+  },
+];
 
 const Testimonials = () => (
   <section className="py-24">
     <h2 className="mb-12 text-center text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)]">
-      行业案例
+      岂止于高度定制和模块化，<br/>更有所有模块无缝集成、全链路自动化流转的强大效能加持。
     </h2>
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-      <TestimonialCard
-        industry="医药行业"
-        title="AI赋能销售代表，核心药品销售额增长35%"
-        description="通过我们的AI销售助手，某跨国药企的销售团队能够智能规划拜访路线、获取实时数据洞察，并为每一次客户互动提供个性化沟通策略。最终，其核心产品线的销售额在半年内实现了35%的同比增长。"
-        imageUrl="/testimonial-1.png"
-      />
-      <TestimonialCard
-        industry="餐饮连锁行业"
-        title="连锁品牌复购率翻倍，单店营收平均增长25%"
-        description="一家全国性餐饮连锁品牌，通过我们的私域运营工具与会员分析系统，实现了精细化用户管理，会员复购率在半年内翻倍。"
-        imageUrl="/testimonial-2.png"
-      />
-      <TestimonialCard
-        industry="教育培训"
-        title="获客成本降低40%，线上课程转化率显著提升"
-        description="领先的在线教育平台采用我们的智能投放与内容策略，精准锁定潜在学员，有效降低了获客成本，并显著提升了线上课程的报名转化率。"
-        imageUrl="/testimonial-3.png"
-      />
+      {testimonialsData.map((testimonial, index) => (
+        <TestimonialCard
+          key={index}
+          industry={testimonial.industry}
+          title={testimonial.title}
+          imageUrl={testimonial.imageUrl}
+          stats={testimonial.stats}
+          icon={testimonial.icon}
+        />
+      ))}
     </div>
     <div className="mt-12 flex justify-center">
       <Button href="/customer-stories" variant="primary">
@@ -36,25 +140,37 @@ const Testimonials = () => (
 interface TestimonialCardProps {
   industry: string;
   title: string;
-  description: string;
   imageUrl: string;
+  stats: {
+    value: string;
+    label: string;
+  }[];
+  icon: React.ElementType;
 }
 
-const TestimonialCard = ({ industry, title, description, imageUrl }: TestimonialCardProps) => (
-  <div className="flex flex-col gap-4">
-    <div
-      className="w-full aspect-square rounded-xl bg-cover bg-center bg-gray-100"
-      style={{ backgroundImage: `url("${imageUrl}")` }}
-    ></div>
-    <div>
-      <p className="label-style">{industry}</p>
-      <p className="mt-2 text-lg font-medium leading-normal text-[var(--text-primary)]">
-        {title}
-      </p>
-      <p className="mt-1 text-base font-normal leading-normal text-[var(--text-secondary)]">
-        {description}
-      </p>
-    </div>
+const TestimonialCard = ({ industry, title, imageUrl, stats, icon: Icon }: TestimonialCardProps) => (
+    <div className="testimonial-card">
+        <img src={imageUrl} alt={title} className="testimonial-card__image" />
+        <div className="testimonial-card__content">
+            <div className="card-title-iconic">
+                <Icon className="w-5 h-5 stroke-[var(--primary-color)]" />
+                <span>{industry}</span>
+            </div>
+            <span className="testimonial-card__quote">“{title}”</span>
+        </div>
+        <div className="testimonial-card__stats">
+            {stats.map((stat, index) => (
+                <React.Fragment key={index}>
+                    <div className="testimonial-card__stat-group">
+                        <div className="testimonial-card__stat-item">
+                            <span className="testimonial-card__stat-title">{stat.value}</span>
+                            <span className="testimonial-card__stat-description">{stat.label}</span>
+                        </div>
+                    </div>
+                    {index < stats.length - 1 && <div className="testimonial-card__stat-divider"></div>}
+                </React.Fragment>
+            ))}
+        </div>
   </div>
 );
 
