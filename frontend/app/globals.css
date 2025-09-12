@@ -7,9 +7,9 @@
   /* 色彩系统 - 使用正确的 v4 命名约定 */
   --color-primary-50: #eff8ff;
   --color-primary-100: #dbeeff;
-  --color-primary-500: #0071e3;
-  --color-primary-600: #005bb8;
-  --color-primary-700: #1a7ef3;
+  --color-primary-500: #007A7A;
+  --color-primary-600: #006666;
+  --color-primary-700: #008888;
 
   --color-accent: #0077ed;
 
@@ -69,7 +69,7 @@
   }
 
   .btn-gradient-primary {
-    background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+    background-color: var(--primary-color);
     color: white;
     font-weight: 600;
     border-radius: 9999px;
@@ -78,7 +78,7 @@
 
   .btn-gradient-primary:hover {
     @media (hover: hover) {
-      background: linear-gradient(to right, var(--primary-hover), #0066cc);
+      background-color: var(--primary-hover);
     }
   }
 

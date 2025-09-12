@@ -40,7 +40,7 @@ const CommunityHero: React.FC = () => {
           <div className="flex justify-center">
             <Button 
               onClick={handleButtonClick}
-              className="bg-gradient-to-r from-[var(--primary-color)] to-[var(--accent-color)] text-white font-semibold px-10 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
+              className="bg-[var(--primary-color)] text-white font-semibold px-10 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
             >
               立即登岛，开启共创之旅
             </Button>
