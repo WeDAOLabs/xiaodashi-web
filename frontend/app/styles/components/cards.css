@@ -1,0 +1,18 @@
+@layer components {
+  .card-feature {
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--border-secondary);
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(4px);
+  }
+
+  .card-title-iconic {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+}

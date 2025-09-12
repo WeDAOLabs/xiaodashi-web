@@ -1,0 +1,26 @@
+@layer components {
+  .layout-section {
+    border-radius: 1rem;
+    padding: 2rem;
+    background-color: var(--bg-tertiary);
+  }
+
+  @media (min-width: 640px) {
+    .layout-section {
+      padding: 3rem;
+    }
+  }
+
+  /* 向后兼容类 */
+  .section-container {
+    border-radius: 1rem;
+    padding: 2rem;
+    background-color: var(--bg-tertiary);
+  }
+
+  @media (min-width: 640px) {
+    .section-container {
+      padding: 3rem;
+    }
+  }
+}
