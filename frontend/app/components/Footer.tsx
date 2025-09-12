@@ -37,12 +37,6 @@ const Footer = () => {
               客户案例
             </Link>
             <Link
-              href="/pricing"
-              className="text-sm font-normal text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
-            >
-              定价
-            </Link>
-            <Link
               href="/community"
               className="text-sm font-normal text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--primary-color)]"
             >
