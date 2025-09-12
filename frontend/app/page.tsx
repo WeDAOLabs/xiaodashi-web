@@ -1,9 +1,10 @@
+import Community from './components/Community';
+import Features from './components/Features';
+import Footer from './components/Footer';
+import GrowthWisdomSection from './components/GrowthWisdomSection';
 import Header from './components/Header';
 import HomepageHero from './components/HomepageHero';
-import Features from './components/Features';
 import Testimonials from './components/Testimonials';
-import Community from './components/Community';
-import Footer from './components/Footer';
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
         <main className="flex-1">
           <HomepageHero />
           <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <GrowthWisdomSection />
             <Features />
             <Testimonials />
           </div>
