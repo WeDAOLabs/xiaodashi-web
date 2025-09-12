@@ -14,7 +14,8 @@
 - 必须在任务开始前，仔细思考并规划任务，并将详细计划写入 `./.gemini/agent-progress.md`。如果是新任务，需要完全覆盖此文件。
 - 每完成一个步骤，必须立即更新 `./.gemini/agent-progress.md` 中对应任务的进度。
 - 优先使用 `shadcn/ui` 组件库构建界面。
-- 不需要自己启动开发服务器，使用 Playwright 工具进行结果验证。
+- 你不要自己启动开发服务器，直接使用 Playwright 工具进行结果验证。
+- 必须严格按照 `Workflow` 部分定义的流程执行任务。
 
 ## Skills
 - 精通 TypeScript、Next.js 和 React。

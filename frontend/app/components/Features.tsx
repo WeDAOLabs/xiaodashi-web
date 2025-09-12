@@ -1,11 +1,13 @@
+import Image from 'next/image';
+
 const Features = () => (
   <section className="py-24">
     <div className="mx-auto max-w-4xl text-center">
       <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl">
-          每个人都能拥有专家级的数字人营销团队
+        每个人都能拥有专家级的数字人营销团队
       </h2>
     </div>
-    <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2">
       <FeatureCard
         title="战略与决策中枢"
         description="基于深度数据洞察，为您提供从战略规划、市场分析到效果评估的全链路决策支持。"
@@ -50,39 +52,38 @@ interface FeatureCardProps {
 }
 
 const FeatureCard = ({ title, description, imageUrl, items }: FeatureCardProps) => (
-  <div className="flex flex-col text-center">
-    <div
-      className="w-full aspect-square rounded-xl bg-cover bg-center bg-gray-100"
-      style={{ backgroundImage: `url("${imageUrl}")` }}
-    ></div>
-    <div className="mt-4">
-      <p className="text-lg font-bold text-[var(--text-primary)]">
-        {title}
-      </p>
-      <p className="mt-2 text-sm font-normal leading-relaxed text-[var(--text-secondary)]">
-        {description}
-      </p>
-      <ul className="mt-4 space-y-2 text-left">
-        {items.map((item) => (
-          <li key={item} className="flex items-start">
-            <svg
-              className="mr-2 mt-1 h-4 w-4 flex-shrink-0 text-[var(--primary-color)]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 13l4 4L19 7"
-              ></path>
-            </svg>
-            <span className="text-sm text-[var(--text-secondary)]">{item}</span>
-          </li>
-        ))}
-      </ul>
+  <div className="overflow-hidden rounded-2xl bg-[var(--bg-secondary)] transition-transform duration-300 hover:-translate-y-1">
+    <div className="flex flex-col md:flex-row">
+      <div className="relative h-48 w-full md:h-auto md:w-2/5">
+        <Image src={imageUrl} alt={title} fill className="object-cover" />
+      </div>
+      <div className="flex flex-col p-6 text-left md:w-3/5">
+        <p className="text-lg font-bold text-[var(--text-primary)]">{title}</p>
+        <p className="mt-2 text-sm font-normal leading-relaxed text-[var(--text-secondary)]">
+          {description}
+        </p>
+        <ul className="mt-4 space-y-2">
+          {items.map((item) => (
+            <li key={item} className="flex items-start">
+              <svg
+                className="mr-2 mt-1 h-4 w-4 flex-shrink-0 text-[var(--primary-color)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+              <span className="text-sm text-[var(--text-secondary)]">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </div>
 );
