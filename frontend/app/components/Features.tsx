@@ -9,36 +9,53 @@ const Features = () => (
     </div>
     <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-2">
       <FeatureCard
-        title="战略与决策中枢"
-        description="基于深度数据洞察，为您提供从战略规划、市场分析到效果评估的全链路决策支持。"
+        title="核心定位"
+        description="营销决策AI引擎与智能营销架构师"
         imageUrl="/feature-analytics.png"
         items={[
-          '智能业务与营销战略规划',
-          '智能市场洞察与竞品分析',
-          '智能营销效果评估与数据分析',
+          '营销决策引擎',
+          '智能营销架构设计',
+          '科学营销知识图谱',
+          'Web3社区共建',
+          '专家级外脑',
         ]}
       />
       <FeatureCard
-        title="品牌与创意资产"
-        description="智能化管理品牌IP与数字资产，AI驱动高效、高质量的内容创作，构建强大品牌护城河。"
+        title="团队协作"
+        description="数字专家群与企业员工的“完美拍档”"
         imageUrl="/feature-content-creation.png"
-        items={['智能品牌与IP资产管理', '智能内容创作与素材中心', '多渠道智能分发与洞察']}
+        items={[
+          'AI营销专家团队',
+          '数字人自运行',
+          '人机完美搭档',
+          '全链路营销协作者',
+          '高价值创造',
+        ]}
       />
       <FeatureCard
-        title="增长与运营执行"
-        description="打通公域与私域，覆盖电商与销售，用AI驱动用户增长和运营转化的每一个关键环节。"
+        title="部署模式"
+        description="灵活配置，无忧数据，即刻赋能"
         imageUrl="/feature-social-media.png"
         items={[
-          '智能公域流量投放与优化',
-          '智能私域增长与运营',
-          '智能电商与销售转化',
+          '敏捷可插拔',
+          '普惠化智能营销',
+          '一人公司适用',
+          '分段构建数据',
+          '降低门槛',
+          '定制化',
         ]}
       />
       <FeatureCard
-        title="赋能与效率提升"
-        description="构建企业智能知识库，打破信息壁垒，全面提升组织协同与运营效率。"
+        title="价值交付"
+        description="经验智用（Experience-Driven Utility, EDU）模式"
         imageUrl="/feature-email-marketing.png"
-        items={['企业级智能知识库', '自动化业务流程', '跨部门智能协同']}
+        items={[
+          '产品服务化',
+          '服务产品化',
+          '简化上手',
+          '重构业务流程',
+          '可信营销生态',
+        ]}
       />
     </div>
   </section>
