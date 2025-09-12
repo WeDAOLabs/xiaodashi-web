@@ -27,7 +27,7 @@ const HomepageHero = () => {
                       .pauseFor(300)
                       .typeString('智商180的')
                       .pauseFor(300)
-                      .typeString('AI全域营销大师')
+                      .typeString('<span style="background: linear-gradient(to right, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 900;">AI全域营销大师</span>')
                       .callFunction((state) => {
                         state.elements.cursor.style.display = 'none';
                         setIsTypingFinished(true);

@@ -2,7 +2,7 @@ const Features = () => (
   <section className="py-24">
     <div className="mx-auto max-w-4xl text-center">
       <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl">
-        四大增长策略
+          每个人都能拥有专家级的数字人营销团队
       </h2>
     </div>
     <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
