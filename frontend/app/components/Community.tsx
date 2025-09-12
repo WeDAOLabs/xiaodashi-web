@@ -64,7 +64,7 @@ const Community = () => (
   <section className="section-container text-center bg-gray-50">
     {/* 标题区域 */}
     <div className="mb-8">
-      <h2 className="text-3xl font-bold leading-tight tracking-tighter text-gray-900 sm:text-4xl mb-2">
+      <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] mb-2">
         销岛 (S DAO)：AI营销人的共振之地
       </h2>
       <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
@@ -93,10 +93,10 @@ const Community = () => (
     {/* CTA按钮 */}
     <div className="mt-8 flex justify-center">
       <Button 
-        href="/community" 
-        className="btn-gradient-primary text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+        href={`/community`} 
+        className={`btn-gradient-primary text-white font-semibold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300`}
       >
-        立即登岛，开启共创之旅
+        加入社区
       </Button>
     </div>
   </section>

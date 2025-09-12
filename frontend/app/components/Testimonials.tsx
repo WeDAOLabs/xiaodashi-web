@@ -1,13 +1,13 @@
 import { Button } from '@/app/components/ui/Button';
 import React from 'react';
-import PharmaIcon from './icons/industries/PharmaIcon';
-import NewRetailIcon from './icons/industries/NewRetailIcon';
+import AutoIcon from './icons/industries/AutoIcon';
 import ECommerceIcon from './icons/industries/ECommerceIcon';
 import EducationIcon from './icons/industries/EducationIcon';
 import FinanceIcon from './icons/industries/FinanceIcon';
 import HealthBeautyIcon from './icons/industries/HealthBeautyIcon';
-import AutoIcon from './icons/industries/AutoIcon';
 import LifestyleIcon from './icons/industries/LifestyleIcon';
+import NewRetailIcon from './icons/industries/NewRetailIcon';
+import PharmaIcon from './icons/industries/PharmaIcon';
 import SuperIndividualIcon from './icons/industries/SuperIndividualIcon';
 
 const testimonialsData = [
@@ -114,8 +114,8 @@ const testimonialsData = [
 
 const Testimonials = () => (
   <section className="py-24">
-    <h2 className="mb-12 text-center text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)]">
-      岂止于高度定制和模块化，<br/>更有所有模块无缝集成、全链路自动化流转的强大效能加持。
+    <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl text-center mb-12">
+      岂止于高度定制和模块化，<br/>更有全模块无缝集成、全链路自动化流转的强大效能加持
     </h2>
     <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
       {testimonialsData.map((testimonial, index) => (

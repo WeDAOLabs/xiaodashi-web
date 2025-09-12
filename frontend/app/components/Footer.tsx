@@ -56,7 +56,7 @@ const Footer = () => {
             </button>
           </div>
           <p className="mt-6 text-center text-sm font-normal leading-normal text-[var(--text-secondary)]">
-            © 2025 智商180的AI全域营销大师。保留所有权利。
+            © 2025 互远AI,保留所有权利。
           </p>
         </div>
       </footer>
