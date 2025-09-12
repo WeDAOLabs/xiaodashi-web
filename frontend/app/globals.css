@@ -3,6 +3,7 @@
 /* ==== Tailwind v4 主题配置 ==== */
 @theme {
   --font-sans: var(--font-noto-sans-sc), var(--font-spline-sans), sans-serif;
+  --font-handwritten: var(--font-zhi-mang-xing), cursive;
 
   /* 色彩系统 - 使用正确的 v4 命名约定 */
   --color-primary-50: #eff8ff;

@@ -1,6 +1,9 @@
 'use client';
 
 import './BusinessTransformation.css';
+import StarIcon from '@/app/components/icons/business-transformation/StarIcon';
+import ArrowLeftIcon from '@/app/components/icons/business-transformation/ArrowLeftIcon';
+import ArrowRightIcon from '@/app/components/icons/business-transformation/ArrowRightIcon';
 
 const BusinessTransformation = () => {
   return (
@@ -14,13 +17,21 @@ const BusinessTransformation = () => {
         </div>
         <div className="business-transformation-middle">
           <div className="business-transformation-arrow-left">
-            <div className="arrow-placeholder"></div>
+            <ArrowLeftIcon />
           </div>
           <div className="business-transformation-process">
-            <div className="process-placeholder">我们创造了一整个数字人营销专家团队<br />然后营销专家团队在24小时为你工作</div>
+            <div className="font-handwritten text-red-500 text-3xl md:text-4xl leading-tight -rotate-3 relative">
+              <p>我们创造了一整个数字人营销专家团队</p>
+              <p className="relative">
+                然后营销专家团队在24小时为你工作
+                <span className="absolute -top-4 -right-10 md:-top-4 md:-right-12 text-yellow-400">
+                  <StarIcon className="w-8 h-8" />
+                </span>
+              </p>
+            </div>
           </div>
           <div className="business-transformation-arrow-right">
-            <div className="arrow-placeholder"></div>
+            <ArrowRightIcon />
           </div>
         </div>
         <div className="business-transformation-right">

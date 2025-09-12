@@ -21,6 +21,11 @@ const spline_sans = localFont({
   variable: '--font-spline-sans',
 });
 
+const zhi_mang_xing = localFont({
+  src: '../fonts/ZhiMangXing-Regular.ttf',
+  variable: '--font-zhi-mang-xing',
+});
+
 export const metadata: Metadata = {
   title: '智赢·全域营销大师',
   description: '智赢，智商180的AI全域营销大师',
@@ -30,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="zh-CN"
-      className={`${noto_sans_sc.variable} ${spline_sans.variable}`}
+      className={`${noto_sans_sc.variable} ${spline_sans.variable} ${zhi_mang_xing.variable}`}
       suppressHydrationWarning
     >
       <body

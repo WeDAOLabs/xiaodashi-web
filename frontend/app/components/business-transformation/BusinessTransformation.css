@@ -66,8 +66,6 @@
     margin-top: 144px;
     margin-right: 82px;
     margin-left: 84px;
-    background: var(--bg-tertiary);
-    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -103,8 +101,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-tertiary);
-    border-radius: 8px;
     color: var(--text-secondary);
     font-weight: 600;
 }
@@ -112,7 +108,6 @@
 .business-transformation-arrow-left {
     top: 114px;
     margin-left: 20px;
-    transform: rotate(180deg);
 }
 
 .business-transformation-arrow-right {
