@@ -5,6 +5,7 @@ import GrowthWisdomSection from './components/GrowthWisdomSection';
 import Header from './components/Header';
 import HomepageHero from './components/HomepageHero';
 import Testimonials from './components/Testimonials';
+import CustomerCaseStudies from './components/CustomerCaseStudies';
 import UserVoices from './components/UserVoices';
 import BusinessTransformation from './components/business-transformation/BusinessTransformation';
 
@@ -20,6 +21,7 @@ export default function Home() {
             <GrowthWisdomSection />
             <Features />
             <Testimonials />
+            <CustomerCaseStudies />
             <UserVoices />
             <BusinessTransformation />
             <Community />

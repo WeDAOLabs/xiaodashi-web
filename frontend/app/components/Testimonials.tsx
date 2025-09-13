@@ -131,11 +131,7 @@ const Testimonials = () => (
           />
         ))}
       </div>
-      <div className="mt-12 flex justify-center">
-        <Button href="/customer-stories" variant="primary">
-          探索更多案例
-        </Button>
-      </div>
+      
     </div>
   </section>
 );
