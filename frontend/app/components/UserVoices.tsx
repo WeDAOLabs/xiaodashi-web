@@ -52,7 +52,7 @@ interface ReviewCardProps {
 const ReviewCard = ({ review }: ReviewCardProps) => (
   <div className="user-voices-review-card">
     <p className="user-voices-review-content">
-      "{review.content}"
+      &ldquo;{review.content}&rdquo;
     </p>
     <div className="user-voices-review-bottom">
       <div className="user-voices-review-user">
@@ -108,7 +108,7 @@ const MainReviewSection = () => (
           className="w-6 h-8 -mt-2.5"
         />
         <h3 className="user-voices-main-card-title">
-          智赢帮我们找到了产品"新手引导流程"的致命痛点，甚至可以直接生成了优化任务给研发团队，不再是凭感觉做迭代了！
+          智赢帮我们找到了产品&ldquo;新手引导流程&rdquo;的致命痛点，甚至可以直接生成了优化任务给研发团队，不再是凭感觉做迭代了！
         </h3>
       </div>
     </div>
