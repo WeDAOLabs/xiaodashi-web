@@ -1,0 +1,6 @@
+<svg width="196" height="200" viewBox="0 0 196 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="98" cy="100" r="80" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+  <circle cx="98" cy="85" r="25" fill="#1976D2"/>
+  <path d="M60 140c0-21 17-38 38-38s38 17 38 38v20H60v-20z" fill="#1976D2"/>
+  <text x="98" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#1976D2" font-weight="bold">用户评价</text>
+</svg>

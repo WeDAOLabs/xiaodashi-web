@@ -64,7 +64,7 @@ const Community = () => (
   <section className="section-container text-center bg-gray-50">
     {/* 标题区域 */}
     <div className="mb-8">
-      <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] mb-2">
+      <h2 className="text-4xl font-bold leading-tight tracking-tighter text-[var(--text-primary)] md:text-5xl text-center mb-12">
         销岛 (S DAO)：AI营销人的共振之地
       </h2>
       <div className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">

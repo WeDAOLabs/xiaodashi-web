@@ -1,0 +1,208 @@
+/* ==== User Voices Styles ==== */
+
+/* 滚动动画 */
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-scroll {
+    animation: scroll 20s linear infinite;
+}
+
+.animate-scroll:hover {
+    animation-play-state: paused;
+}
+
+/* 主要评价展示区域 */
+.user-voices-main-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .user-voices-main-section {
+        flex-direction: row;
+    }
+}
+
+/* 评价卡片 */
+.user-voices-main-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    height: 480px;
+}
+
+@media (min-width: 1024px) {
+    .user-voices-main-card {
+        width: 50%;
+        height: 480px;
+    }
+}
+
+/* 左侧评价卡片 */
+.user-voices-main-card-left {
+    background: #8becff;
+}
+
+/* 右侧评价卡片 */
+.user-voices-main-card-right {
+    background: linear-gradient(to right, #373748, #2c2c3f);
+}
+
+/* 评价卡片内容 */
+.user-voices-main-card-content {
+    display: flex;
+    flex-direction: row;
+    margin-top: 2rem;
+    margin-left: 1.5rem;
+}
+
+/* 评价卡片标题 */
+.user-voices-main-card-title {
+    font-weight: 700;
+    line-height: 1.2;
+    margin-left: 0.5rem;
+    text-align: left;
+    font-size: 40px;
+    line-height: 54px;
+}
+
+@media (max-width: 1536px) {
+    .user-voices-main-card-title {
+        font-size: 32px;
+        line-height: 44px;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-voices-main-card-title {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+}
+
+/* 左侧评价卡片标题颜色 */
+.user-voices-main-card-left .user-voices-main-card-title {
+    color: var(--text-primary);
+}
+
+/* 右侧评价卡片标题颜色 */
+.user-voices-main-card-right .user-voices-main-card-title {
+    color: white;
+}
+
+/* 滚动评价区域 */
+.user-voices-scrollable-section {
+    position: relative;
+    width: 100%;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* 滚动评价内容 */
+.user-voices-scrollable-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* 滚动评价标题 */
+.user-voices-scrollable-title {
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .user-voices-scrollable-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* 滚动评价容器 */
+.user-voices-scrollable-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* 滚动评价列表 */
+.user-voices-scrollable-list {
+    display: flex;
+    animation: scroll 20s linear infinite;
+}
+
+.user-voices-scrollable-list:hover {
+    animation-play-state: paused;
+}
+
+/* 评价卡片 */
+.user-voices-review-card {
+    background: #fff6d3;
+    border-radius: 1rem;
+    width: 246px;
+    flex-shrink: 0;
+    margin-right: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 140px;
+}
+
+/* 评价内容 */
+.user-voices-review-content {
+    color: var(--text-primary);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 25px;
+    flex: 1;
+}
+
+/* 评价底部信息 */
+.user-voices-review-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+/* 用户信息 */
+.user-voices-review-user {
+    display: flex;
+    align-items: center;
+}
+
+/* 用户名 */
+.user-voices-review-name {
+    color: var(--text-primary);
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 26px;
+    margin-left: 0.5rem;
+}
+
+/* 评分图标 */
+.user-voices-review-rating {
+    width: 66px;
+    height: 10px;
+}
