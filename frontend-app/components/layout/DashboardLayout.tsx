@@ -23,7 +23,7 @@ const DashboardLayout = React.memo<DashboardLayoutProps>(({
 
   return (
     <ProtectedRoute>
-      <div className="flex h-screen bg-white overflow-hidden">
+      <div className="flex h-screen bg-slate-50 overflow-hidden">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-10 bg-white">
           <AppHeader />

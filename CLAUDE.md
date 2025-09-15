@@ -95,3 +95,4 @@ xiaodashi-web/
 - If you get TypeScript errors about shared types, ensure the shared package is built first
 - Both frontend-app and backend default to port 3001 - check actual backend port configuration
 - The project uses Turbopack for faster Next.js builds (--turbopack flag)
+- frontend-app 测试用户名：zhangsan@example.com 密码:111111
