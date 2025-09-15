@@ -8,7 +8,6 @@ import TrendCardEnhanced from '@/components/dashboard/TrendCardEnhanced';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import React from 'react';
 
 // 科学营销知识图谱功能卡片数据
@@ -249,7 +248,7 @@ const DashboardPage: React.FC = () => {
         <TopicTrackingTable topics={hotTopics} />
       </div>
 
-      <p className="text-center text-sm font-normal leading-normal text-[var(--text-secondary)] pb-3 pt-1 px-4">© 2025 智赢. 所有权利。|隐私政策|用户协议</p>
+      <p className="text-center text-sm font-normal leading-normal text-[var(--text-secondary)] pb-3 pt-1 px-4">© 2025 互远AI，保留所有权利。</p>
     </DashboardLayout>
   );
 };
