@@ -1,4 +1,3 @@
-import { Button } from '@/app/components/ui/Button';
 import Image from 'next/image';
 import React from 'react';
 import AutoIcon from './icons/industries/AutoIcon';
