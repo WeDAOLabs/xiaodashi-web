@@ -60,7 +60,14 @@ const Header = () => {
         </nav>
         <div className="hidden items-center gap-4 md:flex">
           <Button onClick={() => setIsSalesModalOpen(true)} size="sm">免费试用</Button>
-          <Button onClick={() => setIsSalesModalOpen(true)} size="sm" variant="ghost">登录</Button>
+          <Button 
+            href={process.env.LOGIN_BUTTON_HREF || undefined}
+            onClick={process.env.LOGIN_BUTTON_HREF ? undefined : () => setIsSalesModalOpen(true)} 
+            size="sm" 
+            variant="ghost"
+          >
+            登录
+          </Button>
         </div>
         <button
           className="z-50 p-2 lg:hidden"

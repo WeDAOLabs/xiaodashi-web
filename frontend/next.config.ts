@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // 启用环境变量在构建时可用
+  env: {
+    LOGIN_BUTTON_HREF: process.env.LOGIN_BUTTON_HREF,
+  },
 };
 
 export default nextConfig;
