@@ -45,7 +45,7 @@ const DashboardLayout = React.memo<DashboardLayoutProps>(({
               collapsedSize={5}
               onCollapse={() => setIsCollapsed(true)}
               onExpand={() => setIsCollapsed(false)}
-              className={cn(isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out")}
+              className={cn("bg-white", isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out")}
             >
               <AppSidebar isCollapsed={isCollapsed} />
             </ResizablePanel>

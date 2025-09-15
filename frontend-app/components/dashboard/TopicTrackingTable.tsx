@@ -97,7 +97,9 @@ const TopicTrackingTable: React.FC<TopicTrackingTableProps> = ({ topics }) => {
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
-                  {renderStars(topic.relevance)}
+                  <div className="flex justify-end">
+                    {renderStars(topic.relevance)}
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

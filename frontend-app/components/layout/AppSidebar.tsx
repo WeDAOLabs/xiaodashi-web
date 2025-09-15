@@ -3,6 +3,7 @@
 import ChartLineIcon from '@/components/icons/ChartLineIcon';
 import FileTextIcon from '@/components/icons/FileTextIcon';
 import GearIcon from '@/components/icons/GearIcon';
+import HomeIcon from '@/components/icons/HomeIcon';
 import PresentationChartIcon from '@/components/icons/PresentationChartIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
@@ -69,6 +70,18 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
     <aside className="app-sidebar">
       <div className="flex h-full min-h-[700px] flex-col justify-between bg-white p-4">
         <div className="flex flex-col gap-2">
+          {/* 首页选项 */}
+          <Link
+            href="/dashboard"
+            className={cn(
+              'sidebar-link justify-start',
+              pathname === '/dashboard' && 'sidebar-link-active'
+            )}
+          >
+            <HomeIcon className="size-6" />
+            <p className={cn(isCollapsed && 'hidden')}>首页</p>
+          </Link>
+
           <Accordion type="multiple" className="w-full" defaultValue={['战略与决策中枢']}>
             {navItems.map((item) => {
               const Icon = item.icon;

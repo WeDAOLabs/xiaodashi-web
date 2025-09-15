@@ -154,8 +154,7 @@ const hotTopics = [
 
 const DashboardPage: React.FC = () => {
   const breadcrumbs = [
-    { label: '产品工具集', href: '#' },
-    { label: '文案', href: '#', current: true }
+    { label: '首页', href: '#', current: true }
   ];
 
   return (

@@ -54,10 +54,27 @@
     }
 
     .sidebar-link-active {
-        background-color: var(--bg-secondary);
+        background-color: var(--color-primary-50);
+        color: var(--color-primary-500);
     }
 
     .sidebar-link:hover {
         background-color: var(--bg-secondary);
+    }
+
+    /* 侧边栏图标颜色统一 */
+    .sidebar-link svg {
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+    }
+
+    /* 激活状态下的图标颜色 */
+    .sidebar-link-active svg {
+        color: var(--color-primary-500);
+    }
+
+    /* 悬停状态下的图标颜色 */
+    .sidebar-link:hover svg {
+        color: var(--color-primary-500);
     }
 }
