@@ -8,6 +8,9 @@
 /build
 /out
 /backend/dist
+/shared/dist
+**/dist
+**/build
 
 # MCP
 .playwright-mcp/
