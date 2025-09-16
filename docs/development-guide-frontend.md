@@ -134,6 +134,38 @@ cd frontend-app && npx shadcn@latest add button
 
 ---
 
+## 图标库使用规范
+
+**官方推荐**: 使用 **Lucide React** 作为主要图标库（shadcn/ui 官方默认）。
+
+### 使用策略
+
+- **新功能**: 必须使用 Lucide React
+- **现有功能**: 保持现状，按需迁移
+
+### 正确用法
+
+```tsx
+// 按需导入
+import { Home, Settings, Bell } from 'lucide-react';
+
+// 使用 CSS 变量设置颜色
+<Home className="text-[var(--primary-color)]" size={24} />
+<Settings className="text-[var(--text-secondary)]" strokeWidth={1.5} />
+```
+
+### 错误用法
+
+```tsx
+// ❌ 硬编码颜色
+<Home color="#333333" />
+
+// ❌ 新功能中创建自定义 SVG（应优先检查 Lucide）
+const CustomIcon = () => <svg>...</svg>;
+```
+
+---
+
 ## 依赖管理 (npm Workspaces)
 
 **核心要求**: **所有前端相关的依赖项**都必须安装到 `frontend` 工作区中，而不是项目的根目录。

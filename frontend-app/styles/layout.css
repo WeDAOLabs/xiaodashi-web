@@ -77,4 +77,61 @@
     .sidebar-link:hover svg {
         color: var(--color-primary-500);
     }
+
+    /* 侧边栏分组标题 */
+    .sidebar-group-title {
+        position: relative;
+        padding: 0.75rem 0.5rem 0.5rem;
+        /* 12px 8px 8px */
+        font-size: 0.75rem;
+        /* 12px */
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1;
+    }
+
+    .sidebar-group-title::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0.5rem;
+        right: 0.5rem;
+        height: 1px;
+        background-color: var(--border-secondary);
+    }
+
+    /* 第一个分组不显示上方分隔线 */
+    .sidebar-group-title:first-of-type::before {
+        display: none;
+    }
+
+    /* 可点击的分组标题样式 */
+    .sidebar-group-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        /* 8px */
+        width: 100%;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .sidebar-group-toggle:hover {
+        color: var(--color-primary-500);
+    }
+
+    .sidebar-group-toggle:focus {
+        outline: none;
+        color: var(--color-primary-500);
+    }
+
+    /* 确保折叠图标颜色继承 */
+    .sidebar-group-toggle svg {
+        color: inherit;
+        flex-shrink: 0;
+    }
 }
