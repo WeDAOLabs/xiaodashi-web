@@ -10,6 +10,7 @@ import PresentationChartIcon from '@/components/icons/PresentationChartIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
 import TrendingUpIcon from '@/components/icons/TrendingUpIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
+import UsersThreeIcon from '@/components/icons/UsersThreeIcon';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -56,7 +57,8 @@ const menuGroups: MenuGroup[] = [
         icon: ChartLineIcon,
         subItems: [
           { name: 'AI私域客户洞察中心', href: '/private-growth', icon: UsersIcon },
-          { name: '产品与服务优化洞察', href: '/private-service-insights', icon: TrendingUpIcon }
+          { name: '产品与服务优化洞察', href: '/private-service-insights', icon: TrendingUpIcon },
+          { name: '用户分层与自动化标签中心', href: '/private-user-segmentation', icon: UsersThreeIcon }
         ]
       },
       { name: '智能电商运营与转化', href: '/ecommerce', icon: ChartLineIcon },
