@@ -8,6 +8,7 @@ import GearIcon from '@/components/icons/GearIcon';
 import HomeIcon from '@/components/icons/HomeIcon';
 import PresentationChartIcon from '@/components/icons/PresentationChartIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
+import TrendingUpIcon from '@/components/icons/TrendingUpIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -54,7 +55,8 @@ const menuGroups: MenuGroup[] = [
         name: '智能私域增长与运营',
         icon: ChartLineIcon,
         subItems: [
-          { name: 'AI私域客户洞察中心', href: '/private-growth', icon: UsersIcon }
+          { name: 'AI私域客户洞察中心', href: '/private-growth', icon: UsersIcon },
+          { name: '产品与服务优化洞察', href: '/private-service-insights', icon: TrendingUpIcon }
         ]
       },
       { name: '智能电商运营与转化', href: '/ecommerce', icon: ChartLineIcon },

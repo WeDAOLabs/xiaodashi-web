@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -268,18 +268,15 @@ const CustomerCard: React.FC<CustomerCardProps> = ({
 
 const PrivateGrowthPage: React.FC = () => {
   return (
-    <DashboardLayout
+    <ToolPageLayout
       title="AI私域客户洞察中心"
+      description="通过AI深度挖掘私域客户数据，驱动产品优化与销售增长"
       breadcrumbs={[
         { label: '增长与运营执行', href: '#' },
         { label: '智能私域增长与运营', href: '#' },
         { label: 'AI私域客户洞察中心', href: '/private-growth', current: true }
       ]}
     >
-      <div className="p-6 lg:p-8 flex-1">
-        <div className="mb-6">
-          <p className="text-[var(--text-secondary)]">通过AI深度挖掘私域客户数据，驱动产品优化与销售增长</p>
-        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -551,8 +548,7 @@ const PrivateGrowthPage: React.FC = () => {
           </div>
         </div>
         <div className="py-4"></div>
-      </div>
-    </DashboardLayout>
+    </ToolPageLayout>
   );
 };
 
