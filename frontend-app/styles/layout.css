@@ -134,4 +134,22 @@
         color: inherit;
         flex-shrink: 0;
     }
+
+    /* 未实现功能的置灰样式 */
+    .sidebar-link-disabled {
+        color: var(--text-muted, #a1a1a6) !important;
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+        user-select: none; /* 防止文本选择 */
+    }
+
+    .sidebar-link-disabled:hover {
+        background-color: transparent !important;
+        transform: none !important; /* 防止悬停动画 */
+    }
+
+    .sidebar-link-disabled svg {
+        color: var(--text-muted, #a1a1a6) !important;
+    }
 }

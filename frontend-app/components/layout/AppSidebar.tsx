@@ -20,8 +20,13 @@ interface MenuGroup {
   title: string;
   items: {
     name: string;
-    href: string;
+    href?: string;
     icon: React.ComponentType<{ className?: string }>;
+    subItems?: {
+      name: string;
+      href: string;
+      icon: React.ComponentType<{ className?: string }>;
+    }[];
   }[];
 }
 
@@ -45,7 +50,13 @@ const menuGroups: MenuGroup[] = [
     title: '增长与运营执行',
     items: [
       { name: '智能公域流量投放与优化', href: '/public-traffic', icon: ChartLineIcon },
-      { name: '智能私域增长与运营', href: '/private-growth', icon: ChartLineIcon },
+      {
+        name: '智能私域增长与运营',
+        icon: ChartLineIcon,
+        subItems: [
+          { name: 'AI私域客户洞察中心', href: '/private-growth', icon: UsersIcon }
+        ]
+      },
       { name: '智能电商运营与转化', href: '/ecommerce', icon: ChartLineIcon },
       { name: '智能销售赋能', href: '/sales-enablement', icon: ChartLineIcon },
     ],
@@ -64,12 +75,33 @@ const bottomNavItems = [
     { name: '帮助与支持', icon: QuestionIcon, href: '/support' },
 ]
 
+// 未实现的功能路由列表
+const unimplementedRoutes = [
+  '/strategic-planning',
+  '/market-intelligence',
+  '/marketing-analytics',
+  '/brand-management',
+  '/content-creation',
+  '/public-traffic',
+  '/ecommerce',
+  '/sales-enablement',
+  '/knowledge-base',
+  '/efficiency-improvement',
+  '/settings',
+  '/support'
+];
+
 const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   const pathname = usePathname();
 
   // 管理每个分组的展开/折叠状态
   const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
-    new Set(['战略与决策中枢']) // 默认展开第一个分组
+    new Set(['战略与决策中枢', '增长与运营执行']) // 默认展开第一个分组和增长运营分组
+  );
+
+  // 管理每个子菜单的展开/折叠状态
+  const [expandedSubMenus, setExpandedSubMenus] = React.useState<Set<string>>(
+    new Set(['智能私域增长与运营']) // 默认展开私域子菜单
   );
 
   const toggleGroup = (groupTitle: string) => {
@@ -79,6 +111,18 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
         newSet.delete(groupTitle);
       } else {
         newSet.add(groupTitle);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSubMenu = (itemName: string) => {
+    setExpandedSubMenus(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemName)) {
+        newSet.delete(itemName);
+      } else {
+        newSet.add(itemName);
       }
       return newSet;
     });
@@ -129,16 +173,77 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
                   <div className="flex flex-col gap-1 mt-2">
                     {group.items.map((item) => {
                       const Icon = item.icon;
+
+                      // 如果有子菜单
+                      if (item.subItems) {
+                        const isSubExpanded = expandedSubMenus.has(item.name);
+
+                        return (
+                          <div key={item.name}>
+                            {/* 带子菜单的菜单项 */}
+                            <button
+                              onClick={() => toggleSubMenu(item.name)}
+                              className="sidebar-link justify-start w-full"
+                            >
+                              <Icon className={cn(
+                                "size-6 transition-all duration-200",
+                                isSubExpanded && "transform rotate-90"
+                              )} />
+                              <p className={cn(isCollapsed && 'hidden', 'flex-1 text-left')}>{item.name}</p>
+                            </button>
+
+                            {/* 子菜单项 */}
+                            <div className={cn(
+                              "overflow-hidden transition-all duration-200 ease-in-out ml-4",
+                              !isCollapsed && isSubExpanded ? "max-h-48 opacity-100" : "max-h-0 opacity-0",
+                              isCollapsed && "max-h-48 opacity-100"
+                            )}>
+                              <div className="flex flex-col gap-1 mt-1">
+                                {item.subItems.map((subItem) => {
+                                  const SubIcon = subItem.icon;
+                                  const isActive = pathname === subItem.href;
+                                  const isUnimplemented = unimplementedRoutes.includes(subItem.href);
+                                  const href = isUnimplemented ? 'javascript:void(0)' : subItem.href;
+
+                                  return (
+                                    <Link
+                                      key={subItem.name}
+                                      href={href}
+                                      className={cn(
+                                        'sidebar-link justify-start text-sm',
+                                        isActive && !isUnimplemented && 'sidebar-link-active',
+                                        isUnimplemented && 'sidebar-link-disabled'
+                                      )}
+                                      title={isCollapsed ? subItem.name : undefined}
+                                      onClick={isUnimplemented ? (e) => e.preventDefault() : undefined}
+                                    >
+                                      <SubIcon className="size-5" />
+                                      <p className={cn(isCollapsed && 'hidden')}>{subItem.name}</p>
+                                    </Link>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      // 没有子菜单的普通菜单项
                       const isActive = pathname === item.href;
+                      const isUnimplemented = item.href ? unimplementedRoutes.includes(item.href) : false;
+                      const href = item.href && !isUnimplemented ? item.href : 'javascript:void(0)';
+
                       return (
                         <Link
                           key={item.name}
-                          href={item.href}
+                          href={href}
                           className={cn(
                             'sidebar-link justify-start',
-                            isActive && 'sidebar-link-active'
+                            isActive && !isUnimplemented && 'sidebar-link-active',
+                            isUnimplemented && 'sidebar-link-disabled'
                           )}
                           title={isCollapsed ? item.name : undefined}
+                          onClick={isUnimplemented ? (e) => e.preventDefault() : undefined}
                         >
                           <Icon className="size-6" />
                           <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>
@@ -157,12 +262,20 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
             {bottomNavItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
+                const isUnimplemented = unimplementedRoutes.includes(item.href);
+                const href = isUnimplemented ? 'javascript:void(0)' : item.href;
+
                 return (
                     <Link
                         key={item.name}
-                        href={item.href}
-                        className={cn('sidebar-link', isActive && 'sidebar-link-active')}
+                        href={href}
+                        className={cn(
+                            'sidebar-link',
+                            isActive && !isUnimplemented && 'sidebar-link-active',
+                            isUnimplemented && 'sidebar-link-disabled'
+                        )}
                         title={isCollapsed ? item.name : undefined}
+                        onClick={isUnimplemented ? (e) => e.preventDefault() : undefined}
                     >
                         <Icon className="size-6" />
                         <p className={cn(isCollapsed && 'hidden')}>{item.name}</p>

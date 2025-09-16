@@ -271,8 +271,9 @@ const PrivateGrowthPage: React.FC = () => {
     <DashboardLayout
       title="AI私域客户洞察中心"
       breadcrumbs={[
-        { label: '智能私域增长与运营', href: '/private-growth' },
-        { label: 'Dashboard', href: '/private-growth' }
+        { label: '增长与运营执行', href: '#' },
+        { label: '智能私域增长与运营', href: '#' },
+        { label: 'AI私域客户洞察中心', href: '/private-growth', current: true }
       ]}
     >
       <div className="p-6 lg:p-8 flex-1">
