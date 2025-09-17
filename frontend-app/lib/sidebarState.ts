@@ -3,8 +3,8 @@ const SIDEBAR_USER_GROUPS_KEY = 'sidebar_user_groups';
 const SIDEBAR_USER_SUBMENUS_KEY = 'sidebar_user_submenus';
 
 // 默认展开的菜单状态
-const DEFAULT_EXPANDED_GROUPS = new Set(['战略与决策中枢', '增长与运营执行']);
-const DEFAULT_EXPANDED_SUBMENUS = new Set(['智能私域增长与运营']);
+const DEFAULT_EXPANDED_GROUPS = new Set<string>();
+const DEFAULT_EXPANDED_SUBMENUS = new Set<string>();
 
 // 菜单状态接口
 export interface MenuState {
