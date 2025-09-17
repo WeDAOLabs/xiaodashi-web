@@ -64,42 +64,53 @@ export function clearUserPreferences(): void {
   }
 }
 
-export function getGroupForPath(pathname: string): string | null {
-  const pathToGroupMap: Record<string, string> = {
-    '/strategic-planning': '战略与决策中枢',
-    '/market-intelligence': '战略与决策中枢',
-    '/marketing-analytics': '战略与决策中枢',
-    '/brand-management': '品牌与创意资产',
-    '/content-creation': '品牌与创意资产',
-    '/public-traffic': '增长与运营执行',
-    '/private-growth': '增长与运营执行',
-    '/private-service-insights': '增长与运营执行',
-    '/private-user-segmentation': '增长与运营执行',
-    '/private-communication-strategy': '增长与运营执行',
-    '/ecommerce': '增长与运营执行',
-    '/sales-intelligent-agent-config': '增长与运营执行',
-    '/sales-intelligent-operation-analytics': '增长与运营执行',
-    '/knowledge-base': '赋能与效率提升',
-    '/efficiency-improvement': '赋能与效率提升',
-  };
+// 路由菜单配置接口
+interface RouteMenuConfig {
+  group: string;
+  subMenu?: string;
+}
 
-  return pathToGroupMap[pathname] || null;
+// 统一的路由配置 - 单一数据源
+const ROUTE_MENU_CONFIG: Record<string, RouteMenuConfig> = {
+  // 战略与决策中枢
+  '/strategic-planning': { group: '战略与决策中枢' },
+  '/market-intelligence': { group: '战略与决策中枢' },
+  '/marketing-analytics': { group: '战略与决策中枢' },
+
+  // 品牌与创意资产
+  '/brand-management': { group: '品牌与创意资产' },
+  '/content-creation': { group: '品牌与创意资产' },
+
+  // 增长与运营执行
+  '/public-traffic': { group: '增长与运营执行' },
+  '/ecommerce': { group: '增长与运营执行' },
+
+  // 增长与运营执行 - 智能私域增长与运营
+  '/private-growth': { group: '增长与运营执行', subMenu: '智能私域增长与运营' },
+  '/private-service-insights': { group: '增长与运营执行', subMenu: '智能私域增长与运营' },
+  '/private-user-segmentation': { group: '增长与运营执行', subMenu: '智能私域增长与运营' },
+  '/private-communication-strategy': { group: '增长与运营执行', subMenu: '智能私域增长与运营' },
+
+  // 增长与运营执行 - 智能销售赋能
+  '/sales-intelligent-agent-config': { group: '增长与运营执行', subMenu: '智能销售赋能' },
+  '/sales-intelligent-operation-analytics': { group: '增长与运营执行', subMenu: '智能销售赋能' },
+  '/sales-intelligent-conversation-qa': { group: '增长与运营执行', subMenu: '智能销售赋能' },
+  '/sales-intelligent-training': { group: '增长与运营执行', subMenu: '智能销售赋能' },
+
+  // 赋能与效率提升
+  '/knowledge-base': { group: '赋能与效率提升' },
+  '/efficiency-improvement': { group: '赋能与效率提升' },
+};
+
+export function getGroupForPath(pathname: string): string | null {
+  return ROUTE_MENU_CONFIG[pathname]?.group || null;
 }
 
 export function getSubMenuForPath(pathname: string): string | null {
-  const pathToSubMenuMap: Record<string, string> = {
-    '/private-growth': '智能私域增长与运营',
-    '/private-service-insights': '智能私域增长与运营',
-    '/private-user-segmentation': '智能私域增长与运营',
-    '/private-communication-strategy': '智能私域增长与运营',
-    '/sales-intelligent-agent-config': '智能销售赋能',
-    '/sales-intelligent-operation-analytics': '智能销售赋能',
-  };
-
-  return pathToSubMenuMap[pathname] || null;
+  return ROUTE_MENU_CONFIG[pathname]?.subMenu || null;
 }
 
-// 基于路径获取强制展开的菜单状态
+// 基于路径获取菜单状态（增量式展开）
 export function getPathBasedMenuState(pathname: string): MenuState | null {
   const currentGroup = getGroupForPath(pathname);
   const currentSubMenu = getSubMenuForPath(pathname);
@@ -108,13 +119,13 @@ export function getPathBasedMenuState(pathname: string): MenuState | null {
     return null;
   }
 
-  const expandedGroups = new Set(DEFAULT_EXPANDED_GROUPS);
-  const expandedSubMenus = new Set(DEFAULT_EXPANDED_SUBMENUS);
+  // 🔧 关键改动：保持现有用户偏好，在此基础上增量展开
+  const userPreferences = loadUserPreferences();
+  const expandedGroups = new Set(userPreferences?.expandedGroups || DEFAULT_EXPANDED_GROUPS);
+  const expandedSubMenus = new Set(userPreferences?.expandedSubMenus || DEFAULT_EXPANDED_SUBMENUS);
 
-  // 强制展开当前路径对应的分组
+  // 确保当前路径对应的菜单被展开
   expandedGroups.add(currentGroup);
-
-  // 如果有子菜单，强制展开
   if (currentSubMenu) {
     expandedSubMenus.add(currentSubMenu);
   }
@@ -125,21 +136,21 @@ export function getPathBasedMenuState(pathname: string): MenuState | null {
   };
 }
 
-// 核心状态决策函数 - 实现分层状态管理
+// 核心状态决策函数 - 实现智能状态管理
 export function determineMenuState(pathname: string): MenuState {
-  // 1. 首页/默认页面：清除用户偏好，使用默认状态
+  // 1. 首页/默认页面：保持用户偏好，不强制清除
   if (isDefaultPage(pathname)) {
-    clearUserPreferences();
-    return getDefaultMenuState();
+    const userPreferences = loadUserPreferences();
+    return userPreferences || getDefaultMenuState();
   }
 
-  // 2. 有对应菜单的页面：使用路径驱动状态（忽略用户偏好）
+  // 2. 有对应菜单的页面：在用户偏好基础上增量展开
   const pathBasedState = getPathBasedMenuState(pathname);
   if (pathBasedState) {
     return pathBasedState;
   }
 
-  // 3. 其他页面：尝试使用用户偏好，否则使用默认状态
+  // 3. 其他页面：使用用户偏好或默认状态
   const userPreferences = loadUserPreferences();
   return userPreferences || getDefaultMenuState();
 }
