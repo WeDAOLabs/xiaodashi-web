@@ -180,15 +180,20 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
     <aside className="app-sidebar">
       <div className="flex h-full min-h-[700px] flex-col bg-white">
         {/* 区域0: 顶部 Logo */}
-        <div className="flex items-center gap-4 p-4 border-b border-[var(--border-secondary)]">
-          <div className="size-4">
-            <LogoIcon />
+        <div className="px-4 py-3 border-b border-[var(--border-secondary)]">
+          <div className={cn(
+            "flex items-center gap-4 p-3 rounded-lg",
+            isCollapsed && "justify-center"
+          )}>
+            <div className="size-8">
+              <LogoIcon />
+            </div>
+            {!isCollapsed && (
+              <h2 className="text-lg font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
+                智赢
+              </h2>
+            )}
           </div>
-          {!isCollapsed && (
-            <h2 className="text-lg font-bold leading-tight tracking-[-0.015em] text-[var(--text-primary)]">
-              智赢
-            </h2>
-          )}
         </div>
 
         {/* 区域1: 首页导航 */}
