@@ -78,6 +78,7 @@ export function getGroupForPath(pathname: string): string | null {
     '/private-communication-strategy': '增长与运营执行',
     '/ecommerce': '增长与运营执行',
     '/sales-intelligent-agent-config': '增长与运营执行',
+    '/sales-intelligent-operation-analytics': '增长与运营执行',
     '/knowledge-base': '赋能与效率提升',
     '/efficiency-improvement': '赋能与效率提升',
   };
@@ -92,6 +93,7 @@ export function getSubMenuForPath(pathname: string): string | null {
     '/private-user-segmentation': '智能私域增长与运营',
     '/private-communication-strategy': '智能私域增长与运营',
     '/sales-intelligent-agent-config': '智能销售赋能',
+    '/sales-intelligent-operation-analytics': '智能销售赋能',
   };
 
   return pathToSubMenuMap[pathname] || null;

@@ -35,10 +35,11 @@ Run all commands from the project root directory:
 - `npm run build:shared` - Build shared package (run this first when shared types change)
 - Individual workspaces can be built with: `npm run build --workspace=<workspace-name>`
 
-### Linting
-- Frontend: `npm run lint --workspace=frontend`
-- Frontend-app: `npm run lint --workspace=frontend-app`
+### Linting & Quality Check
+- Frontend: `npm run lint:frontend` (shorthand for `npm run lint --workspace=frontend`)
+- Frontend-app: `npm run lint:frontend-app` (shorthand for `npm run lint --workspace=frontend-app`)
 - Backend: `npm run lint --workspace=backend` (includes auto-fix)
+- All frontend: `npm run lint` (runs both frontend workspaces)
 
 ### Testing (Backend)
 - `npm run test --workspace=backend` - Run unit tests
@@ -83,6 +84,21 @@ xiaodashi-web/
    - Frontend-app (dashboard): 3001
    - Backend API: 3001 (default, may conflict with frontend-app)
 4. **Documentation**: Extensive docs available in `docs/` directory including architecture, tech stack, and development guides
+
+## Code Quality Workflow (推荐执行顺序)
+
+**开发期间质量检查**：
+1. Lint 检查：`npm run lint:frontend-app` 或 `npm run lint:frontend`
+2. 类型检查：`npm run build --workspace=frontend-app` (确保无 TypeScript 错误)
+3. 如有 shared 类型变更：先执行 `npm run build:shared`
+
+**代码提交前检查**：
+```bash
+# 全面检查
+npm run lint                           # 检查所有前端代码
+npm run build:shared                   # 构建共享类型
+npm run build --workspace=frontend-app # 验证构建无错误
+```
 
 ## Build Order for Deployment
 

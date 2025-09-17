@@ -74,7 +74,8 @@ const menuGroups: MenuGroup[] = [
         name: '智能销售赋能',
         icon: ChartLineIcon,
         subItems: [
-          { name: '智能销售员设置与策略配置', href: '/sales-intelligent-agent-config', icon: GearIcon }
+          { name: '智能销售员设置与策略配置', href: '/sales-intelligent-agent-config', icon: GearIcon },
+          { name: '销售运营数据与分析', href: '/sales-intelligent-operation-analytics', icon: ChartLineIcon }
         ]
       },
     ],
