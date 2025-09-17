@@ -236,8 +236,8 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
                   {/* 分组菜单项 - 带折叠动画 */}
                   <div className={cn(
                     "overflow-hidden transition-all duration-200 ease-in-out",
-                    !isCollapsed && isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0",
-                    isCollapsed && "max-h-96 opacity-100" // 侧边栏折叠时始终显示所有项
+                    !isCollapsed && isExpanded ? "max-h-none opacity-100" : "max-h-0 opacity-0",
+                    isCollapsed && "max-h-none opacity-100" // 侧边栏折叠时始终显示所有项
                   )}>
                     <div className="flex flex-col gap-1 mt-2">
                       {group.items.map((item) => {
@@ -264,8 +264,8 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
                               {/* 子菜单项 */}
                               <div className={cn(
                                 "overflow-hidden transition-all duration-200 ease-in-out ml-4",
-                                !isCollapsed && isSubExpanded ? "max-h-48 opacity-100" : "max-h-0 opacity-0",
-                                isCollapsed && "max-h-48 opacity-100"
+                                !isCollapsed && isSubExpanded ? "max-h-[calc(4*3rem)] opacity-100" : "max-h-0 opacity-0",
+                                isCollapsed && "max-h-[calc(4*3rem)] opacity-100"
                               )}>
                                 <div className="flex flex-col gap-1 mt-1">
                                   {item.subItems.map((subItem) => {
