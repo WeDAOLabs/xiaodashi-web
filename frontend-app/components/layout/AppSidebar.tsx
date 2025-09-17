@@ -16,9 +16,9 @@ import UsersThreeIcon from '@/components/icons/UsersThreeIcon';
 import { useAuth } from '@/components/layout/AuthContext';
 import { cn } from '@/lib/utils';
 import {
-  determineMenuState,
   saveUserPreferences,
-  shouldOverrideUserPreferences,
+  loadUserPreferences,
+  getDefaultMenuState,
   type MenuState
 } from '@/lib/sidebarState';
 import Image from 'next/image';
@@ -121,25 +121,18 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   const router = useRouter();
   const { user, logout } = useAuth();
 
-  // 使用新的状态管理机制
+  // 简化的状态管理 - 由于组件不再重新挂载，状态会自然保持
   const [menuState, setMenuState] = React.useState<MenuState>(() => {
-    return determineMenuState(pathname);
+    // 初始化时从 sessionStorage 加载用户偏好，如果没有则使用默认状态
+    return loadUserPreferences() || getDefaultMenuState();
   });
 
   const { expandedGroups, expandedSubMenus } = menuState;
 
-  // 当路径变化时，重新计算菜单状态
+  // 自动保存用户操作到 sessionStorage
   React.useEffect(() => {
-    const newMenuState = determineMenuState(pathname);
-    setMenuState(newMenuState);
-  }, [pathname]);
-
-  // 保存用户偏好状态（仅在非路径驱动时）
-  React.useEffect(() => {
-    if (!shouldOverrideUserPreferences(pathname)) {
-      saveUserPreferences(menuState);
-    }
-  }, [menuState, pathname]);
+    saveUserPreferences(menuState);
+  }, [menuState]);
 
   const toggleGroup = (groupTitle: string) => {
     setMenuState(prev => {
