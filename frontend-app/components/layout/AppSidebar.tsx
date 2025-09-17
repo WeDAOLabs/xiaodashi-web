@@ -13,6 +13,12 @@ import TrendingUpIcon from '@/components/icons/TrendingUpIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import UsersThreeIcon from '@/components/icons/UsersThreeIcon';
 import { cn } from '@/lib/utils';
+import {
+  determineMenuState,
+  saveUserPreferences,
+  shouldOverrideUserPreferences,
+  type MenuState
+} from '@/lib/sidebarState';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
@@ -64,7 +70,13 @@ const menuGroups: MenuGroup[] = [
         ]
       },
       { name: '智能电商运营与转化', href: '/ecommerce', icon: ChartLineIcon },
-      { name: '智能销售赋能', href: '/sales-enablement', icon: ChartLineIcon },
+      {
+        name: '智能销售赋能',
+        icon: ChartLineIcon,
+        subItems: [
+          { name: '智能销售员设置与策略配置', href: '/sales-intelligent-agent-config', icon: GearIcon }
+        ]
+      },
     ],
   },
   {
@@ -100,37 +112,53 @@ const unimplementedRoutes = [
 const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   const pathname = usePathname();
 
-  // 管理每个分组的展开/折叠状态
-  const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
-    new Set(['战略与决策中枢', '增长与运营执行']) // 默认展开第一个分组和增长运营分组
-  );
+  // 使用新的状态管理机制
+  const [menuState, setMenuState] = React.useState<MenuState>(() => {
+    return determineMenuState(pathname);
+  });
 
-  // 管理每个子菜单的展开/折叠状态
-  const [expandedSubMenus, setExpandedSubMenus] = React.useState<Set<string>>(
-    new Set(['智能私域增长与运营']) // 默认展开私域子菜单
-  );
+  const { expandedGroups, expandedSubMenus } = menuState;
+
+  // 当路径变化时，重新计算菜单状态
+  React.useEffect(() => {
+    const newMenuState = determineMenuState(pathname);
+    setMenuState(newMenuState);
+  }, [pathname]);
+
+  // 保存用户偏好状态（仅在非路径驱动时）
+  React.useEffect(() => {
+    if (!shouldOverrideUserPreferences(pathname)) {
+      saveUserPreferences(menuState);
+    }
+  }, [menuState, pathname]);
 
   const toggleGroup = (groupTitle: string) => {
-    setExpandedGroups(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(groupTitle)) {
-        newSet.delete(groupTitle);
+    setMenuState(prev => {
+      const newExpandedGroups = new Set(prev.expandedGroups);
+      if (newExpandedGroups.has(groupTitle)) {
+        newExpandedGroups.delete(groupTitle);
       } else {
-        newSet.add(groupTitle);
+        newExpandedGroups.add(groupTitle);
       }
-      return newSet;
+      return {
+        ...prev,
+        expandedGroups: newExpandedGroups
+      };
     });
   };
 
   const toggleSubMenu = (itemName: string) => {
-    setExpandedSubMenus(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(itemName)) {
-        newSet.delete(itemName);
+    setMenuState(prev => {
+      const newExpandedSubMenus = new Set(prev.expandedSubMenus);
+      if (newExpandedSubMenus.has(itemName)) {
+        newExpandedSubMenus.delete(itemName);
       } else {
-        newSet.add(itemName);
+        newExpandedSubMenus.add(itemName);
       }
-      return newSet;
+      return {
+        ...prev,
+        expandedSubMenus: newExpandedSubMenus
+      };
     });
   };
 
