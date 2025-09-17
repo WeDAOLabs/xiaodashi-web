@@ -15,7 +15,7 @@
 
 ## 开发要求及规范
 - 严格遵循开发文档 `docs/development-guide-frontend.md` 和 `docs/development-guide.md` 中的规范。
-- 优先使用 `shadcn/ui` 组件库构建界面。
+- 优先使用 `shadcn/ui` 组件库构建界面。如果没有，可以使用shadcn工具来查询。
 - 页面验证：你直接使用 Playwright 工具进行修改后的页面结果进行验证，不需要启动开发服务器，开发服务器已经启动。
 
 ## Skills

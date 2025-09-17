@@ -77,6 +77,8 @@
 
 本项目使用 `shadcn/ui` 作为 UI 组件的基础。它并非传统的组件库，而是一套可复用的组件代码集合，通过 CLI 添加到项目中。
 
+如果需要新的组件，可以使用shadcn工具来查询
+
 ### 安装命令
 ```
 cd frontend-app && npx shadcn@latest add button
