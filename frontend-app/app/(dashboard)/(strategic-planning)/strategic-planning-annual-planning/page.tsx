@@ -30,7 +30,7 @@ import {
   Clock,
   XCircle
 } from 'lucide-react';
-import { Calendar } from '@/components/ui/calendar';
+import { Calendar, CalendarDayButton } from '@/components/ui/calendar';
 
 interface MarketingActivity {
   id: string;
@@ -39,6 +39,13 @@ interface MarketingActivity {
   startDate: string;
   endDate: string;
   manager: string;
+}
+
+interface CalendarEvent {
+  date: string; // YYYY-MM-DD 格式
+  name: string;
+  type: 'holiday' | 'marketing';
+  color: 'purple' | 'red' | 'blue' | 'green';
 }
 
 const mockActivities: MarketingActivity[] = [
@@ -102,11 +109,31 @@ const getStatusIcon = (status: MarketingActivity['status']) => {
 const CalendarView: React.FC = () => {
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date());
 
-  // 定义特殊日期（节假日）
-  const holidays = [
-    { date: new Date(2024, 8, 10), name: '教师节' }, // 9月10日
-    { date: new Date(2024, 8, 17), name: '中秋节' }, // 9月17日
+  // 定义日历事件
+  const events: CalendarEvent[] = [
+    { date: '2024-09-10', name: '教师节', type: 'holiday', color: 'purple' },
+    { date: '2024-09-17', name: '中秋节', type: 'holiday', color: 'red' },
   ];
+
+  // 将事件转换为日期对象用于 modifiers
+  const eventDates = events.map(event => new Date(event.date));
+
+  // 根据日期获取事件
+  const getEventsForDate = (date: Date): CalendarEvent[] => {
+    const dateString = date.toISOString().split('T')[0];
+    return events.filter(event => event.date === dateString);
+  };
+
+  // 获取事件颜色类名
+  const getEventColorClass = (color: CalendarEvent['color']) => {
+    switch (color) {
+      case 'purple': return 'bg-purple-100 text-purple-700';
+      case 'red': return 'bg-red-100 text-red-700';
+      case 'blue': return 'bg-blue-100 text-blue-700';
+      case 'green': return 'bg-green-100 text-green-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
 
   return (
     <Card className="lg:col-span-2">
@@ -115,27 +142,56 @@ const CalendarView: React.FC = () => {
           <h2 className="text-xl font-bold text-[var(--text-primary)]">2024年 9月</h2>
         </div>
 
-        <div className="flex justify-center">
-          <Calendar
-            mode="single"
-            selected={selectedDate}
-            onSelect={setSelectedDate}
-            className="rounded-md border border-[var(--border-secondary)]"
-            modifiers={{
-              holiday: holidays.map(h => h.date),
-            }}
-            modifiersClassNames={{
-              holiday: "bg-[var(--color-primary-50)] text-[var(--primary-color)] font-semibold",
-            }}
-          />
-        </div>
+        <Calendar
+          mode="single"
+          selected={selectedDate}
+          onSelect={setSelectedDate}
+          className="w-full [--cell-size:120px]"
+          modifiers={{
+            hasEvent: eventDates,
+          }}
+          modifiersClassNames={{
+            hasEvent: "relative",
+          }}
+          components={{
+            DayButton: ({ children, modifiers, day, ...props }) => {
+              const dayEvents = getEventsForDate(day.date);
 
-        {/* 节假日图例 */}
+              return (
+                <CalendarDayButton
+                  day={day}
+                  modifiers={modifiers}
+                  {...props}
+                  className="h-[120px] w-full p-1.5 relative border-r border-b border-[var(--border-secondary)] bg-white hover:bg-[var(--bg-secondary)] transition-colors"
+                >
+                  <div className="absolute top-1.5 left-1.5 text-xs font-semibold text-[var(--text-primary)]">
+                    {children}
+                  </div>
+                  {dayEvents.length > 0 && (
+                    <div className="mt-7 space-y-1 w-full px-1">
+                      {dayEvents.map((event, index) => (
+                        <div
+                          key={index}
+                          className={`text-[11px] font-medium px-1 py-0.5 rounded-md ${getEventColorClass(event.color)}`}
+                          title={event.name}
+                        >
+                          {event.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CalendarDayButton>
+              );
+            },
+          }}
+        />
+
+        {/* 事件图例 */}
         <div className="mt-4 flex justify-center gap-4">
-          {holidays.map((holiday, index) => (
+          {events.map((event, index) => (
             <div key={index} className="flex items-center text-xs text-[var(--text-secondary)]">
-              <div className="w-2 h-2 rounded-full bg-[var(--color-primary-50)] mr-1"></div>
-              <span>{holiday.date.getDate()}日 {holiday.name}</span>
+              <div className={`w-2 h-2 rounded-full mr-1 ${getEventColorClass(event.color).split(' ')[0]}`}></div>
+              <span>{new Date(event.date).getDate()}日 {event.name}</span>
             </div>
           ))}
         </div>
