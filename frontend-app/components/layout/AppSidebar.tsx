@@ -55,6 +55,7 @@ const menuGroups: MenuGroup[] = [
           { name: '战略制定和宏观分析', href: '/strategic-planning-analysis', icon: ChartLineIcon },
           { name: '年度营销规划', href: '/strategic-planning-annual-planning', icon: CalendarIcon },
           { name: '营销目标拆解与策略规划', href: '/strategic-planning-marketing-goal-decomposition', icon: TargetIcon },
+          { name: '产品策略与创新', href: '/strategic-planning-business-marketing-strategy', icon: TrendingUpIcon },
         ]
       },
       { name: '智能市场洞察与竞品分析', href: '/market-intelligence', icon: PresentationChartIcon },
