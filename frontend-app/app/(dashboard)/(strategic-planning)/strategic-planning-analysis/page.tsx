@@ -1,23 +1,23 @@
 'use client';
 
-import React from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardAction } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, type ChartConfig } from '@/components/ui/chart';
-import { PieChart, Pie, Cell, ResponsiveContainer, RadarChart as RechartsRadarChart, PolarGrid, PolarAngleAxis, Radar, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import {
-  Eye,
-  Download,
-  RefreshCw,
-  Plus,
   AlertTriangle,
-  Settings,
+  Download,
   Edit,
-  Target,
+  Eye,
   Grid,
-  Play
+  Play,
+  Plus,
+  RefreshCw,
+  Settings,
+  Target
 } from 'lucide-react';
+import React from 'react';
+import { Bar, BarChart, Cell, Pie, PieChart, PolarAngleAxis, PolarGrid, Radar, RadarChart as RechartsRadarChart, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 // 类型定义
 interface CircularProgressProps {
@@ -138,7 +138,7 @@ const HorizontalBarChart: React.FC<{ data: BarData[] }> = ({ data }) => {
           dataKey="value"
           fill="var(--color-value)"
           radius={3}
-          barSize={20}
+          barSize={10}
         />
       </BarChart>
     </ChartContainer>

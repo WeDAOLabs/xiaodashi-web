@@ -112,3 +112,4 @@ npm run build --workspace=frontend-app # 验证构建无错误
 - Both frontend-app and backend default to port 3001 - check actual backend port configuration
 - The project uses Turbopack for faster Next.js builds (--turbopack flag)
 - frontend-app 测试用户名：zhangsan@example.com 密码:111111
+- ui界面组件优先使用 shadcn/ui, 可以使用shadcn工具查询.每次查询一个组件.如果在查询组件时遇到网络错误,可以尝试重试一次.
