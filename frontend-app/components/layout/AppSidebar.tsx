@@ -46,7 +46,13 @@ const menuGroups: MenuGroup[] = [
   {
     title: '战略与决策中枢',
     items: [
-      { name: '智能业务与营销战略规划', href: '/strategic-planning', icon: PresentationChartIcon },
+      {
+        name: '智能业务与营销战略规划',
+        icon: PresentationChartIcon,
+        subItems: [
+          { name: '战略制定和宏观分析', href: '/strategic-planning-analysis', icon: ChartLineIcon },
+        ]
+      },
       { name: '智能市场洞察与竞品分析', href: '/market-intelligence', icon: PresentationChartIcon },
       { name: '智能营销效果评估与数据分析', href: '/marketing-analytics', icon: PresentationChartIcon },
     ],
@@ -102,7 +108,6 @@ const utilityNavItems = [
 
 // 未实现的功能路由列表
 const unimplementedRoutes = [
-  '/strategic-planning',
   '/market-intelligence',
   '/marketing-analytics',
   '/brand-management',
