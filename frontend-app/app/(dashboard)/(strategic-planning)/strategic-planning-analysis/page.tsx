@@ -105,44 +105,42 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   );
 };
 
-// 水平柱状图组件 - 基于shadcn Chart和Recharts BarChart实现
+// 水平柱状图组件 - 基于shadcn Chart标准实现
 const HorizontalBarChart: React.FC<{ data: BarData[] }> = ({ data }) => {
   const chartConfig: ChartConfig = {
     value: {
       label: '热度',
-      color: 'hsl(var(--primary))',
+      color: '#10b981', // 使用UI设计规范中的chart-primary颜色
     },
   };
 
   return (
-    <ChartContainer config={chartConfig} className="w-full h-[200px] pt-2">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart
-          data={data}
-          layout="horizontal"
-          margin={{ top: 5, right: 5, left: 40, bottom: 5 }}
-        >
-          <XAxis
-            type="number"
-            domain={[0, 100]}
-            hide
-          />
-          <YAxis
-            type="category"
-            dataKey="label"
-            axisLine={false}
-            tickLine={false}
-            tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
-            width={35}
-          />
-          <Bar
-            dataKey="value"
-            fill="hsl(var(--primary))"
-            radius={[0, 2, 2, 0]}
-            className="transition-all duration-300"
-          />
-        </BarChart>
-      </ResponsiveContainer>
+    <ChartContainer config={chartConfig} className="h-[160px] w-full">
+      <BarChart
+        accessibilityLayer
+        data={data}
+        layout="vertical"
+        margin={{
+          left: -20,
+        }}
+        barCategoryGap="20%"
+      >
+        <XAxis type="number" dataKey="value" domain={[0, 100]} hide />
+        <YAxis
+          dataKey="label"
+          type="category"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tick={{ fontSize: 12, fill: 'var(--text-secondary)' }}
+        />
+        <Bar
+          dataKey="value"
+          fill="var(--color-value)"
+          radius={3}
+          barSize={20}
+        />
+      </BarChart>
     </ChartContainer>
   );
 };
@@ -212,11 +210,11 @@ const strategicGoalsData = [
 ];
 
 const hotTopicsData = [
-  { label: 'AI+', value: 95, color: 'var(--primary-light)' },
-  { label: '新能源', value: 82, color: 'var(--primary-light)' },
-  { label: '数字孪生', value: 76, color: 'var(--primary-light)' },
-  { label: '元宇宙', value: 65, color: 'var(--primary-light)' },
-  { label: '碳中和', value: 58, color: 'var(--primary-light)' },
+  { label: 'AI+', value: 95 },
+  { label: '新能源', value: 82 },
+  { label: '数字孪生', value: 76 },
+  { label: '元宇宙', value: 65 },
+  { label: '碳中和', value: 58 },
 ];
 
 const StrategicPlanningAnalysisPage: React.FC = () => {
