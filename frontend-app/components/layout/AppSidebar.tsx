@@ -11,6 +11,7 @@ import LogoIcon from '@/components/icons/LogoIcon';
 import MegaphoneIcon from '@/components/icons/MegaphoneIcon';
 import PresentationChartIcon from '@/components/icons/PresentationChartIcon';
 import QuestionIcon from '@/components/icons/QuestionIcon';
+import TargetIcon from '@/components/icons/TargetIcon';
 import TrendingUpIcon from '@/components/icons/TrendingUpIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import UsersThreeIcon from '@/components/icons/UsersThreeIcon';
@@ -53,6 +54,7 @@ const menuGroups: MenuGroup[] = [
         subItems: [
           { name: '战略制定和宏观分析', href: '/strategic-planning-analysis', icon: ChartLineIcon },
           { name: '年度营销规划', href: '/strategic-planning-annual-planning', icon: CalendarIcon },
+          { name: '营销目标拆解与策略规划', href: '/strategic-planning-marketing-goal-decomposition', icon: TargetIcon },
         ]
       },
       { name: '智能市场洞察与竞品分析', href: '/market-intelligence', icon: PresentationChartIcon },
