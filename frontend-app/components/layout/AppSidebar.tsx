@@ -1,5 +1,6 @@
 'use client';
 
+import CalendarIcon from '@/components/icons/CalendarIcon';
 import ChartLineIcon from '@/components/icons/ChartLineIcon';
 import ChevronDownIcon from '@/components/icons/ChevronDownIcon';
 import ChevronRightIcon from '@/components/icons/ChevronRightIcon';
@@ -51,6 +52,7 @@ const menuGroups: MenuGroup[] = [
         icon: PresentationChartIcon,
         subItems: [
           { name: '战略制定和宏观分析', href: '/strategic-planning-analysis', icon: ChartLineIcon },
+          { name: '年度营销规划', href: '/strategic-planning-annual-planning', icon: CalendarIcon },
         ]
       },
       { name: '智能市场洞察与竞品分析', href: '/market-intelligence', icon: PresentationChartIcon },
