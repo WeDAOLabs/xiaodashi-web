@@ -57,6 +57,7 @@ const menuGroups: MenuGroup[] = [
           { name: '营销目标拆解与策略规划', href: '/strategic-planning-marketing-goal-decomposition', icon: TargetIcon },
           { name: '产品策略与创新', href: '/strategic-planning-business-marketing-strategy', icon: TrendingUpIcon },
           { name: '高层决策支持与会议报告', href: '/strategic-planning-executive-reporting', icon: PresentationChartIcon },
+          { name: '营销活动方案与管理', href: '/strategic-planning-campaign-management', icon: MegaphoneIcon },
         ]
       },
       { name: '智能市场洞察与竞品分析', href: '/market-intelligence', icon: PresentationChartIcon },
@@ -268,8 +269,8 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
                               {/* 子菜单项 */}
                               <div className={cn(
                                 "overflow-hidden transition-all duration-200 ease-in-out ml-4",
-                                !isCollapsed && isSubExpanded ? "max-h-[calc(4*3rem)] opacity-100" : "max-h-0 opacity-0",
-                                isCollapsed && "max-h-[calc(4*3rem)] opacity-100"
+                                !isCollapsed && isSubExpanded ? "max-h-[calc(6*3rem)] opacity-100" : "max-h-0 opacity-0",
+                                isCollapsed && "max-h-[calc(6*3rem)] opacity-100"
                               )}>
                                 <div className="flex flex-col gap-1 mt-1">
                                   {item.subItems.map((subItem) => {
