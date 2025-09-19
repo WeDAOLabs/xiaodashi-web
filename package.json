@@ -1,12 +1,6 @@
 {
   "name": "xiaodashi-web",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "frontend-app",
-    "backend",
-    "shared"
-  ],
   "scripts": {
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:frontend-app": "pnpm --filter frontend-app dev",
