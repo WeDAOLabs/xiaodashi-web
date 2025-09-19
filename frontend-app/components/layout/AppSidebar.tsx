@@ -60,7 +60,13 @@ const menuGroups: MenuGroup[] = [
           { name: '营销活动方案与管理', href: '/strategic-planning-campaign-management', icon: MegaphoneIcon },
         ]
       },
-      { name: '智能市场洞察与竞品分析', href: '/market-intelligence', icon: PresentationChartIcon },
+      {
+        name: '智能市场洞察与竞品分析',
+        icon: PresentationChartIcon,
+        subItems: [
+          { name: '宏观环境监测', href: '/market-intelligence-macro-monitoring', icon: ChartLineIcon },
+        ]
+      },
       { name: '智能营销效果评估与数据分析', href: '/marketing-analytics', icon: PresentationChartIcon },
     ],
   },
@@ -115,7 +121,6 @@ const utilityNavItems = [
 
 // 未实现的功能路由列表
 const unimplementedRoutes = [
-  '/market-intelligence',
   '/marketing-analytics',
   '/brand-management',
   '/content-creation',
