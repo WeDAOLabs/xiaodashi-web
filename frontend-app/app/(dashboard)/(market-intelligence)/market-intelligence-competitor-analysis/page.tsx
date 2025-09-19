@@ -7,12 +7,12 @@ import { AlertTriangle, FileText, Plus } from 'lucide-react';
 import React, { useState } from 'react';
 
 // 导入所有子组件
-import ComparisonWorkbench from '@/components/competitor-analysis/ComparisonWorkbench';
-import CompetitorRadarChart from '@/components/competitor-analysis/CompetitorRadarChart';
-import CompetitorSelector from '@/components/competitor-analysis/CompetitorSelector';
-import PricingStrategyChart from '@/components/competitor-analysis/PricingStrategyChart';
-import ProductComparisonTable from '@/components/competitor-analysis/ProductComparisonTable';
-import UserSentimentComparison from '@/components/competitor-analysis/UserSentimentComparison';
+import ComparisonWorkbench from '@/app/(dashboard)/(competitor-analysis)/_components/competitor-analysis/ComparisonWorkbench';
+import CompetitorRadarChart from '@/app/(dashboard)/(competitor-analysis)/_components/competitor-analysis/CompetitorRadarChart';
+import CompetitorSelector from '@/app/(dashboard)/(competitor-analysis)/_components/competitor-analysis/CompetitorSelector';
+import PricingStrategyChart from '@/app/(dashboard)/(competitor-analysis)/_components/competitor-analysis/PricingStrategyChart';
+import ProductComparisonTable from '@/app/(dashboard)/(competitor-analysis)/_components/competitor-analysis/ProductComparisonTable';
+import UserSentimentComparison from '@/app/(dashboard)/(competitor-analysis)/_components/competitor-analysis/UserSentimentComparison';
 
 // 静态数据定义
 const initialCompetitors = [

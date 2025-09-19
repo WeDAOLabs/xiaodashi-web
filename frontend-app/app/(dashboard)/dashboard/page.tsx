@@ -1,10 +1,10 @@
-import BriefingCard from '@/components/dashboard/BriefingCard';
-import FeatureCard from '@/components/dashboard/FeatureCard';
-import HealthChart from '@/components/dashboard/HealthChart';
-import MetricCard from '@/components/dashboard/MetricCard';
-import ProgressCard from '@/components/dashboard/ProgressCard';
-import TopicTrackingTable from '@/components/dashboard/TopicTrackingTable';
-import TrendCardEnhanced from '@/components/dashboard/TrendCardEnhanced';
+import BriefingCard from '@/app/(dashboard)/_components/dashboard/BriefingCard';
+import FeatureCard from '@/app/(dashboard)/_components/dashboard/FeatureCard';
+import HealthChart from '@/app/(dashboard)/_components/dashboard/HealthChart';
+import MetricCard from '@/app/(dashboard)/_components/dashboard/MetricCard';
+import ProgressCard from '@/app/(dashboard)/_components/dashboard/ProgressCard';
+import TopicTrackingTable from '@/app/(dashboard)/_components/dashboard/TopicTrackingTable';
+import TrendCardEnhanced from '@/app/(dashboard)/_components/dashboard/TrendCardEnhanced';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';

@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Line, LineChart as RechartsLineChart, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-import MiniTrendChart from '@/components/charts/MiniTrendChart';
-import ConversationTypePieChart from '@/components/charts/ConversationTypePieChart';
-import HourlyConversationChart from '@/components/charts/HourlyConversationChart';
+import MiniTrendChart from '@/app/(dashboard)/_components/charts/MiniTrendChart';
+import ConversationTypePieChart from '@/app/(dashboard)/_components/charts/ConversationTypePieChart';
+import HourlyConversationChart from '@/app/(dashboard)/_components/charts/HourlyConversationChart';
 import {
   Calendar,
   Download,

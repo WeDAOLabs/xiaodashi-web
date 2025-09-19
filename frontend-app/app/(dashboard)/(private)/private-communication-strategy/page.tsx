@@ -3,16 +3,16 @@
 import React from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { BreadcrumbItem } from '@/components/layout/types';
-import AdoptionRateCard from '@/components/communication-strategy/AdoptionRateCard';
-import TopConversionCard from '@/components/communication-strategy/TopConversionCard';
-import ActivationFunnelCard from '@/components/communication-strategy/ActivationFunnelCard';
-import AIScriptGenerator from '@/components/communication-strategy/AIScriptGenerator';
-import ABTestConfig from '@/components/communication-strategy/ABTestConfig';
-import ABTestMonitor from '@/components/communication-strategy/ABTestMonitor';
-import ActivationFunnelTable from '@/components/communication-strategy/ActivationFunnelTable';
-import ScriptLibraryStats from '@/components/communication-strategy/ScriptLibraryStats';
-import ScriptCategories from '@/components/communication-strategy/ScriptCategories';
-import ScriptLibraryList from '@/components/communication-strategy/ScriptLibraryList';
+import AdoptionRateCard from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/AdoptionRateCard';
+import TopConversionCard from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/TopConversionCard';
+import ActivationFunnelCard from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ActivationFunnelCard';
+import AIScriptGenerator from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/AIScriptGenerator';
+import ABTestConfig from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ABTestConfig';
+import ABTestMonitor from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ABTestMonitor';
+import ActivationFunnelTable from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ActivationFunnelTable';
+import ScriptLibraryStats from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ScriptLibraryStats';
+import ScriptCategories from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ScriptCategories';
+import ScriptLibraryList from '@/app/(dashboard)/(communication-strategy)/_components/communication-strategy/ScriptLibraryList';
 
 const CommunicationStrategyPage: React.FC = () => {
   const breadcrumbs: BreadcrumbItem[] = [

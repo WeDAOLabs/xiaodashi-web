@@ -3,12 +3,12 @@
 import React from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { BreadcrumbItem } from '@/components/layout/types';
-import TopStatsCards from '@/components/user-segmentation/TopStatsCards';
-import RepurchaseUserTable from '@/components/user-segmentation/RepurchaseUserTable';
-import UserLifecycleChart from '@/components/user-segmentation/UserLifecycleChart';
-import GMVRankingCard from '@/components/user-segmentation/GMVRankingCard';
-import AITagManagement from '@/components/user-segmentation/AITagManagement';
-import UserProfileFilter from '@/components/user-segmentation/UserProfileFilter';
+import TopStatsCards from '@/app/(dashboard)/(user-segmentation)/_components/user-segmentation/TopStatsCards';
+import RepurchaseUserTable from '@/app/(dashboard)/(user-segmentation)/_components/user-segmentation/RepurchaseUserTable';
+import UserLifecycleChart from '@/app/(dashboard)/(user-segmentation)/_components/user-segmentation/UserLifecycleChart';
+import GMVRankingCard from '@/app/(dashboard)/(user-segmentation)/_components/user-segmentation/GMVRankingCard';
+import AITagManagement from '@/app/(dashboard)/(user-segmentation)/_components/user-segmentation/AITagManagement';
+import UserProfileFilter from '@/app/(dashboard)/(user-segmentation)/_components/user-segmentation/UserProfileFilter';
 
 const UserSegmentationPage: React.FC = () => {
   const breadcrumbs: BreadcrumbItem[] = [

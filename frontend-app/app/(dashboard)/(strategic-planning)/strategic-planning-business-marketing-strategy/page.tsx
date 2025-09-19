@@ -1,9 +1,9 @@
 'use client';
 
-import CompetitorSentimentChart from '@/components/charts/CompetitorSentimentChart';
-import EmotionTrendChart from '@/components/charts/EmotionTrendChart';
-import InnovationOpportunityChart from '@/components/charts/InnovationOpportunityChart';
-import PriorityMatrixChart from '@/components/charts/PriorityMatrixChart';
+import CompetitorSentimentChart from '@/app/(dashboard)/_components/charts/CompetitorSentimentChart';
+import EmotionTrendChart from '@/app/(dashboard)/_components/charts/EmotionTrendChart';
+import InnovationOpportunityChart from '@/app/(dashboard)/_components/charts/InnovationOpportunityChart';
+import PriorityMatrixChart from '@/app/(dashboard)/_components/charts/PriorityMatrixChart';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

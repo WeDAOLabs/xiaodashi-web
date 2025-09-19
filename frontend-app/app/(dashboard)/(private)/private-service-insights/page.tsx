@@ -4,14 +4,14 @@ import React from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { BreadcrumbItem } from '@/components/layout/types';
 import { Button } from '@/components/ui/button';
-import SentimentTrendChart from '@/components/product-service-insights/SentimentTrendChart';
-import FlavorPreferenceChart from '@/components/product-service-insights/FlavorPreferenceChart';
-import ServiceSatisfactionCard from '@/components/product-service-insights/ServiceSatisfactionCard';
-import ProductKeywordsCloud from '@/components/product-service-insights/ProductKeywordsCloud';
-import SentimentAnalysisCard from '@/components/product-service-insights/SentimentAnalysisCard';
-import ServiceInsightsCard from '@/components/product-service-insights/ServiceInsightsCard';
-import AIRecommendationCard from '@/components/product-service-insights/AIRecommendationCard';
-import ActionPlanCard from '@/components/product-service-insights/ActionPlanCard';
+import SentimentTrendChart from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/SentimentTrendChart';
+import FlavorPreferenceChart from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/FlavorPreferenceChart';
+import ServiceSatisfactionCard from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/ServiceSatisfactionCard';
+import ProductKeywordsCloud from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/ProductKeywordsCloud';
+import SentimentAnalysisCard from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/SentimentAnalysisCard';
+import ServiceInsightsCard from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/ServiceInsightsCard';
+import AIRecommendationCard from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/AIRecommendationCard';
+import ActionPlanCard from '@/app/(dashboard)/(product-insights)/_components/product-service-insights/ActionPlanCard';
 
 const ProductServiceInsightsPage: React.FC = () => {
   const breadcrumbs: BreadcrumbItem[] = [

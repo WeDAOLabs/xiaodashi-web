@@ -1,3 +1,54 @@
+# Frontend Development Guide
+
+## 核心开发原则
+
+### 设计原则
+- **KISS原则**：保持简单愚蠢，避免过度复杂化
+- **模块化、组件化**：高内聚、低耦合的架构设计
+- **DRY原则**：避免重复代码，提取公共逻辑
+- **YAGNI原则**：不要过度设计，只实现当前需要的功能
+- **单一职责原则**：每个模块/函数只做一件事
+
+### 代码质量原则
+- **可读性优于简洁性**：代码是写给人看的
+- **明确优于隐晦**：显式声明胜过隐式猜测
+
+### 工程实践原则
+- **渐进式开发**：先让功能工作，再优化
+- **测试驱动开发**：重要功能先写测试
+- **持续重构**：小步快跑，持续改进
+
+### 协作与维护原则
+- **文档同步**：代码即文档，注释解释为什么而非是什么
+- **代码复用**：优先使用共享组件和工具库
+
+---
+
+## 组件组织最佳实践
+
+### 推荐的分层架构
+```
+frontend-app/
+├── components/                 # 全局可复用组件
+│   ├── ui/                    # shadcn/ui 基础组件
+│   ├── layout/                # 全局布局组件
+│   ├── icons/                 # 图标组件库
+│   └── shared/                # 业务无关的通用组件
+├── app/
+│   └── (dashboard)/
+│       ├── _components/       # 仪表板级别共享组件
+│       └── (specific-module)/
+│           └── _components/   # 模块级专用组件
+```
+
+### 组件职责划分
+- **`components/`**：全局复用的基础组件和通用组件
+- **`app/(route-group)/_components/`**：路由组级别的共享组件
+- **`app/(route-group)/(sub-route)/_components/`**：模块级专用组件
+- **`app/specific-page/_components/`**：页面级私有组件
+
+---
+
 # Development Conventions
 
 - **Images need to be localized**: All images used in the frontend should be stored locally in the `frontend/public` directory.
