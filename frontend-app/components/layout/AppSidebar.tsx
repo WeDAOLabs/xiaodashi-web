@@ -68,6 +68,7 @@ const menuGroups: MenuGroup[] = [
           { name: '竞品深度分析', href: '/market-intelligence-competitor-analysis', icon: TargetIcon },
           { name: '消费者洞察与细分', href: '/market-intelligence-consumer-insights', icon: UsersIcon },
           { name: '预测与预警概览', href: '/market-intelligence-prediction-overview', icon: TrendingUpIcon },
+          { name: '市场与竞品洞察项目管理', href: '/market-intelligence-project-management', icon: FileTextIcon },
         ]
       },
       { name: '智能营销效果评估与数据分析', href: '/marketing-analytics', icon: PresentationChartIcon },
