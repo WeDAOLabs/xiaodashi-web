@@ -81,7 +81,8 @@ const menuGroups: MenuGroup[] = [
         name: '智能品牌与IP资产管理',
         icon: FileTextIcon,
         subItems: [
-          { name: '品牌健康度持续监测与提升', href: '/brand-management-health-monitoring', icon: ChartLineIcon }
+          { name: '品牌健康度持续监测与提升', href: '/brand-management-health-monitoring', icon: ChartLineIcon },
+          { name: 'IP资产智能评估与商业化孵化', href: '/brand-management-ip-evaluation', icon: TargetIcon }
         ]
       },
       { name: '智能内容创作与素材中心', href: '/content-creation', icon: FileTextIcon },
