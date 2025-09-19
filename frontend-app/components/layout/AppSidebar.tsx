@@ -16,13 +16,13 @@ import TrendingUpIcon from '@/components/icons/TrendingUpIcon';
 import UsersIcon from '@/components/icons/UsersIcon';
 import UsersThreeIcon from '@/components/icons/UsersThreeIcon';
 import { useAuth } from '@/components/layout/AuthContext';
-import { cn } from '@/lib/utils';
 import {
-  saveUserPreferences,
-  loadUserPreferences,
   getDefaultMenuState,
+  loadUserPreferences,
+  saveUserPreferences,
   type MenuState
 } from '@/lib/sidebarState';
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -67,6 +67,7 @@ const menuGroups: MenuGroup[] = [
           { name: '宏观环境监测', href: '/market-intelligence-macro-monitoring', icon: ChartLineIcon },
           { name: '竞品深度分析', href: '/market-intelligence-competitor-analysis', icon: TargetIcon },
           { name: '消费者洞察与细分', href: '/market-intelligence-consumer-insights', icon: UsersIcon },
+          { name: '预测与预警概览', href: '/market-intelligence-prediction-overview', icon: TrendingUpIcon },
         ]
       },
       { name: '智能营销效果评估与数据分析', href: '/marketing-analytics', icon: PresentationChartIcon },
@@ -132,7 +133,7 @@ const unimplementedRoutes = [
   '/knowledge-base',
   '/efficiency-improvement',
   '/settings',
-  '/support'
+  '/support',
 ];
 
 const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
@@ -184,8 +185,14 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   };
 
   const handleLogout = async () => {
-    await logout();
-    router.push('/login');
+    try {
+      await logout();
+      router.push('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // 即使登出失败也跳转到登录页
+      router.push('/login');
+    }
   };
 
   return (

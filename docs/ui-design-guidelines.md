@@ -69,9 +69,50 @@
 --color-warning-600: #d97706
 ```
 
-**错误状态**
+#### shadcn/ui 语义化色彩（优先使用）
 ```css
---color-danger-600: #ef4444
+--destructive: oklch(0.577 0.245 27.325)  /* 危险/错误状态 - shadcn标准 */
+--primary: #007A7A                        /* 主色 - shadcn标准 */
+--secondary: oklch(0.97 0 0)              /* 次要色 - shadcn标准 */
+```
+
+**使用场景**：
+- shadcn/ui组件内部样式
+- Badge、Alert等组件的variant
+- 优先选择，保证与shadcn组件的一致性
+
+#### 项目自定义色彩系统
+
+**危险/错误状态**
+```css
+--color-danger-50:  #fef2f2
+--color-danger-100: #fee2e2
+--color-danger-200: #fecaca
+--color-danger-500: #ef4444
+--color-danger-600: #dc2626
+--color-danger-800: #991b1b
+```
+
+**使用场景**：
+- 自定义组件开发
+- 需要特定色阶的场景
+- 与设计稿精确匹配的场景
+
+#### 色彩选择指南
+1. **shadcn组件样式**：优先使用 `--destructive`, `--primary` 等语义化变量
+2. **自定义组件**：可使用 `--color-danger-*` 系列获得更精确的色彩控制
+3. **一致性原则**：同一组件内保持色彩系统的统一性
+
+#### 实际案例
+```tsx
+// ✅ 推荐：使用shadcn语义化色彩
+return 'bg-[var(--destructive)] text-white border-[var(--destructive)]';
+
+// ✅ 也可接受：使用项目色彩系统
+return 'bg-[var(--color-danger-500)] text-white border-[var(--color-danger-600)]';
+
+// ❌ 避免：混用两套系统
+return 'bg-[var(--destructive)] border-[var(--color-danger-600)]';
 ```
 
 ---
