@@ -77,7 +77,13 @@ const menuGroups: MenuGroup[] = [
   {
     title: '品牌与创意资产',
     items: [
-      { name: '智能品牌与IP资产管理', href: '/brand-management', icon: FileTextIcon },
+      {
+        name: '智能品牌与IP资产管理',
+        icon: FileTextIcon,
+        subItems: [
+          { name: '品牌健康度持续监测与提升', href: '/brand-management-health-monitoring', icon: ChartLineIcon }
+        ]
+      },
       { name: '智能内容创作与素材中心', href: '/content-creation', icon: FileTextIcon },
     ],
   },
