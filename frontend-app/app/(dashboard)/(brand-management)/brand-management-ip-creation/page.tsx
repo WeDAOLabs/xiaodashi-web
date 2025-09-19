@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -199,14 +200,15 @@ const mockIPProjects: IPProject[] = [
 ];
 
 const BrandManagementIPCreationPage: React.FC = () => {
+  const router = useRouter();
+
   const handleCardClick = (project: IPProject) => {
     console.log(`查看 '${project.name}' 的详情`);
     // TODO: 跳转到IP详情页面
   };
 
   const handleCreateNew = () => {
-    console.log('创建新IP项目');
-    // TODO: 跳转到IP创建页面
+    router.push('/brand-management-ip-creation/create');
   };
 
   const handleManageProjects = () => {
