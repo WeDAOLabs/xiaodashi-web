@@ -8,14 +8,14 @@
     "shared"
   ],
   "scripts": {
-    "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:frontend-app": "npm run dev --workspace=frontend-app",
-    "dev:backend": "npm run start:dev --workspace=backend",
-    "build:shared": "npm run build --workspace=shared",
-    "lint": "npm run lint --workspace=frontend && npm run lint --workspace=frontend-app",
-    "lint:frontend": "npm run lint --workspace=frontend",
-    "lint:frontend-app": "npm run lint --workspace=frontend-app",
-    "build:all": "npm run build:shared && npm run build --workspace=frontend && npm run build --workspace=frontend-app"
+    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:frontend-app": "pnpm --filter frontend-app dev",
+    "dev:backend": "pnpm --filter backend start:dev",
+    "build:shared": "pnpm --filter shared build",
+    "lint": "pnpm --filter frontend lint && pnpm --filter frontend-app lint",
+    "lint:frontend": "pnpm --filter frontend lint",
+    "lint:frontend-app": "pnpm --filter frontend-app lint",
+    "build:all": "pnpm --filter shared build && pnpm --filter frontend build && pnpm --filter frontend-app build"
   },
   "dependencies": {},
   "devDependencies": {}

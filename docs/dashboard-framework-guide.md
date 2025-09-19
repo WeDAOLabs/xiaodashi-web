@@ -208,7 +208,7 @@ export default NewFeaturePage;
 
 ```bash
 # 为frontend-app工作区安装依赖
-npm install <package-name> --workspace=frontend-app
+pnpm --filter frontend-app add <package-name>
 ```
 
 ### 4. 更新导航

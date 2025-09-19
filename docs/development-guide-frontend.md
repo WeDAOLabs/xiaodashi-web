@@ -2,7 +2,7 @@
 
 - **Images need to be localized**: All images used in the frontend should be stored locally in the `frontend/public` directory.
 - **Avoid Google resources**: Do not use Google Fonts or other Google-hosted resources directly. Use local alternatives like `@fontsource` for fonts.
-- **Component Prop Typing**: All React component props must be explicitly typed. This is mandatory to prevent `implicit any` type errors that will cause the production build (`npm run build`) to fail.
+- **Component Prop Typing**: All React component props must be explicitly typed. This is mandatory to prevent `implicit any` type errors that will cause the production build (`pnpm --filter frontend build`) to fail.
 
   - **Bad Practice:**
     ```tsx
@@ -94,7 +94,7 @@ cd frontend-app && npx shadcn@latest add button
 
 ### 核心理念
 
-- **非依赖包**: `shadcn/ui` 不是一个 npm 包。你拥有组件的全部代码，可以自由修改。
+- **非依赖包**: `shadcn/ui` 不是一个 pnpm 包。你拥有组件的全部代码，可以自由修改。
 - **基于 Radix UI**: 底层使用功能强大、无障碍性优秀的 Radix UI 无头组件。
 - **Tailwind CSS 造型**: 样式完全由 Tailwind CSS 实现，与项目设计系统无缝集成。
 
@@ -168,13 +168,13 @@ const CustomIcon = () => <svg>...</svg>;
 
 ---
 
-## 依赖管理 (npm Workspaces)
+## 依赖管理 (pnpm Workspaces)
 
 **核心要求**: **所有前端相关的依赖项**都必须安装到 `frontend` 工作区中，而不是项目的根目录。
 
-本项目使用 npm Workspaces 管理 monorepo。为了保持 `frontend` 工作区依赖的清晰和独立，请遵循以下规范：
+本项目使用 pnpm Workspaces 管理 monorepo。为了保持 `frontend` 工作区依赖的清晰和独立，请遵循以下规范：
 
--   **错误的做法**: 在项目根目录直接运行 `npm install <package-name>`。
+-   **错误的做法**: 在项目根目录直接运行 `pnpm add <package-name>`。
 -   **正确的做法**: 使用 `--workspace=frontend` 参数来指定依赖的安装位置。
 
 #### 命令示例
@@ -183,10 +183,10 @@ const CustomIcon = () => <svg>...</svg>;
 
 ```bash
 # 为 frontend 工作区安装一个生产依赖
-npm install <package-name> --workspace=frontend
+pnpm --filter frontend add <package-name>
 
 # 为 frontend 工作区安装一个开发依赖
-npm install <package-name> --save-dev --workspace=frontend
+pnpm --filter frontend add -D <package-name>
 ```
 
 **效果**:

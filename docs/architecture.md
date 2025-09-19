@@ -173,8 +173,8 @@ backend/
 ## 部署架构
 
 ### 开发环境
-- 前端: `npm run dev` (localhost:3000)
-- 后端: `npm run dev` (localhost:8000)
+- 前端: `pnpm run dev` (localhost:3000)
+- 后端: `pnpm run dev` (localhost:8000)
 - 数据库: Docker PostgreSQL + Redis
 
 ### 生产环境

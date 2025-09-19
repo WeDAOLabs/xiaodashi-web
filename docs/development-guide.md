@@ -5,7 +5,7 @@
 ### 系统要求
 
 - **Node.js**: 20.x LTS 或更高版本
-- **包管理器**: pnpm 8.x (推荐) 或 npm 9.x
+- **包管理器**: pnpm 8.x (推荐)
 - **数据库**: PostgreSQL 16.x
 - **缓存**: Redis 7.x
 - **Git**: 2.x 或更高版本
@@ -20,11 +20,8 @@ cd xiaodashi-web
 
 #### 2. 安装依赖
 ```bash
-# 使用 pnpm (推荐)
+# 使用 pnpm
 pnpm install
-
-# 或使用 npm
-npm install
 ```
 
 #### 3. 环境配置
@@ -514,10 +511,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN pnpm install --prod --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 FROM node:18-alpine AS runner
 
@@ -527,7 +524,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
 EXPOSE 8000
-CMD ["npm", "start"]
+CMD ["pnpm", "start"]
 ```
 
 ```dockerfile
@@ -536,10 +533,10 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 FROM node:18-alpine AS runner
 

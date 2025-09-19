@@ -4,7 +4,7 @@ This document provides context for the `xiaodashi-web` project, a full-stack web
 
 ## Project Overview
 
-`xiaodashi-web` is a modern, full-stack web application built with a monorepo architecture using npm workspaces. It consists of a Next.js frontend, a NestJS backend, and a shared library for common code.
+`xiaodashi-web` is a modern, full-stack web application built with a monorepo architecture using pnpm workspaces. It consists of a Next.js frontend, a NestJS backend, and a shared library for common code.
 
 - **Frontend:** A Next.js application for the user interface.
 - **Backend:** A NestJS application for the API and business logic.
@@ -14,30 +14,31 @@ The project is well-documented, with detailed information on architecture, API d
 
 ## Building and Running
 
-The project uses `npm` workspaces for managing the monorepo. All commands should be run from the root of the project.
+The project uses `pnpm` workspaces for managing the monorepo. All commands should be run from the root of the project.
 
 ### Installation
 
 To install all dependencies for the project, run the following command from the root directory:
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### Development
 
 To run the frontend and backend development servers, use the following commands:
 
-- **Frontend:** `npm run dev:frontend`
-- **Backend:** `npm run dev:backend`
+- **Frontend:** `pnpm run dev:frontend`
+- **Backend:** `pnpm run dev:backend`
 
 ### Building
 
 To build the frontend, backend, and shared library for production, use the following commands:
 
-- **Frontend:** `npm run build:frontend`
-- **Backend:** `npm run build:backend`
-- **Shared:** `npm run build:shared`
+- **Frontend:** `pnpm --filter frontend build`
+- **Frontend-app:** `pnpm --filter frontend-app build`
+- **Backend:** `pnpm --filter backend build`
+- **Shared:** `pnpm run build:shared`
 
 ## Development Conventions
 

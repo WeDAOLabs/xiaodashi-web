@@ -8,7 +8,10 @@ export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
   @Get()
-  @ApiOperation({ summary: '获取健康状态', description: '返回一个简单的健康信息。' })
+  @ApiOperation({
+    summary: '获取健康状态',
+    description: '返回一个简单的健康信息。',
+  })
   @ApiResponse({ status: 200, description: '成功返回健康信息。' })
   getHealth() {
     return this.healthService.getHealth();

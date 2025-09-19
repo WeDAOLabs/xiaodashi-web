@@ -37,11 +37,11 @@ frontend-app/
 
 ```bash
 # 在项目根目录运行
-npm run dev:frontend-app
+pnpm run dev:frontend-app
 
 # 或直接在 frontend-app 目录运行
 cd frontend-app
-npm run dev
+pnpm run dev
 ```
 
 项目将在 `http://localhost:3001` 启动。
@@ -50,18 +50,18 @@ npm run dev
 
 ```bash
 # 在项目根目录运行
-npm run build --workspace=frontend-app
+pnpm --filter frontend-app build
 
 # 或直接在 frontend-app 目录运行
 cd frontend-app
-npm run build
+pnpm run build
 ```
 
 ### 启动生产服务器
 
 ```bash
 cd frontend-app
-npm run start
+pnpm run start
 ```
 
 ## 特性
@@ -81,7 +81,7 @@ npm run start
 1. **组件 Props 类型**: 所有 React 组件 props 必须显式类型化
 2. **样式规范**: 使用 CSS 变量，禁止硬编码颜色值
 3. **路径别名**: 使用 `@/` 作为 `frontend-app/` 的别名
-4. **依赖管理**: 使用 npm workspaces 管理依赖
+4. **依赖管理**: 使用 pnpm workspaces 管理依赖
 
 ## 与主项目的关系
 
@@ -96,11 +96,11 @@ npm run start
 
 - **Vercel**: 推荐，零配置部署
 - **Docker**: 使用项目根目录的 Docker 配置
-- **静态导出**: `npm run build` 后部署 `out` 目录
+- **静态导出**: `pnpm run build` 后部署 `out` 目录
 
 ## 开发注意事项
 
 1. 确保 Node.js 版本 >= 18.14.0
-2. 使用 `npm install --workspace=frontend-app` 安装依赖
+2. 使用 `pnpm --filter frontend-app add <package>` 安装依赖
 3. 遵循 KISS 原则，保持代码简洁
 4. 所有图片资源需要本地化存储

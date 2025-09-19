@@ -11,11 +11,11 @@
 *   **后端**: NestJS 11, TypeScript 5, Prisma (ORM)
 *   **共享**: TypeScript 类型与工具库
 *   **数据库**: PostgreSQL 16, Redis 7
-*   **包管理**: npm Workspaces
+*   **包管理**: pnpm Workspaces
 
 ### 项目结构
 
-项目使用 npm workspaces 管理 Monorepo，主要包含以下目录：
+项目使用 pnpm workspaces 管理 Monorepo，主要包含以下目录：
 
 *   `frontend/`: 主站前端 Next.js 应用 (端口 3000)
 *   `frontend-app/`: 应用前端 Next.js 应用 (端口 3001)
@@ -30,39 +30,39 @@
 ### 环境要求
 
 *   Node.js 20.x 或更高版本
-*   npm 9.x 或更高版本
+*   pnpm 8.x 或更高版本 (推荐)
 
 ### 快速开始
 
 1.  **安装依赖**
     ```bash
-    npm install
+    pnpm install
     ```
 
 2.  **启动主站前端开发服务器**
     ```bash
-    npm run dev:frontend
+    pnpm run dev:frontend
     ```
     应用将在 `http://localhost:3000` 启动。
 
 3.  **启动应用前端开发服务器**
     ```bash
-    npm run dev:frontend-app
+    pnpm run dev:frontend-app
     ```
     应用将在 `http://localhost:3001` 启动。
 
 4.  **启动后端开发服务器**
     ```bash
-    npm run dev:backend
+    pnpm run dev:backend
     ```
     后端服务将在 `http://localhost:3001` (默认) 启动。
 
 ### 可用脚本
 
-*   `npm run dev:frontend`: 启动主站前端开发服务器。
-*   `npm run dev:frontend-app`: 启动应用前端开发服务器。
-*   `npm run dev:backend`: 启动后端开发服务器。
-*   `npm run build:shared`: 构建共享模块。
+*   `pnpm run dev:frontend`: 启动主站前端开发服务器。
+*   `pnpm run dev:frontend-app`: 启动应用前端开发服务器。
+*   `pnpm run dev:backend`: 启动后端开发服务器。
+*   `pnpm run build:shared`: 构建共享模块。
 
 ## 开发约定
 
@@ -79,7 +79,7 @@
 *   **字体**: 使用 `next/font/local` 加载本地字体文件。
 *   **图片**: 所有图片需本地化存储于 `frontend/public` 目录。
 *   **组件**: 优先使用原生 HTML 和 Tailwind CSS 构建组件。
-*   **依赖**: 所有前端依赖必须安装到 `frontend` 工作区 (`npm install <package> --workspace=frontend`)。
+*   **依赖**: 所有前端依赖必须安装到 `frontend` 工作区 (`pnpm --filter frontend add <package>`)。
 
 ### 前端开发规范 (应用 `frontend-app/`)
 
@@ -88,7 +88,7 @@
 *   **图片**: 所有图片需本地化存储于 `frontend-app/public` 目录。
 *   **组件**: **必须优先使用 shadcn/ui 组件** 实现页面和功能。
 *   **shadcn/ui**: 通过 CLI 添加组件 (`npx shadcn@latest add button`)，自定义样式优先使用 `variant` 扩展。
-*   **依赖**: 所有前端依赖必须安装到 `frontend-app` 工作区 (`npm install <package> --workspace=frontend-app`)。
+*   **依赖**: 所有前端依赖必须安装到 `frontend-app` 工作区 (`pnpm --filter frontend-app add <package>`)。
 
 ### 后端开发规范 (`backend/`)
 

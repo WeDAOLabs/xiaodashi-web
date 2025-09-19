@@ -12,7 +12,7 @@
 
 ## 项目结构
 
-本项目使用 npm workspaces 管理 Monorepo。
+本项目使用 pnpm workspaces 管理 Monorepo。
 
 - `frontend/`: 前端 Next.js 应用
 - `backend/`: 后端 NestJS 应用
@@ -22,25 +22,25 @@
 ## 环境要求
 
 - Node.js 20.x 或更高版本
-- npm 9.x 或更高版本
+- pnpm 8.x 或更高版本 (推荐)
 
 ## 快速开始
 
 1. **安装依赖**
    在项目根目录运行：
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **启动前端开发服务器**
    ```bash
-   npm run dev:frontend
+   pnpm run dev:frontend
    ```
    前端应用将在 `http://localhost:3000` 启动。
 
 3. **启动后端开发服务器**
    ```bash
-   npm run dev:backend
+   pnpm run dev:backend
    ```
    后端服务将在 `http://localhost:3001` (默认) 启动。
 
@@ -48,8 +48,9 @@
 
 所有脚本都应在项目根目录运行。
 
-- `npm run dev:frontend`: 启动前端开发服务器。
-- `npm run dev:backend`: 启动后端开发服务器。
-- `npm run build:frontend`: 构建前端生产环境代码。
-- `npm run build:backend`: 构建后端生产环境代码。
-- `npm run build:shared`: 构建共享模块。
+- `pnpm run dev:frontend`: 启动前端开发服务器。
+- `pnpm run dev:frontend-app`: 启动前端管理后台。
+- `pnpm run dev:backend`: 启动后端开发服务器。
+- `pnpm run build:shared`: 构建共享模块。
+- `pnpm run lint`: 检查前端代码质量。
+- `pnpm run build:all`: 构建所有模块。
