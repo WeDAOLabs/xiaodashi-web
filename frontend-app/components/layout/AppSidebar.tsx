@@ -66,6 +66,7 @@ const menuGroups: MenuGroup[] = [
         subItems: [
           { name: '宏观环境监测', href: '/market-intelligence-macro-monitoring', icon: ChartLineIcon },
           { name: '竞品深度分析', href: '/market-intelligence-competitor-analysis', icon: TargetIcon },
+          { name: '消费者洞察与细分', href: '/market-intelligence-consumer-insights', icon: UsersIcon },
         ]
       },
       { name: '智能营销效果评估与数据分析', href: '/marketing-analytics', icon: PresentationChartIcon },
