@@ -91,7 +91,9 @@ const menuGroups: MenuGroup[] = [
         name: '智能内容创作与素材中心',
         icon: FileTextIcon,
         subItems: [
-          { name: '营销文案智能创作与优化', href: '/content-creation-copywriting', icon: FileTextIcon }
+          { name: '营销文案智能创作与优化', href: '/content-creation-copywriting', icon: FileTextIcon },
+          { name: 'AI文案生成与编辑', href: '/content-creation-ai-editor', icon: FileTextIcon },
+          { name: '朋友圈内容日历与管理', href: '/content-creation-social-calendar', icon: CalendarIcon }
         ]
       },
     ],
