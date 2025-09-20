@@ -35,6 +35,18 @@
     --color-chart-4: var(--chart-4);
     --color-chart-5: var(--chart-5);
 
+    /* 状态色映射 - 提供shadcn组件使用 */
+    --color-info: var(--color-info-500);
+    --color-success: var(--color-success-500);
+    --color-warning: var(--color-warning-500);
+    --color-danger: var(--color-danger-500);
+
+    /* 扩展图表色彩映射 */
+    --color-chart-info: var(--chart-2);
+    --color-chart-success: var(--chart-1);
+    --color-chart-warning: var(--chart-4);
+    --color-chart-danger: var(--chart-5);
+
     /* Sidebar 颜色 */
     --color-sidebar: var(--sidebar);
     --color-sidebar-foreground: var(--sidebar-foreground);

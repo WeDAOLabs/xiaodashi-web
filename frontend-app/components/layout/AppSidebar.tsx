@@ -87,7 +87,13 @@ const menuGroups: MenuGroup[] = [
           { name: 'IP打造与定位', href: '/brand-management-ip-creation', icon: FileTextIcon }
         ]
       },
-      { name: '智能内容创作与素材中心', href: '/content-creation', icon: FileTextIcon },
+      {
+        name: '智能内容创作与素材中心',
+        icon: FileTextIcon,
+        subItems: [
+          { name: '营销文案智能创作与优化', href: '/content-creation-copywriting', icon: FileTextIcon }
+        ]
+      },
     ],
   },
   {
@@ -136,7 +142,6 @@ const utilityNavItems = [
 const unimplementedRoutes = [
   '/marketing-analytics',
   '/brand-management',
-  '/content-creation',
   '/public-traffic',
   '/ecommerce',
   '/sales-enablement',
