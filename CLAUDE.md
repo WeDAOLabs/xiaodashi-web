@@ -113,3 +113,33 @@ pnpm --filter frontend-app build      # 验证构建无错误
 - The project uses Turbopack for faster Next.js builds (--turbopack flag)
 - frontend-app 测试用户名：zhangsan@example.com 密码:111111
 - ui界面组件优先使用 shadcn/ui, 可以使用shadcn工具查询.每次查询一个组件.如果在查询组件时遇到网络错误,可以尝试重试一次.
+
+## Tailwind CSS v4 开发规范 🚨
+
+**⚠️ CRITICAL: frontend-app 项目必须使用 Tailwind CSS v4 语法！严禁使用 v3 语法！**
+
+### 必须遵循的语法规则
+
+1. **透明度语法 (最常见错误)**:
+   - ❌ 错误: `bg-blue-500/50`, `text-white/80`
+   - ✅ 正确: `bg-blue-500\/50`, `text-white\/80`
+
+2. **表单验证优先使用 user-* 变体**:
+   - ❌ 避免: `invalid:border-red-500`
+   - ✅ 推荐: `user-invalid:border-red-500`
+
+3. **利用 v4 新特性**:
+   - 入场动画: `starting:open:opacity-0`
+   - JS 禁用检测: `noscript:block`
+   - 阴影透明度: `text-shadow-lg/50`
+
+### 开发检查点
+
+在编写或审查代码时必须检查：
+- [ ] 所有透明度都使用了 `\/` 转义语法
+- [ ] 表单验证使用了 `user-*` 变体
+- [ ] 充分利用了 v4 新功能
+
+### 详细语法指南
+
+参考文档: `docs/tailwind-v4-migration.md` - 包含完整的 v3 vs v4 语法对比和常见错误示例
