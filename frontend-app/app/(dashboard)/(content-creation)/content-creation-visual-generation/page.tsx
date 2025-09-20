@@ -114,10 +114,12 @@ const VisualTaskOverview: React.FC = () => (
         <Button variant="outline" className="w-full bg-[var(--color-warning-50)] text-[var(--color-warning-600)] hover:bg-[var(--color-warning-100)] border-[var(--color-warning-100)]">
           前往合规审核
         </Button>
-        <Button className="w-full bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] flex items-center justify-center gap-2">
-          <Plus className="w-4 h-4" />
-          快速新建视觉素材
-        </Button>
+        <Link href="/content-creation-ai-image-generation">
+          <Button className="w-full bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] flex items-center justify-center gap-2">
+            <Plus className="w-4 h-4" />
+            快速新建视觉素材
+          </Button>
+        </Link>
       </div>
     </CardContent>
   </Card>
@@ -287,6 +289,26 @@ const SmartGenerationQuickAccess: React.FC = () => (
           if (item.title === '文生图') {
             return (
               <Link key={index} href="/content-creation-ai-image-generation" className="flex-1">
+                <button
+                  className="w-full text-left p-6 bg-[var(--bg-tertiary)] rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group border border-transparent hover:border-[var(--color-primary-500)]"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 bg-[var(--color-primary-50)] rounded-lg text-[var(--color-primary-500)]">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-[var(--text-tertiary)] group-hover:text-[var(--color-primary-600)] transition-colors" />
+                  </div>
+                  <h3 className="text-lg font-semibold mt-4 text-[var(--text-primary)]">{item.title}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">{item.description}</p>
+                </button>
+              </Link>
+            );
+          }
+
+          // 如果是"短视频脚本"项，使用Link包装
+          if (item.title === '短视频脚本') {
+            return (
+              <Link key={index} href="/content-creation-video-script-editing" className="flex-1">
                 <button
                   className="w-full text-left p-6 bg-[var(--bg-tertiary)] rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group border border-transparent hover:border-[var(--color-primary-500)]"
                 >
