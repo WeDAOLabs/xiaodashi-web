@@ -1,5 +1,6 @@
 import React from 'react';
-import DashboardLayout from './DashboardLayout';
+import BreadcrumbNav from './BreadcrumbNav';
+import ErrorBoundary from './ErrorBoundary';
 import { BreadcrumbItem } from './types';
 
 interface ToolPageLayoutProps {
@@ -20,17 +21,30 @@ const ToolPageLayout: React.FC<ToolPageLayoutProps> = ({
   className
 }) => {
   return (
-    <DashboardLayout title={title} breadcrumbs={breadcrumbs}>
-      <div className="p-6 lg:p-8 flex-1">
-        <div className="mb-6">
-          <p className="text-[var(--text-secondary)]">{description}</p>
-          {actions && <div className="mt-4">{actions}</div>}
+    <div className="page-container">
+      {/* Breadcrumb Navigation */}
+      {breadcrumbs && breadcrumbs.length > 0 && (
+        <BreadcrumbNav items={breadcrumbs} />
+      )}
+
+      {/* Page Title */}
+      {title && (
+        <h1 className="dashboard-section-title">{title}</h1>
+      )}
+
+      {/* Tool Page Content */}
+      <ErrorBoundary>
+        <div className="p-6 lg:p-8 flex-1">
+          <div className="mb-6">
+            <p className="text-[var(--text-secondary)]">{description}</p>
+            {actions && <div className="mt-4">{actions}</div>}
+          </div>
+          <div className={className}>
+            {children}
+          </div>
         </div>
-        <div className={className}>
-          {children}
-        </div>
-      </div>
-    </DashboardLayout>
+      </ErrorBoundary>
+    </div>
   );
 };
 
