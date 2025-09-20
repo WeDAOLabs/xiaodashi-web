@@ -14,6 +14,7 @@ import {
   Settings
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { PieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
@@ -61,9 +62,11 @@ const AIRecommendation: React.FC = () => (
         <Button className="bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)]">
           查看更多灵感
         </Button>
-        <Button variant="outline">
-          生成类似素材
-        </Button>
+        <Link href="/content-creation-ai-image-generation">
+          <Button variant="outline">
+            生成类似素材
+          </Button>
+        </Link>
       </div>
     </CardContent>
   </Card>
@@ -279,21 +282,44 @@ const SmartGenerationQuickAccess: React.FC = () => (
           { icon: FileText, title: 'AI海报设计', description: '智能排版，一键生成营销海报' },
           { icon: Film, title: '短视频脚本', description: 'AI生成视频脚本，提升内容创意' },
           { icon: Settings, title: '智能剪辑', description: '上传素材，AI自动完成视频剪辑' }
-        ].map((item, index) => (
-          <button
-            key={index}
-            className="flex-1 text-left p-6 bg-[var(--bg-tertiary)] rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group border border-transparent hover:border-[var(--color-primary-500)]"
-          >
-            <div className="flex items-center justify-between">
-              <div className="p-3 bg-[var(--color-primary-50)] rounded-lg text-[var(--color-primary-500)]">
-                <item.icon className="w-6 h-6" />
+        ].map((item, index) => {
+          // 如果是"文生图"项，使用Link包装
+          if (item.title === '文生图') {
+            return (
+              <Link key={index} href="/content-creation-ai-image-generation" className="flex-1">
+                <button
+                  className="w-full text-left p-6 bg-[var(--bg-tertiary)] rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group border border-transparent hover:border-[var(--color-primary-500)]"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="p-3 bg-[var(--color-primary-50)] rounded-lg text-[var(--color-primary-500)]">
+                      <item.icon className="w-6 h-6" />
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-[var(--text-tertiary)] group-hover:text-[var(--color-primary-600)] transition-colors" />
+                  </div>
+                  <h3 className="text-lg font-semibold mt-4 text-[var(--text-primary)]">{item.title}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">{item.description}</p>
+                </button>
+              </Link>
+            );
+          }
+
+          // 其他项保持原样
+          return (
+            <button
+              key={index}
+              className="flex-1 text-left p-6 bg-[var(--bg-tertiary)] rounded-lg shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group border border-transparent hover:border-[var(--color-primary-500)]"
+            >
+              <div className="flex items-center justify-between">
+                <div className="p-3 bg-[var(--color-primary-50)] rounded-lg text-[var(--color-primary-500)]">
+                  <item.icon className="w-6 h-6" />
+                </div>
+                <ArrowRight className="w-5 h-5 text-[var(--text-tertiary)] group-hover:text-[var(--color-primary-600)] transition-colors" />
               </div>
-              <ArrowRight className="w-5 h-5 text-[var(--text-tertiary)] group-hover:text-[var(--color-primary-600)] transition-colors" />
-            </div>
-            <h3 className="text-lg font-semibold mt-4 text-[var(--text-primary)]">{item.title}</h3>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">{item.description}</p>
-          </button>
-        ))}
+              <h3 className="text-lg font-semibold mt-4 text-[var(--text-primary)]">{item.title}</h3>
+              <p className="text-sm text-[var(--text-secondary)] mt-1">{item.description}</p>
+            </button>
+          );
+        })}
       </div>
     </CardContent>
   </Card>
