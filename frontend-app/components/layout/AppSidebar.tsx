@@ -93,7 +93,8 @@ const menuGroups: MenuGroup[] = [
         subItems: [
           { name: '营销文案智能创作与优化', href: '/content-creation-copywriting', icon: FileTextIcon },
           { name: 'AI文案生成与编辑', href: '/content-creation-ai-editor', icon: FileTextIcon },
-          { name: '朋友圈内容日历与管理', href: '/content-creation-social-calendar', icon: CalendarIcon }
+          { name: '朋友圈内容日历与管理', href: '/content-creation-social-calendar', icon: CalendarIcon },
+          { name: '视觉内容智能生成与编辑', href: '/content-creation-visual-generation', icon: FileTextIcon }
         ]
       },
     ],
@@ -214,7 +215,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
 
   return (
     <aside className="app-sidebar">
-      <div className="flex h-full min-h-[700px] flex-col bg-white">
+      <div className="flex h-full min-h-[700px] flex-col bg-[var(--bg-primary)]">
         {/* 区域0: 顶部 Logo */}
         <div className="px-4 py-3 border-b border-[var(--border-secondary)]">
           <div className={cn(
