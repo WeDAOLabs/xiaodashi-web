@@ -20,7 +20,7 @@ import {
   Trash2
 } from 'lucide-react';
 import Image from 'next/image';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 
 // 类型定义
@@ -303,8 +303,8 @@ const MaterialCompliancePage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
-  // 示例数据
-  const riskMaterials: RiskMaterial[] = [
+  // 示例数据 - 使用 useMemo 优化性能
+  const riskMaterials: RiskMaterial[] = useMemo(() => [
     {
       id: '1',
       name: '夏季新品海报.jpg',
@@ -360,7 +360,7 @@ const MaterialCompliancePage: React.FC = () => {
       submitter: '孙七',
       submitDate: '2024-09-29'
     }
-  ];
+  ], []);
 
   const handleViewDetail = useCallback((material: RiskMaterial) => {
     setSelectedMaterial(material);

@@ -475,7 +475,7 @@ const MaterialCenterPage: React.FC = () => {
                 ))}
               </div>
               <Button variant="outline" className="w-full mt-4" asChild>
-                <Link href="/content-creation-material-compliance">
+                <Link href="/content-creation-team-collaboration">
                   进入审核
                 </Link>
               </Button>
