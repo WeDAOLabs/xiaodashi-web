@@ -4,7 +4,7 @@ packages:
   - backend
   - shared
 
-ignoredBuiltDependencies:
+onlyBuiltDependencies:
   - '@nestjs/core'
   - '@scarf/scarf'
   - '@tailwindcss/oxide'
