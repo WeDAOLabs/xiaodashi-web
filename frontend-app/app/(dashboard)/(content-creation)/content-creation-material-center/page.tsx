@@ -307,17 +307,23 @@ const MaterialCenterPage: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-[var(--text-primary)]">当前素材库合规风险总览</h3>
               <div className="flex items-center gap-3">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <Settings className="w-4 h-4" />
-                  配置合规规则
+                <Button variant="outline" className="flex items-center gap-2" asChild>
+                  <Link href="/content-creation-material-compliance">
+                    <Settings className="w-4 h-4" />
+                    配置合规规则
+                  </Link>
                 </Button>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  查看合规报告
+                <Button variant="outline" className="flex items-center gap-2" asChild>
+                  <Link href="/content-creation-material-compliance">
+                    <FileText className="w-4 h-4" />
+                    查看合规报告
+                  </Link>
                 </Button>
-                <Button className="flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  立即处理风险
+                <Button className="flex items-center gap-2" asChild>
+                  <Link href="/content-creation-material-compliance">
+                    <Shield className="w-4 h-4" />
+                    立即处理风险
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -468,8 +474,10 @@ const MaterialCenterPage: React.FC = () => {
                   <PendingReviewItem key={index} {...item} />
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4">
-                进入审核
+              <Button variant="outline" className="w-full mt-4" asChild>
+                <Link href="/content-creation-material-compliance">
+                  进入审核
+                </Link>
               </Button>
             </CardContent>
           </Card>
