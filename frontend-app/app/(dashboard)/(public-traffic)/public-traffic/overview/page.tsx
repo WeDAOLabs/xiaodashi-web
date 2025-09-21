@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -41,6 +42,7 @@ interface PlatformCardProps {
   todaySpend: string;
   roi: string;
   icon: React.ReactNode;
+  platformKey: string;
 }
 
 // KPI统计卡片组件
@@ -132,7 +134,14 @@ const AIAlertCard: React.FC<AIAlertProps> = ({ type, message, timestamp, actions
 };
 
 // 平台连接卡片组件
-const PlatformCard: React.FC<PlatformCardProps> = ({ name, status, todaySpend, roi, icon }) => {
+const PlatformCard: React.FC<PlatformCardProps> = ({ name, status, todaySpend, roi, icon, platformKey }) => {
+  const router = useRouter();
+
+  const handleEnterPlatform = () => {
+    if (status === 'connected') {
+      router.push(`/public-traffic/${platformKey}`);
+    }
+  };
   const getStatusBadge = () => {
     switch (status) {
       case 'connected':
@@ -183,7 +192,13 @@ const PlatformCard: React.FC<PlatformCardProps> = ({ name, status, todaySpend, r
           <Button variant="ghost" size="sm" className="flex-1">
             管理连接
           </Button>
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={handleEnterPlatform}
+            disabled={status !== 'connected'}
+          >
             进入平台
           </Button>
         </div>
@@ -351,28 +366,32 @@ const PublicTrafficOverviewPage: React.FC = () => {
       status: 'connected' as const,
       todaySpend: '¥12,500',
       roi: '3.8',
-      icon: PlatformIcons.douyin
+      icon: PlatformIcons.douyin,
+      platformKey: 'douyin'
     },
     {
       name: '微信广告',
       status: 'connected' as const,
       todaySpend: '¥8,200',
       roi: '4.1',
-      icon: PlatformIcons.wechat
+      icon: PlatformIcons.wechat,
+      platformKey: 'wechat'
     },
     {
       name: '百度信息流',
       status: 'error' as const,
       todaySpend: '¥5,600',
       roi: '2.5',
-      icon: PlatformIcons.baidu
+      icon: PlatformIcons.baidu,
+      platformKey: 'baidu'
     },
     {
       name: '小红书',
       status: 'pending' as const,
       todaySpend: '-',
       roi: '-',
-      icon: PlatformIcons.xiaohongshu
+      icon: PlatformIcons.xiaohongshu,
+      platformKey: 'xiaohongshu'
     }
   ];
 
@@ -383,7 +402,7 @@ const PublicTrafficOverviewPage: React.FC = () => {
       breadcrumbs={[
         { label: '增长与运营执行', href: '#' },
         { label: '智能公域流量投放与优化', href: '#' },
-        { label: '投放平台数据概览', href: '/public-traffic-overview', current: true }
+        { label: '投放平台数据概览', href: '/public-traffic/overview', current: true }
       ]}
     >
       <div className="space-y-6 lg:space-y-8">

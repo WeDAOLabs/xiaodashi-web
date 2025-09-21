@@ -108,7 +108,7 @@ const menuGroups: MenuGroup[] = [
         name: '智能公域流量投放与优化',
         icon: ChartLineIcon,
         subItems: [
-          { name: '投放平台数据概览', href: '/public-traffic-overview', icon: PresentationChartIcon }
+          { name: '投放平台数据概览', href: '/public-traffic/overview', icon: PresentationChartIcon }
         ]
       },
       {
