@@ -57,30 +57,39 @@ interface TemplateCardProps {
   status: 'approved' | 'needs-review';
 }
 
-const TemplateCard: React.FC<TemplateCardProps> = ({ title, description, preview, status }) => (
-  <div className="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-secondary)] flex flex-col justify-between">
-    <div>
-      <div className="flex justify-between items-start">
-        <h4 className="font-semibold text-[var(--text-primary)]">{title}</h4>
-        <Badge className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-          status === 'approved'
-            ? 'bg-[var(--color-success-50)] text-[var(--color-success-600)]'
-            : 'bg-[var(--color-warning-50)] text-[var(--color-warning-600)]'
-        }`}>
-          {status === 'approved' ? '已合规' : '需校验'}
-        </Badge>
+const TemplateCard: React.FC<TemplateCardProps> = ({ title, description, preview, status }) => {
+  const router = useRouter();
+
+  const handleUseTemplate = React.useCallback(() => {
+    router.push('/content-creation-ai-voice-synthesis');
+  }, [router]);
+
+  return (
+    <div className="bg-[var(--bg-tertiary)] p-4 rounded-lg border border-[var(--border-secondary)] flex flex-col justify-between">
+      <div>
+        <div className="flex justify-between items-start">
+          <h4 className="font-semibold text-[var(--text-primary)]">{title}</h4>
+          <Badge className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+            status === 'approved'
+              ? 'bg-[var(--color-success-50)] text-[var(--color-success-600)]'
+              : 'bg-[var(--color-warning-50)] text-[var(--color-warning-600)]'
+          }`}>
+            {status === 'approved' ? '已合规' : '需校验'}
+          </Badge>
+        </div>
+        <p className="text-xs text-[var(--text-secondary)] mt-1">{description}</p>
+        <p className="text-xs text-[var(--text-tertiary)] mt-2 italic">&ldquo;{preview}&rdquo;</p>
       </div>
-      <p className="text-xs text-[var(--text-secondary)] mt-1">{description}</p>
-      <p className="text-xs text-[var(--text-tertiary)] mt-2 italic">&ldquo;{preview}&rdquo;</p>
+      <Button
+        variant="ghost"
+        onClick={handleUseTemplate}
+        className="mt-4 w-full justify-center px-4 py-2 rounded-lg transition-colors text-sm font-semibold text-[var(--color-primary-500)] hover:bg-[var(--color-primary-50)]"
+      >
+        使用此模板
+      </Button>
     </div>
-    <Button
-      variant="ghost"
-      className="mt-4 w-full justify-center px-4 py-2 rounded-lg transition-colors text-sm font-semibold text-[var(--color-primary-500)] hover:bg-[var(--color-primary-50)]"
-    >
-      使用此模板
-    </Button>
-  </div>
-);
+  );
+};
 
 interface QuickActionButtonProps {
   icon: React.ReactNode;
@@ -145,6 +154,8 @@ const ContentCreationAudioCenterPage: React.FC = () => {
   const handleQuickAction = React.useCallback((actionType: string) => {
     if (actionType === '播客脚本生成') {
       router.push('/content-creation-podcast-script');
+    } else if (actionType === '文案转语音' || actionType === '智能音频剪辑') {
+      router.push('/content-creation-ai-voice-synthesis');
     } else {
       console.log(`执行快捷操作: ${actionType}`);
       // 这里可以添加其他实际的业务逻辑
