@@ -104,7 +104,13 @@ const menuGroups: MenuGroup[] = [
   {
     title: '增长与运营执行',
     items: [
-      { name: '智能公域流量投放与优化', href: '/public-traffic', icon: ChartLineIcon },
+      {
+        name: '智能公域流量投放与优化',
+        icon: ChartLineIcon,
+        subItems: [
+          { name: '投放平台数据概览', href: '/public-traffic-overview', icon: PresentationChartIcon }
+        ]
+      },
       {
         name: '智能私域增长与运营',
         icon: ChartLineIcon,
@@ -147,7 +153,6 @@ const utilityNavItems = [
 const unimplementedRoutes = [
   '/marketing-analytics',
   '/brand-management',
-  '/public-traffic',
   '/ecommerce',
   '/sales-enablement',
   '/knowledge-base',
