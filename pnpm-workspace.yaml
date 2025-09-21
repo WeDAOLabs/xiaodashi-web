@@ -1,5 +1,12 @@
 packages:
-  - 'frontend'
-  - 'frontend-app'
-  - 'backend'
-  - 'shared'
+  - frontend
+  - frontend-app
+  - backend
+  - shared
+
+ignoredBuiltDependencies:
+  - '@nestjs/core'
+  - '@scarf/scarf'
+  - '@tailwindcss/oxide'
+  - sharp
+  - unrs-resolver
