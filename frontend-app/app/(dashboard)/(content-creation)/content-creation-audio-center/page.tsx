@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -128,6 +129,8 @@ const COMPLIANCE_RISK_DATA = [
 ];
 
 const ContentCreationAudioCenterPage: React.FC = () => {
+  const router = useRouter();
+
   // 使用 useMemo 优化趋势数据
   const trendData = React.useMemo(() => [
     { day: '周一', effect: 4.2 },
@@ -140,9 +143,18 @@ const ContentCreationAudioCenterPage: React.FC = () => {
 
   // 快捷操作处理
   const handleQuickAction = React.useCallback((actionType: string) => {
-    console.log(`执行快捷操作: ${actionType}`);
-    // 这里可以添加实际的业务逻辑
-  }, []);
+    if (actionType === '播客脚本生成') {
+      router.push('/content-creation-podcast-script');
+    } else {
+      console.log(`执行快捷操作: ${actionType}`);
+      // 这里可以添加其他实际的业务逻辑
+    }
+  }, [router]);
+
+  // 生成播客脚本处理
+  const handleGeneratePodcastScript = React.useCallback(() => {
+    router.push('/content-creation-podcast-script');
+  }, [router]);
 
   return (
     <ToolPageLayout
@@ -177,7 +189,10 @@ const ContentCreationAudioCenterPage: React.FC = () => {
                   >
                     查看更多灵感
                   </Button>
-                  <Button className="flex-1 text-sm font-semibold">
+                  <Button
+                    className="flex-1 text-sm font-semibold"
+                    onClick={handleGeneratePodcastScript}
+                  >
                     <ArrowRight className="w-4 h-4" />
                     生成此主题播客脚本
                   </Button>
