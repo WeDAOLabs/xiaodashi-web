@@ -1,5 +1,6 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -23,11 +24,15 @@ import {
   List,
   Search,
   Trash2,
-  Upload,
-  X
+  Upload
 } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
+
+// 导入组件和数据
+const MaterialDetailPanel = lazy(() => import('./_components/MaterialDetailPanel'));
+import { ExtendedMaterialData } from './_components/types';
+import { EXTENDED_MOCK_MATERIALS } from './_components/data';
 
 interface FilterPanelProps {
   searchQuery: string;
@@ -216,7 +221,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({
         <Button
           size="sm"
           variant="outline"
-          className="w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm hover:bg-white p-0"
+          className="w-8 h-8 rounded-full bg-white shadow-md hover:bg-gray-50 p-0"
           title="查看详情"
           onClick={() => onView?.(id)}
         >
@@ -225,7 +230,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({
         <Button
           size="sm"
           variant="outline"
-          className="w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm hover:bg-white p-0"
+          className="w-8 h-8 rounded-full bg-white shadow-md hover:bg-gray-50 p-0"
           title="下载"
           onClick={() => onDownload?.(id)}
         >
@@ -234,7 +239,7 @@ const MaterialCard: React.FC<MaterialCardProps> = ({
         <Button
           size="sm"
           variant="outline"
-          className="w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm hover:bg-white p-0 text-red-500 hover:text-red-600"
+          className="w-8 h-8 rounded-full bg-white shadow-md hover:bg-gray-50 p-0 text-red-500 hover:text-red-600"
           title="删除"
           onClick={() => onDelete?.(id)}
         >
@@ -394,212 +399,6 @@ const Pagination: React.FC<PaginationProps> = ({
   </div>
 );
 
-interface ImageViewModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  material: {
-    id: string;
-    title: string;
-    image: string;
-    type: string;
-    compliance: {
-      status: string;
-      label: string;
-    };
-    tags: string[];
-  } | null;
-}
-
-const ImageViewModal: React.FC<ImageViewModalProps> = ({ isOpen, onClose, material }) => {
-  React.useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen || !material) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* 背景遮罩 */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* 模态框内容 */}
-      <div className="relative z-10 max-w-4xl max-h-[90vh] mx-4 bg-white rounded-lg shadow-2xl overflow-hidden">
-        {/* 关闭按钮 */}
-        <Button
-          size="sm"
-          variant="outline"
-          className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white p-0"
-          onClick={onClose}
-        >
-          <X className="w-4 h-4" />
-        </Button>
-
-        {/* 图片区域 */}
-        <div className="relative">
-          <Image
-            src={material.image}
-            alt={material.title}
-            width={800}
-            height={600}
-            className="w-full max-h-[70vh] object-contain"
-            priority
-          />
-        </div>
-
-        {/* 信息区域 */}
-        <div className="p-6 bg-white">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-2">
-                {material.title}
-              </h2>
-              <p className="text-sm text-[var(--text-secondary)] mb-3">
-                ID: {material.id} • 类型: {material.type}
-              </p>
-
-              {/* 合规状态 */}
-              <div className="mb-4">
-                <Badge className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${
-                  material.compliance.status === 'compliant'
-                    ? 'bg-[var(--color-success-50)] text-[var(--color-success-600)] border-[var(--color-success-200)]'
-                    : material.compliance.status === 'low-risk'
-                    ? 'bg-[var(--color-warning-50)] text-[var(--color-warning-600)] border-[var(--color-warning-200)]'
-                    : material.compliance.status === 'medium-risk'
-                    ? 'bg-[var(--color-warning-100)] text-[var(--color-warning-700)] border-[var(--color-warning-300)]'
-                    : material.compliance.status === 'high-risk'
-                    ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-600)] border-[var(--color-danger-200)]'
-                    : 'bg-[var(--bg-secondary)] text-[var(--text-secondary)] border-[var(--border-secondary)]'
-                }`}>
-                  {material.compliance.label}
-                </Badge>
-              </div>
-
-              {/* 标签 */}
-              {material.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {material.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="text-xs font-medium px-2 py-1 rounded-full bg-[var(--color-primary-50)] text-[var(--color-primary-700)]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* 操作按钮 */}
-            <div className="flex items-center gap-2 ml-4">
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                下载
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2 text-red-500 hover:text-red-600"
-              >
-                <Trash2 className="w-4 h-4" />
-                删除
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// 示例数据 - 移到组件外部避免重复创建
-const MOCK_MATERIALS = [
-    {
-      id: 'MT001',
-      title: '夏季新品发布会主视觉.jpg',
-      type: '图片',
-      image: '/images/materials/summer-campaign.jpg',
-      compliance: { status: 'compliant' as const, label: '已合规' },
-      tags: ['夏季', '新品', '时尚']
-    },
-    {
-      id: 'MT002',
-      title: '品牌宣传视频V2.mp4',
-      type: '视频',
-      image: '/images/materials/brand-video.jpg',
-      compliance: { status: 'low-risk' as const, label: '低风险' },
-      tags: ['品牌', '宣传片', 'TVC']
-    },
-    {
-      id: 'MT004',
-      title: '代言人形象照-备选.jpg',
-      type: '图片',
-      image: '/images/materials/celebrity-portrait.jpg',
-      compliance: { status: 'high-risk' as const, label: '高风险' },
-      tags: ['代言人', '肖像']
-    },
-    {
-      id: 'MT003',
-      title: '产品介绍核心卖点.doc',
-      type: '文案',
-      image: '/images/materials/document-thumbnail.jpg',
-      compliance: { status: 'compliant' as const, label: '已合规' },
-      tags: ['产品', '卖点', '文案']
-    },
-    {
-      id: 'MT005',
-      title: 'App开屏广告设计稿.psd',
-      type: '设计稿',
-      image: '/images/materials/design-draft.jpg',
-      compliance: { status: 'compliant' as const, label: '已合规' },
-      tags: ['APP', '开屏', '广告']
-    },
-    {
-      id: 'MT006',
-      title: '电台广告音频.mp3',
-      type: '音频',
-      image: '/images/materials/audio-wave.jpg',
-      compliance: { status: 'medium-risk' as const, label: '中风险' },
-      tags: ['电台', '广告', '音频']
-    },
-    {
-      id: 'MT007',
-      title: '社交媒体九宫格图.zip',
-      type: '图片',
-      image: '/images/materials/social-media.jpg',
-      compliance: { status: 'compliant' as const, label: '已合规' },
-      tags: ['社交', '九宫格', '媒体']
-    },
-    {
-      id: 'MT008',
-      title: '用户访谈录音.wav',
-      type: '音频',
-      image: '/images/materials/interview-record.jpg',
-      compliance: { status: 'low-risk' as const, label: '低风险' },
-      tags: ['访谈', '录音', '用户']
-    }
-];
-
 const MaterialManagementPage: React.FC = () => {
   // 状态管理
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -611,12 +410,12 @@ const MaterialManagementPage: React.FC = () => {
   const [selectedMaterials, setSelectedMaterials] = React.useState<string[]>([]);
   const [currentPage, setCurrentPage] = React.useState(1);
 
-  // 模态框状态
-  const [isViewModalOpen, setIsViewModalOpen] = React.useState(false);
-  const [viewingMaterial, setViewingMaterial] = React.useState<typeof MOCK_MATERIALS[0] | null>(null);
+  // 详情面板状态
+  const [isDetailPanelOpen, setIsDetailPanelOpen] = React.useState(false);
+  const [viewingMaterial, setViewingMaterial] = React.useState<ExtendedMaterialData | null>(null);
 
   // 材料数据状态 - 支持删除操作
-  const [materials, setMaterials] = React.useState(MOCK_MATERIALS);
+  const [materials, setMaterials] = React.useState(EXTENDED_MOCK_MATERIALS);
 
   const handleComplianceFilterChange = React.useCallback((filter: string, checked: boolean) => {
     setComplianceFilters(prev =>
@@ -646,7 +445,7 @@ const MaterialManagementPage: React.FC = () => {
     const material = materials.find(m => m.id === id);
     if (material) {
       setViewingMaterial(material);
-      setIsViewModalOpen(true);
+      setIsDetailPanelOpen(true);
     }
   }, [materials]);
 
@@ -753,15 +552,22 @@ const MaterialManagementPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 图片查看模态框 */}
-      <ImageViewModal
-        isOpen={isViewModalOpen}
-        onClose={() => {
-          setIsViewModalOpen(false);
-          setViewingMaterial(null);
-        }}
-        material={viewingMaterial}
-      />
+      {/* 素材详情面板 */}
+      <Suspense fallback={<div className="fixed inset-0 bg-black\/30 z-40 flex items-center justify-center">
+        <div className="bg-white p-4 rounded-lg shadow-lg">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        </div>
+      </div>}>
+        <MaterialDetailPanel
+          isOpen={isDetailPanelOpen}
+          onClose={() => {
+            setIsDetailPanelOpen(false);
+            setViewingMaterial(null);
+          }}
+          material={viewingMaterial}
+          onDownload={handleDownload}
+        />
+      </Suspense>
 
       <div className="py-4"></div>
     </ToolPageLayout>
