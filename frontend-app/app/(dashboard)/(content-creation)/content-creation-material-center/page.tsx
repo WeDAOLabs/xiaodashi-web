@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -437,7 +438,9 @@ const MaterialCenterPage: React.FC = () => {
                   </TabsList>
                 </Tabs>
                 <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="sm">查看更多</Button>
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/content-creation-material-management">查看更多</Link>
+                  </Button>
                   <Button className="flex items-center gap-2">
                     <Upload className="w-4 h-4" />
                     快速上传

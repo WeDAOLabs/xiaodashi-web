@@ -7,11 +7,9 @@
 
 ### 1. 不透明度语法 (最常见错误)
 ```html
-<!-- ❌ v3 语法 (错误) -->
-<div class="bg-blue-500/50 text-white/80">
 
 <!-- ✅ v4 语法 (正确) -->
-<div class="bg-blue-500\/50 text-white\/80">
+<div class="bg-blue-500/50 text-white/80">
 ```
 
 ### 2. 新的伪类变体
@@ -61,8 +59,6 @@
 
 | 功能 | ❌ v3 语法 | ✅ v4 语法 | 说明 |
 |------|-----------|-----------|------|
-| 背景透明度 | `bg-blue-500/50` | `bg-blue-500\/50` | 反斜杠转义 |
-| 文字透明度 | `text-white/80` | `text-white\/80` | 反斜杠转义 |
 | 表单验证 | `invalid:border-red-500` | `user-invalid:border-red-500` | 用户交互后显示 |
 | 阴影透明度 | 需要自定义 CSS | `text-shadow-lg/30` | 内置支持 |
 | JS 禁用检测 | `<noscript>` 标签 | `noscript:block` | CSS 类方式 |
