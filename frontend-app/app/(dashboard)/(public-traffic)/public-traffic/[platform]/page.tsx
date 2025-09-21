@@ -12,6 +12,7 @@ import {
   Users
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 // Tab组件导入（稍后实现）
@@ -138,9 +139,11 @@ const PublicTrafficPlatformPage: React.FC = () => {
               className="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-color-focus-ring)]"
             />
           </div>
-          <Button className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            新建投放计划
+          <Button asChild className="flex items-center gap-2">
+            <Link href="/public-traffic/campaign/create">
+              <Plus className="w-4 h-4" />
+              新建投放计划
+            </Link>
           </Button>
         </div>
       </div>
