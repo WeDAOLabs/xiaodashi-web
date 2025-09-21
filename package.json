@@ -11,6 +11,15 @@
     "lint:frontend-app": "pnpm --filter frontend-app lint",
     "build:all": "pnpm --filter shared build && pnpm --filter frontend build && pnpm --filter frontend-app build"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@scarf/scarf",
+      "@tailwindcss/oxide",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
   "dependencies": {},
   "devDependencies": {}
 }
