@@ -1,13 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import StatusFilter, { TaskStatus } from './_components/StatusFilter';
 import TaskTable from './_components/TaskTable';
 
 const ProductActivityOverviewPage: React.FC = () => {
+  const router = useRouter();
   const [currentFilter, setCurrentFilter] = useState<TaskStatus>('all');
 
   const handleFilterChange = (status: TaskStatus) => {
@@ -15,9 +17,7 @@ const ProductActivityOverviewPage: React.FC = () => {
   };
 
   const handleCreateTask = () => {
-    // TODO: 导航到创建任务页面
-    console.log('导航到创建任务页面');
-    // 未来实现: router.push('/ecommerce/product-activity/create');
+    router.push('/ecommerce/product-activity/create');
   };
 
   return (
@@ -25,7 +25,6 @@ const ProductActivityOverviewPage: React.FC = () => {
       title="商品与活动聚合发布"
       description="统一管理商品和活动发布任务，实现跨平台快速发布和状态监控"
       breadcrumbs={[
-        { label: '增长与运营执行', href: '#' },
         { label: '智能电商运营与转化', href: '#' },
         { label: '商品与活动聚合发布', href: '/ecommerce/product-activity/overview', current: true }
       ]}
