@@ -138,6 +138,7 @@ const menuGroups: MenuGroup[] = [
           { name: '电商运营总览', href: '/ecommerce/overview', icon: PresentationChartIcon },
           { name: '商品与活动聚合发布', href: '/ecommerce/product-activity/overview', icon: FileTextIcon },
           { name: '多平台多店铺管理', href: '/ecommerce/platform-management', icon: UsersThreeIcon },
+          { name: '团购与O2O管理', href: '/ecommerce/group-o2o-management', icon: UsersIcon },
         ]
       },
       {
