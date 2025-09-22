@@ -131,7 +131,13 @@ const menuGroups: MenuGroup[] = [
           { name: '智能沟通话术与策略中心', href: '/private-communication-strategy', icon: MegaphoneIcon }
         ]
       },
-      { name: '智能电商运营与转化', href: '/ecommerce', icon: ChartLineIcon },
+      {
+        name: '智能电商运营与转化',
+        icon: ChartLineIcon,
+        subItems: [
+          { name: '电商运营总览', href: '/ecommerce/overview', icon: PresentationChartIcon },
+        ]
+      },
       {
         name: '智能销售赋能',
         icon: ChartLineIcon,
