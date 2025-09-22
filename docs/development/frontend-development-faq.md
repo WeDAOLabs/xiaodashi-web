@@ -27,6 +27,41 @@
 
 **原理**: 灰色背景是 recharts 的默认 highlight 效果，通过在 Tooltip 上设置 cursor={false} 可以完全禁用。
 
+### Q: recharts 横向柱状图不显示柱子（空矩形元素）如何解决？
+
+**问题症状**:
+- HTML中显示空的 `<g class="recharts-layer recharts-bar-rectangle"></g>`
+- 坐标轴和网格线正常，但柱子不显示
+- 即使使用直接颜色值也不显示
+
+**根本原因**: `layout="horizontal"` 配置错误
+
+**解决方案**: 使用 `layout="vertical"` 创建横向柱状图
+
+```tsx
+// ❌ 错误配置：会导致柱子不显示
+<BarChart layout="horizontal" data={data}>
+  <CartesianGrid horizontal={true} vertical={false} />
+  <XAxis type="number" />
+  <YAxis type="category" dataKey="name" />
+  <Bar dataKey="value" fill="#10b981" />
+</BarChart>
+
+// ✅ 正确配置：横向柱状图
+<BarChart layout="vertical" data={data}>
+  <CartesianGrid horizontal={false} />
+  <XAxis type="number" hide />
+  <YAxis type="category" dataKey="name" />
+  <Bar dataKey="value" fill="#10b981" maxBarSize={40} />
+</BarChart>
+```
+
+**关键要点**:
+1. 横向柱状图使用 `layout="vertical"`
+2. CartesianGrid 设置 `horizontal={false}`
+3. 添加 `maxBarSize` 限制柱子高度
+4. 推荐隐藏 XAxis: `<XAxis type="number" hide />`
+
 ---
 
 ## Tailwind CSS v4 相关
