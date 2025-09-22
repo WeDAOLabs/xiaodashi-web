@@ -71,7 +71,13 @@ const menuGroups: MenuGroup[] = [
           { name: '市场与竞品洞察项目管理', href: '/market-intelligence-project-management', icon: FileTextIcon },
         ]
       },
-      { name: '智能营销效果评估与数据分析', href: '/marketing-analytics', icon: PresentationChartIcon },
+      {
+        name: '智能营销效果评估与数据分析',
+        icon: PresentationChartIcon,
+        subItems: [
+          { name: '智能营销效果总览', href: '/marketing-analytics/overview', icon: ChartLineIcon },
+        ]
+      },
     ],
   },
   {
@@ -151,7 +157,6 @@ const utilityNavItems = [
 
 // 未实现的功能路由列表
 const unimplementedRoutes = [
-  '/marketing-analytics',
   '/brand-management',
   '/ecommerce',
   '/sales-enablement',

@@ -269,13 +269,95 @@ gap-8:  32px  /* 2rem */
 
 ## 📊 数据可视化
 
-### 图表色彩
-```css
---chart-primary:   #10b981  /* 绿色 - 正向趋势 */
---chart-secondary: #3b82f6  /* 蓝色 - 中性数据 */
---chart-accent:    #8b5cf6  /* 紫色 - 特殊指标 */
---chart-warning:   #f59e0b  /* 橙色 - 预警数据 */
---chart-danger:    #ef4444  /* 红色 - 负向趋势 */
+### 图表颜色变量对照表
+
+| 语义化名称 | 实际变量名 | 颜色值 | 颜色预览 | 用途 |
+|-----------|-----------|--------|----------|------|
+| 主要趋势 | `var(--color-chart-1)` | #10b981 | 🟢 绿色 | 正向数据、主要指标、成功状态 |
+| 次要数据 | `var(--color-chart-2)` | #3b82f6 | 🔵 蓝色 | 对比数据、次要指标、信息展示 |
+| 中性指标 | `var(--color-chart-3)` | #8b5cf6 | 🟣 紫色 | 中性数据、特殊指标 |
+| 预警数据 | `var(--color-chart-4)` | #f59e0b | 🟡 橙色 | 警告状态、预警数据 |
+| 负向趋势 | `var(--color-chart-5)` | #ef4444 | 🔴 红色 | 下降趋势、负向数据、错误状态 |
+
+### 图表颜色使用指南
+
+**✅ 推荐用法**：
+```tsx
+// 使用 shadcn 标准变量（推荐）
+const chartConfig = {
+  value: {
+    label: "数据",
+    color: "var(--color-chart-1)",
+  },
+  secondaryValue: {
+    label: "对比数据",
+    color: "var(--color-chart-5)",
+  },
+} satisfies ChartConfig;
+
+// 组件中使用
+<Bar dataKey="value" fill="var(--color-value)" />
+<Line dataKey="secondaryValue" stroke="var(--color-secondaryValue)" />
+```
+
+**❌ 避免用法**：
+```tsx
+// 避免：使用不存在的变量
+primaryColor: 'var(--chart-primary)'  // 这个变量不存在
+
+// 避免：直接使用颜色值（主题切换时会有问题）
+primaryColor: '#10b981'  // 不利于主题切换
+```
+
+### 常见图表配色方案
+
+**单色图表**：
+- 柱状图、折线图：使用 `var(--color-chart-1)` (绿色)
+- 进度条、环形图：使用 `var(--color-chart-1)` (绿色)
+
+**双色对比图表**：
+- 增长 vs 流失：`var(--color-chart-1)` (绿色) + `var(--color-chart-5)` (红色)
+- 主要 vs 次要：`var(--color-chart-1)` (绿色) + `var(--color-chart-2)` (蓝色)
+
+**多色状态图表**：
+- 饼图、堆叠图：按顺序使用 chart-1, chart-2, chart-3, chart-4, chart-5
+- 状态分布：成功用 chart-1，警告用 chart-4，错误用 chart-5
+
+### 实际开发案例
+
+**营销效果趋势图表**：
+```tsx
+// 数据配置
+const trendsData = [
+  {
+    title: '整体GMV趋势',
+    chartType: 'bar' as const,
+    primaryColor: 'var(--color-chart-1)',  // 使用绿色表示正向增长
+  },
+  {
+    title: 'ROI变化曲线',
+    chartType: 'line' as const,
+    primaryColor: 'var(--color-chart-2)',  // 使用蓝色表示中性指标
+  },
+  {
+    title: '用户增长与流失',
+    chartType: 'mixed' as const,
+    primaryColor: 'var(--color-chart-1)',    // 绿色表示增长
+    secondaryColor: 'var(--color-chart-5)',  // 红色表示流失
+  }
+];
+
+// ChartConfig 配置
+const chartConfig = {
+  growth: {
+    label: "用户增长",
+    color: "var(--color-chart-1)",
+  },
+  churn: {
+    label: "用户流失",
+    color: "var(--color-chart-5)",
+  },
+} satisfies ChartConfig;
 ```
 
 ### 图表组件规范
