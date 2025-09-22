@@ -78,6 +78,8 @@ const menuGroups: MenuGroup[] = [
           { name: '智能营销效果总览', href: '/marketing-analytics/overview', icon: ChartLineIcon },
           { name: '多渠道效果对比与归因分析', href: '/marketing-analytics/channel-comparison', icon: ChartLineIcon },
           { name: '营销策略优化与预测', href: '/marketing-analytics/strategy-optimization', icon: TrendingUpIcon },
+          { name: '榜单排行与基准对比', href: '/marketing-analytics/ranking-benchmark', icon: TargetIcon },
+          { name: '数据中心与配置', href: '/marketing-analytics/data-center', icon: GearIcon },
         ]
       },
     ],
