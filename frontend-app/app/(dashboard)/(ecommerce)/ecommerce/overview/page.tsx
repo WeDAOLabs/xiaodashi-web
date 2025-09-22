@@ -1,14 +1,14 @@
 'use client';
 
-import { useCallback } from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
+import { useCallback } from 'react';
+import AISuggestionsCard from './_components/AISuggestionsCard';
+import AlertsTasksCard from './_components/AlertsTasksCard';
+import AttributionChart from './_components/AttributionChart';
+import LeaderboardCard from './_components/LeaderboardCard';
 import MetricsCards from './_components/MetricsCards';
 import TimeFilter from './_components/TimeFilter';
 import TrendChart from './_components/TrendChart';
-import LeaderboardCard from './_components/LeaderboardCard';
-import AlertsTasksCard from './_components/AlertsTasksCard';
-import AISuggestionsCard from './_components/AISuggestionsCard';
-import AttributionChart from './_components/AttributionChart';
 
 const EcommerceOverviewPage: React.FC = () => {
   const handleTimeRangeChange = useCallback((range: 'day' | 'week' | 'month' | 'quarter') => {
@@ -22,7 +22,6 @@ const EcommerceOverviewPage: React.FC = () => {
       title="电商运营总览"
       description="智能电商运营与转化数据概览，掌握全局运营状况"
       breadcrumbs={[
-        { label: '增长与运营执行', href: '#' },
         { label: '智能电商运营与转化', href: '#' },
         { label: '电商运营总览', href: '/ecommerce/overview', current: true },
       ]}

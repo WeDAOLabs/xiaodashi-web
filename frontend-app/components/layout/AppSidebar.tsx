@@ -136,6 +136,7 @@ const menuGroups: MenuGroup[] = [
         icon: ChartLineIcon,
         subItems: [
           { name: '电商运营总览', href: '/ecommerce/overview', icon: PresentationChartIcon },
+          { name: '商品与活动聚合发布', href: '/ecommerce/product-activity/overview', icon: FileTextIcon },
         ]
       },
       {
