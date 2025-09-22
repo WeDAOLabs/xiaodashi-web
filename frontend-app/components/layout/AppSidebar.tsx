@@ -76,6 +76,8 @@ const menuGroups: MenuGroup[] = [
         icon: PresentationChartIcon,
         subItems: [
           { name: '智能营销效果总览', href: '/marketing-analytics/overview', icon: ChartLineIcon },
+          { name: '多渠道效果对比与归因分析', href: '/marketing-analytics/channel-comparison', icon: ChartLineIcon },
+          { name: '营销策略优化与预测', href: '/marketing-analytics/strategy-optimization', icon: TrendingUpIcon },
         ]
       },
     ],
