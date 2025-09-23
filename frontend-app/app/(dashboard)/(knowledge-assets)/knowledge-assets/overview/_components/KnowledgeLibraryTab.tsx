@@ -3,9 +3,16 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import KnowledgeBaseCard from './KnowledgeBaseCard';
 
 const KnowledgeLibraryTab: React.FC = () => {
+  const router = useRouter();
+
+  const handleCreateKnowledgeBase = () => {
+    router.push('/knowledge-assets/create');
+  };
+
   // 知识库数据
   const knowledgeBases = [
     {
@@ -40,7 +47,7 @@ const KnowledgeLibraryTab: React.FC = () => {
         <div>
           <p className="text-sm text-[var(--text-secondary)]">
             首次使用？
-            <Button variant="link" className="p-0 h-auto text-[var(--color-primary-600)] font-semibold" onClick={() => {}}>
+            <Button variant="link" className="p-0 h-auto text-[var(--color-primary-600)] font-semibold" onClick={handleCreateKnowledgeBase}>
               立即创建您的第一个知识库！
             </Button>
           </p>
@@ -51,7 +58,7 @@ const KnowledgeLibraryTab: React.FC = () => {
             </Button>
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2" onClick={handleCreateKnowledgeBase}>
           <Plus className="w-4 h-4" />
           新建知识库
         </Button>
