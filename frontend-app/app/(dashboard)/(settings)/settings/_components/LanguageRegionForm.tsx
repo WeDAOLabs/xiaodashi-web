@@ -15,10 +15,10 @@ interface LanguageRegionSettings {
 }
 
 const LanguageRegionForm: React.FC<LanguageRegionFormProps> = ({ className }) => {
-  const initialSettings: LanguageRegionSettings = {
+  const initialSettings: LanguageRegionSettings = useMemo(() => ({
     language: 'zh-CN',
     timezone: 'GMT+8'
-  };
+  }), []);
 
   const [settings, setSettings] = useState<LanguageRegionSettings>(initialSettings);
 
