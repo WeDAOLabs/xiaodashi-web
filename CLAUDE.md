@@ -143,3 +143,7 @@ pnpm --filter frontend-app build      # 验证构建无错误
 ### 详细语法指南
 
 参考文档: `docs/tailwind-v4-migration.md` - 包含完整的 v3 vs v4 语法对比和常见错误示例
+
+
+### 指令集 - 前缀 "/"
+   - faq-save: 使用 faq-agent-writer 整理并记录当前问题到FAQ中，以方便后续查询
