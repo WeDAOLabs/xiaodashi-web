@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '@/components/layout/AuthContext';
 import Image from 'next/image';
 
 interface PersonalInfoFormProps {
@@ -17,13 +18,20 @@ interface PersonalInfo {
 }
 
 const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({ className }) => {
-  const initialPersonalInfo: PersonalInfo = {
-    fullName: '王智赢',
-    email: 'zhiying.wang@example.com',
-    avatar: '/images/settings/user-avatar.jpg'
-  };
+  const { user } = useAuth();
+
+  const initialPersonalInfo: PersonalInfo = useMemo(() => ({
+    fullName: user?.name || '',
+    email: user?.email || '',
+    avatar: user?.avatar || '/images/dashboard/avatar.png'
+  }), [user]);
 
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(initialPersonalInfo);
+
+  // 当用户数据变更时，更新表单状态
+  useEffect(() => {
+    setPersonalInfo(initialPersonalInfo);
+  }, [initialPersonalInfo]);
 
   // 检查表单是否有变更
   const hasChanges = useMemo(() => {

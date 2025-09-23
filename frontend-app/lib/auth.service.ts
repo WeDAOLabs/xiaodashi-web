@@ -16,6 +16,12 @@ const MOCK_USERS: User[] = [
         email: 'lisi@example.com',
         avatar: '/images/dashboard/avatar.png',
     },
+    {
+        id: '3',
+        name: '彭晶',
+        email: 'pengjing@example.com',
+        avatar: '/images/dashboard/avatar.png',
+    },
 ];
 
 // Mock authentication service
