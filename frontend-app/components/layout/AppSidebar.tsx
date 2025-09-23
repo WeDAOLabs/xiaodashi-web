@@ -165,7 +165,13 @@ const menuGroups: MenuGroup[] = [
           { name: '知识库质量管理', href: '/knowledge-assets/lifecycle-management', icon: TrendingUpIcon },
         ]
       },
-      { name: '企业效率提升', href: '/efficiency-improvement', icon: UsersIcon },
+      {
+        name: '企业效率提升',
+        icon: UsersIcon,
+        subItems: [
+          { name: '工具聚合', href: '/efficiency-improvement/tool-aggregation', icon: GearIcon },
+        ]
+      },
     ],
   },
 ];
