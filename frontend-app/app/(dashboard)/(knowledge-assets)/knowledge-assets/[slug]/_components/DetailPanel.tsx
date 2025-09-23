@@ -1,8 +1,13 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Edit, Share, Download, Info, GitBranch } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle
+} from '@/components/ui/sheet';
+import { Download, Edit, GitBranch, Info, Share } from 'lucide-react';
+import React from 'react';
 import { KnowledgeItem } from './types';
 
 interface DetailPanelProps {
@@ -13,69 +18,55 @@ interface DetailPanelProps {
 
 const DetailPanel: React.FC<DetailPanelProps> = ({ item, isOpen, onClose }) => {
   return (
-    <>
-      {/* 背景遮罩 - 条件渲染 */}
-      {isOpen && item && (
-        <div
-          className="fixed inset-0 bg-black\/20 backdrop-blur-sm z-50 transition-all duration-300"
-          onClick={onClose}
-        />
-      )}
-
-      {/* 详情面板 */}
-      <div
-        className={cn(
-          "fixed top-0 right-0 h-full w-full max-w-2xl bg-[var(--bg-primary)] shadow-2xl z-[60] flex flex-col",
-          "transition-all duration-300 ease-in-out",
-          isOpen && item
-            ? "transform translate-x-0 opacity-100"
-            : "transform translate-x-full opacity-0 pointer-events-none"
-        )}
+    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <SheetContent
+        side="right"
+        width="wide"
+        hideCloseButton={true}
+        className="p-0 flex flex-col bg-[var(--bg-primary)]"
       >
         {item && (
-          <div className="flex flex-col h-full">
+          <>
             {/* 头部 */}
-            <div className="p-5 border-b border-[var(--border-secondary)] flex items-start justify-between">
-              <div>
-                <Badge className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-primary-50)] text-[var(--color-primary-700)] mb-1 inline-block border-0">
+            <div className="p-5 border-b border-[var(--border-secondary)]">
+              {/* 第一行：标签和按钮 */}
+              <div className="flex items-center justify-between mb-3">
+                <Badge className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[var(--color-primary-50)] text-[var(--color-primary-700)] border-0">
                   {item.category}
                 </Badge>
-                <h2 className="text-xl font-bold text-[var(--text-primary)]">{item.title}</h2>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 text-sm bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md hover:bg-[var(--border-primary)] transition-colors"
+                  >
+                    <Edit className="w-4 h-4" />
+                    编辑
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 text-sm bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md hover:bg-[var(--border-primary)] transition-colors"
+                  >
+                    <Share className="w-4 h-4" />
+                    分享
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 text-sm bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md hover:bg-[var(--border-primary)] transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    下载
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0 ml-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 text-sm bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md hover:bg-[var(--border-primary)] transition-colors"
-                >
-                  <Edit className="w-4 h-4" />
-                  编辑
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 text-sm bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md hover:bg-[var(--border-primary)] transition-colors"
-                >
-                  <Share className="w-4 h-4" />
-                  分享
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2 text-sm bg-[var(--bg-secondary)] text-[var(--text-secondary)] px-3 py-1.5 rounded-md hover:bg-[var(--border-primary)] transition-colors"
-                >
-                  <Download className="w-4 h-4" />
-                  下载
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClose}
-                  className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--color-primary-50)] hover:bg-[var(--border-primary)] transition-colors text-[var(--color-primary-500)]"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
+              {/* 第二行：标题 */}
+              <SheetHeader className="p-0">
+                <SheetTitle className="text-xl font-bold text-[var(--text-primary)] text-left leading-tight">
+                  {item.title}
+                </SheetTitle>
+              </SheetHeader>
             </div>
 
             {/* 标签栏 */}
@@ -178,10 +169,10 @@ const DetailPanel: React.FC<DetailPanelProps> = ({ item, isOpen, onClose }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
-      </div>
-    </>
+      </SheetContent>
+    </Sheet>
   );
 };
 
