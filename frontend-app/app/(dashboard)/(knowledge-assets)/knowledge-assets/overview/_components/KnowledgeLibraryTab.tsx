@@ -40,11 +40,15 @@ const KnowledgeLibraryTab: React.FC = () => {
         <div>
           <p className="text-sm text-[var(--text-secondary)]">
             首次使用？
-            <a href="#" className="text-[var(--color-primary-600)] font-semibold">立即创建您的第一个知识库！</a>
+            <Button variant="link" className="p-0 h-auto text-[var(--color-primary-600)] font-semibold" onClick={() => {}}>
+              立即创建您的第一个知识库！
+            </Button>
           </p>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
             如何高效管理知识库？
-            <a href="#" className="text-[var(--color-primary-600)] font-semibold">查看最佳实践。</a>
+            <Button variant="link" className="p-0 h-auto text-[var(--color-primary-600)] font-semibold" onClick={() => {}}>
+              查看最佳实践。
+            </Button>
           </p>
         </div>
         <Button className="flex items-center gap-2">

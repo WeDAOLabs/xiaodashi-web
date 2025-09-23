@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ToolPageLayout from '@/components/layout/ToolPageLayout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,29 @@ import StatCard from './_components/StatCard';
 import KnowledgeLibraryTab from './_components/KnowledgeLibraryTab';
 
 const KnowledgeAssetsOverviewPage: React.FC = () => {
+  // 状态管理
+  const [activeTab, setActiveTab] = useState('knowledge-library');
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  // 保存滚动位置
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // 标签切换时保持滚动位置
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    // 延迟恢复滚动位置，确保内容已渲染
+    setTimeout(() => {
+      window.scrollTo(0, scrollPosition);
+    }, 0);
+  };
+
   // 统计数据
   const statsData = [
     {
@@ -114,7 +137,7 @@ const KnowledgeAssetsOverviewPage: React.FC = () => {
 
         {/* 主内容区域 */}
         <Card className="p-2 shadow-sm">
-          <Tabs defaultValue="knowledge-library" className="w-full">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <div className="flex items-center gap-2 border-b border-[var(--border-secondary)] px-4">
               <TabsList className="bg-transparent border-none p-0 h-auto">
                 <TabsTrigger
@@ -133,11 +156,11 @@ const KnowledgeAssetsOverviewPage: React.FC = () => {
             </div>
 
             <div className="p-6">
-              <TabsContent value="knowledge-library" className="mt-0">
+              <TabsContent value="knowledge-library" className="mt-0 min-h-[280px]">
                 <KnowledgeLibraryTab />
               </TabsContent>
-              <TabsContent value="data-source" className="mt-0">
-                <div className="text-center py-12">
+              <TabsContent value="data-source" className="mt-0 min-h-[280px]">
+                <div className="flex items-center justify-center h-full">
                   <p className="text-[var(--text-secondary)]">数据源管理功能即将推出</p>
                 </div>
               </TabsContent>

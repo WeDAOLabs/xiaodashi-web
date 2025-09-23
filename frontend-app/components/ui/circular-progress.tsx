@@ -49,7 +49,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 
   return (
     <div className={cn('relative flex items-center justify-center', config.container, className)}>
-      <ChartContainer config={chartConfig} className="w-full h-full">
+      <ChartContainer config={chartConfig} className="w-full h-full aspect-square">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie

@@ -162,6 +162,7 @@ const menuGroups: MenuGroup[] = [
         icon: UsersIcon,
         subItems: [
           { name: '全部知识资产', href: '/knowledge-assets/overview', icon: FileTextIcon },
+          { name: '知识库质量管理', href: '/knowledge-assets/lifecycle-management', icon: TrendingUpIcon },
         ]
       },
       { name: '企业效率提升', href: '/efficiency-improvement', icon: UsersIcon },
