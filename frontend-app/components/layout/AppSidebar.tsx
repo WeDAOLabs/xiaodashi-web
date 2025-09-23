@@ -157,7 +157,13 @@ const menuGroups: MenuGroup[] = [
   {
     title: '赋能与效率提升',
     items: [
-      { name: '智能知识库', href: '/knowledge-base', icon: UsersIcon },
+      {
+        name: '智能知识库',
+        icon: UsersIcon,
+        subItems: [
+          { name: '全部知识资产', href: '/knowledge-assets/overview', icon: FileTextIcon },
+        ]
+      },
       { name: '企业效率提升', href: '/efficiency-improvement', icon: UsersIcon },
     ],
   },
