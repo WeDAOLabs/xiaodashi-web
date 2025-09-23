@@ -190,7 +190,6 @@ const unimplementedRoutes = [
   '/knowledge-base',
   '/efficiency-improvement',
   '/settings',
-  '/support',
 ];
 
 const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
