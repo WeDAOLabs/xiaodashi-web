@@ -32,14 +32,17 @@ import { AppSidebarProps } from './types';
 
 interface MenuGroup {
   title: string;
+  visible?: boolean; // 控制分组是否显示，默认为 true
   items: {
     name: string;
     href?: string;
     icon: React.ComponentType<{ className?: string }>;
+    visible?: boolean; // 控制菜单项是否显示，默认为 true
     subItems?: {
       name: string;
       href: string;
       icon: React.ComponentType<{ className?: string }>;
+      visible?: boolean; // 控制子菜单项是否显示，默认为 true
     }[];
   }[];
 }
@@ -47,6 +50,7 @@ interface MenuGroup {
 const menuGroups: MenuGroup[] = [
   {
     title: '战略与决策中枢',
+    visible: false, // 开发阶段隐藏
     items: [
       {
         name: '智能业务与营销战略规划',
@@ -86,6 +90,7 @@ const menuGroups: MenuGroup[] = [
   },
   {
     title: '品牌与创意资产',
+    visible: false, // 开发阶段隐藏
     items: [
       {
         name: '智能品牌与IP资产管理',
@@ -113,6 +118,7 @@ const menuGroups: MenuGroup[] = [
   },
   {
     title: '增长与运营执行',
+    visible: false, // 开发阶段隐藏
     items: [
       {
         name: '智能公域流量投放与优化',
@@ -156,10 +162,12 @@ const menuGroups: MenuGroup[] = [
   },
   {
     title: '赋能与效率提升',
+    // visible: true 默认显示，可以省略
     items: [
       {
         name: '智能知识库',
         icon: UsersIcon,
+        visible: false, // 开发阶段隐藏
         subItems: [
           { name: '全部知识资产', href: '/knowledge-assets/overview', icon: FileTextIcon },
           { name: '知识库质量管理', href: '/knowledge-assets/lifecycle-management', icon: TrendingUpIcon },
@@ -168,8 +176,10 @@ const menuGroups: MenuGroup[] = [
       {
         name: '企业效率提升',
         icon: UsersIcon,
+        // visible: true 默认显示，可以省略
         subItems: [
           { name: '工具聚合', href: '/efficiency-improvement/tool-aggregation', icon: GearIcon },
+          // 如果后续有其他子菜单，可以设置 visible: false 来隐藏
         ]
       },
     ],
@@ -191,6 +201,22 @@ const unimplementedRoutes = [
   '/efficiency-improvement',
 ];
 
+// 过滤可见的菜单组
+const getVisibleMenuGroups = (groups: MenuGroup[]): MenuGroup[] => {
+  return groups
+    .filter(group => group.visible !== false) // 只显示可见的分组
+    .map(group => ({
+      ...group,
+      items: group.items
+        .filter(item => item.visible !== false) // 只显示可见的菜单项
+        .map(item => ({
+          ...item,
+          subItems: item.subItems?.filter(subItem => subItem.visible !== false) // 只显示可见的子菜单项
+        }))
+    }))
+    .filter(group => group.items.length > 0); // 移除没有可见子项的分组
+};
+
 const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   const pathname = usePathname();
   const router = useRouter();
@@ -203,6 +229,9 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
   });
 
   const { expandedGroups, expandedSubMenus } = menuState;
+
+  // 获取过滤后的可见菜单组
+  const visibleMenuGroups = React.useMemo(() => getVisibleMenuGroups(menuGroups), []);
 
   // 自动保存用户操作到 sessionStorage
   React.useEffect(() => {
@@ -288,7 +317,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isCollapsed }) => {
         <div className="flex-1 overflow-y-auto px-4 py-2">
           <div className="flex flex-col gap-1">
             {/* 分组菜单 */}
-            {menuGroups.map((group) => {
+            {visibleMenuGroups.map((group) => {
               const isExpanded = expandedGroups.has(group.title);
               return (
                 <div key={group.title} className="mt-3 first:mt-0">
