@@ -54,7 +54,9 @@ async function bootstrap() {
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup(appConfig.swagger.path, app, document);
-    logger.log(`Swagger文档已启用: http://localhost:${appConfig.port}/${appConfig.swagger.path}`);
+    logger.log(
+      `Swagger文档已启用: http://localhost:${appConfig.port}/${appConfig.swagger.path}`,
+    );
   }
 
   // 启动应用
@@ -76,12 +78,14 @@ function validateEnvironment() {
     'DB_NAME',
   ];
 
-  const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+  const missingEnvVars = requiredEnvVars.filter(
+    (envVar) => !process.env[envVar],
+  );
 
   if (missingEnvVars.length > 0) {
     throw new Error(
       `缺少必要的环境变量: ${missingEnvVars.join(', ')}\n` +
-      `请检查 .env 文件或设置相应的环境变量。`,
+        `请检查 .env 文件或设置相应的环境变量。`,
     );
   }
 }

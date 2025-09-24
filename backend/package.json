@@ -19,11 +19,29 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "openapi:gen": "ts-node scripts/generate-openapi.ts",
+
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d typeorm.config.ts",
     "migration:create": "typeorm-ts-node-commonjs migration:create",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d typeorm.config.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts",
-    "migration:show": "typeorm-ts-node-commonjs migration:show -d typeorm.config.ts"
+    "migration:show": "typeorm-ts-node-commonjs migration:show -d typeorm.config.ts",
+
+    "_comment_multi_db": "=== 预留多数据库 Migration 脚本（未来使用时取消注释） ===",
+    "_migration:user:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/datasources/user.datasource.ts",
+    "_migration:user:create": "typeorm-ts-node-commonjs migration:create",
+    "_migration:user:run": "typeorm-ts-node-commonjs migration:run -d src/database/datasources/user.datasource.ts",
+    "_migration:user:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/datasources/user.datasource.ts",
+    "_migration:user:show": "typeorm-ts-node-commonjs migration:show -d src/database/datasources/user.datasource.ts",
+
+    "_migration:auth:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/datasources/auth.datasource.ts",
+    "_migration:auth:create": "typeorm-ts-node-commonjs migration:create",
+    "_migration:auth:run": "typeorm-ts-node-commonjs migration:run -d src/database/datasources/auth.datasource.ts",
+    "_migration:auth:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/datasources/auth.datasource.ts",
+    "_migration:auth:show": "typeorm-ts-node-commonjs migration:show -d src/database/datasources/auth.datasource.ts",
+
+    "_migration:all:run": "npm run migration:user:run && npm run migration:auth:run",
+    "_migration:all:show": "npm run migration:user:show && npm run migration:auth:show",
+    "_migration:all:revert": "npm run migration:auth:revert && npm run migration:user:revert"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

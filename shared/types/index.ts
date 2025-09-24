@@ -1,8 +1,9 @@
 /**
  * Shared Types 统一导出
- * 整合所有类型定义，方便外部包引用
+ * 整合所有类型定义，支持按域命名空间导出（为未来多数据库架构预留）
  */
 
+// === 直接导出（保持向后兼容） ===
 // 导出API相关类型
 export * from './api.types';
 
@@ -37,3 +38,28 @@ export type {
   ApiResponse,
   ApiErrorResponse
 } from './api.types';
+
+// === 按域命名空间导出（为未来多数据库扩展预留） ===
+// 用户域类型命名空间
+export * as UserDomain from './user';
+
+// 认证域类型命名空间
+export * as AuthDomain from './auth';
+
+// 通用API类型命名空间
+export * as ApiTypes from './api.types';
+
+// 预留其他业务域命名空间
+// export * as BusinessDomain from './business';
+// export * as AnalyticsDomain from './analytics';
+
+// 域类型集合（为未来按域使用提供便利）
+import * as UserTypes from './user';
+import * as AuthTypes from './auth';
+
+export const DomainTypes = {
+  User: UserTypes,
+  Auth: AuthTypes,
+  // Business: BusinessTypes,
+  // Analytics: AnalyticsTypes,
+} as const;

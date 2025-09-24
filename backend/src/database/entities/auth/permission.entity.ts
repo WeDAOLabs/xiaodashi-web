@@ -36,6 +36,9 @@ export class Permission {
   createdAt: Date;
 
   // 关联关系
-  @OneToMany(() => RolePermission, (rolePermission) => rolePermission.permission)
+  @OneToMany(
+    () => RolePermission,
+    (rolePermission) => rolePermission.permission,
+  )
   rolePermissions: RolePermission[];
 }
