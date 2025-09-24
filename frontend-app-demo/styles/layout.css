@@ -1,0 +1,134 @@
+/* ==== 布局组件样式 ==== */
+@layer components {
+
+    /* Header 组件样式已移除 - 改为侧边栏集成式布局 */
+
+    /* Sidebar 组件 */
+    .app-sidebar {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        /* Full screen height for new layout */
+        background-color: var(--bg-primary);
+    }
+
+    /* Sidebar 链接状态 */
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        /* 12px */
+        padding: 0.5rem 0.75rem;
+        /* 8px 12px */
+        border-radius: 0.5rem;
+        /* 8px */
+        color: var(--text-primary);
+        font-size: 0.875rem;
+        /* 14px */
+        font-weight: 500;
+        line-height: 1.25rem;
+        /* 20px */
+        transition: background-color 0.2s ease;
+    }
+
+    .sidebar-link-active {
+        background-color: var(--color-primary-50);
+        color: var(--color-primary-500);
+    }
+
+    .sidebar-link:hover {
+        background-color: var(--bg-secondary);
+    }
+
+    /* 侧边栏图标颜色统一 */
+    .sidebar-link svg {
+        color: var(--text-secondary);
+        transition: color 0.2s ease;
+    }
+
+    /* 激活状态下的图标颜色 */
+    .sidebar-link-active svg {
+        color: var(--color-primary-500);
+    }
+
+    /* 悬停状态下的图标颜色 */
+    .sidebar-link:hover svg {
+        color: var(--color-primary-500);
+    }
+
+    /* 侧边栏分组标题 */
+    .sidebar-group-title {
+        position: relative;
+        padding: 0.75rem 0.5rem 0.5rem;
+        /* 12px 8px 8px */
+        font-size: 0.75rem;
+        /* 12px */
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        line-height: 1;
+    }
+
+    .sidebar-group-title::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0.5rem;
+        right: 0.5rem;
+        height: 1px;
+        background-color: var(--border-secondary);
+    }
+
+    /* 第一个分组不显示上方分隔线 */
+    .sidebar-group-title:first-of-type::before {
+        display: none;
+    }
+
+    /* 可点击的分组标题样式 */
+    .sidebar-group-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        /* 8px */
+        width: 100%;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .sidebar-group-toggle:hover {
+        color: var(--color-primary-500);
+    }
+
+    .sidebar-group-toggle:focus {
+        outline: none;
+        color: var(--color-primary-500);
+    }
+
+    /* 确保折叠图标颜色继承 */
+    .sidebar-group-toggle svg {
+        color: inherit;
+        flex-shrink: 0;
+    }
+
+    /* 未实现功能的置灰样式 */
+    .sidebar-link-disabled {
+        color: var(--text-muted, #a1a1a6) !important;
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+        user-select: none; /* 防止文本选择 */
+    }
+
+    .sidebar-link-disabled:hover {
+        background-color: transparent !important;
+        transform: none !important; /* 防止悬停动画 */
+    }
+
+    .sidebar-link-disabled svg {
+        color: var(--text-muted, #a1a1a6) !important;
+    }
+}

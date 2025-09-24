@@ -1,6 +1,7 @@
 packages:
   - frontend
   - frontend-app
+  - frontend-app-demo
   - backend
   - shared
 

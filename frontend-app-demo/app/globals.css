@@ -1,0 +1,21 @@
+/* ==== 主入口文件 - 模块化 CSS 架构 ==== */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* 导入模块化样式文件 */
+@import "../styles/theme.css";
+@import "../styles/variables.css";
+@import "../styles/layout.css";
+@import "../styles/dashboard.css";
+@import "../styles/utility.css";
+@import "../styles/shadcn-theme.css";
+@import "../styles/shadcn-overrides.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==== 基础样式 ==== */
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}

@@ -1,0 +1,60 @@
+/* ==== Dashboard 特定样式 ==== */
+@layer components {
+
+    /* Dashboard 主内容区域 */
+    .dashboard-main-content {
+        display: flex;
+        flex-direction: column;
+        max-width: none;
+        /* Remove max-width constraint for full width */
+        flex: 1;
+        padding: 0;
+        /* Remove default padding for scrollable content */
+    }
+
+    /* Dashboard 标题样式 */
+    .dashboard-section-title {
+        color: var(--text-primary);
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        padding: 1.25rem 1rem 0.75rem 1rem;
+    }
+
+    .dashboard-subsection-title {
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        /* 18px */
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        padding: 1rem 1rem 0.5rem 1rem;
+    }
+
+    /* Dashboard Tab 样式 */
+    .dashboard-tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-bottom-width: 3px;
+        padding-bottom: 13px;
+        padding-top: 1rem;
+        font-size: 0.875rem;
+        /* 14px */
+        font-weight: 700;
+        letter-spacing: 0.015em;
+        transition: all 0.2s ease;
+    }
+
+    .dashboard-tab-active {
+        border-color: #111718;
+        color: #111718;
+    }
+
+    .dashboard-tab-inactive {
+        border-color: transparent;
+        color: #618389;
+    }
+}

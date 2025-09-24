@@ -1,0 +1,47 @@
+/* ==== 语义化CSS变量系统 ==== */
+:root {
+    /* 语义化颜色映射 - 使用 Tailwind v4 生成的变量 */
+    --primary-color: #007A7A;
+    --primary-hover: #006666;
+    --primary-light: #008888;
+    --primary-color-focus-ring: #B2DFDB;
+    --accent-color: #0077ed;
+
+    /* 文本颜色语义化 */
+    --text-primary: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --text-tertiary: #8e8e93;
+    --text-muted: #a1a1a6;
+
+    /* 背景颜色语义化 */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f7;
+    --bg-tertiary: var(--color-neutral-50);
+
+    /* 边框颜色语义化 */
+    --border-primary: #d2d2d7;
+    --border-secondary: var(--color-neutral-200);
+
+    /* 辅助色彩语义化映射 */
+    --info-color: var(--color-info-600);
+    --info-bg: var(--color-info-50);
+    --info-border: var(--color-info-100);
+
+    --warning-color: var(--color-warning-600);
+    --warning-bg: var(--color-warning-50);
+    --warning-border: var(--color-warning-100);
+
+    --success-color: var(--color-success-600);
+    --success-bg: var(--color-success-50);
+    --success-border: var(--color-success-100);
+
+    /* 特殊组件颜色 */
+    --help-button-bg: #0071e3;
+    --help-button-hover: #005bb8;
+
+    /* 向后兼容的shadcn变量 */
+    --background-color: var(--bg-primary);
+    --surface-color: var(--bg-secondary);
+    --border-color: var(--border-primary);
+    --radius: 0.625rem;
+}

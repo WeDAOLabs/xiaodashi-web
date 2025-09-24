@@ -1,0 +1,94 @@
+/* ==== 通用工具类 ==== */
+@layer components {
+
+    /* 页面容器 */
+    .page-container {
+        max-width: 96rem;
+        /* 1536px - 6xl */
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        /* 24px */
+        width: 95%;
+    }
+
+    /* 网格布局 */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+        gap: 0.75rem;
+        /* 12px */
+        padding: 1rem;
+    }
+
+    .feature-grid {
+        display: grid;
+        gap: 1.5rem;
+        /* 24px */
+        padding: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    /* 内容区块 */
+    .content-section {
+        margin-bottom: 2rem;
+        /* 32px */
+    }
+
+    /* 标题工具类 */
+    .section-header {
+        color: var(--text-primary);
+        font-size: 22px;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        padding: 1.25rem 1rem 0.75rem 1rem;
+    }
+
+    .subsection-header {
+        color: var(--text-primary);
+        font-size: 1.125rem;
+        /* 18px */
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        padding: 1rem 1rem 0.5rem 1rem;
+    }
+
+    /* 交互状态 */
+    .interactive-hover {
+        transition: all 0.2s ease;
+    }
+
+    .interactive-hover:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-elevation-medium);
+    }
+
+    /* 焦点状态 */
+    .focus-ring {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+    }
+
+    .focus-ring:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    /* 动画效果 */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+        opacity: 0;
+    }
+}

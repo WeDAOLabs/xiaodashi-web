@@ -4,11 +4,13 @@
   "scripts": {
     "dev:frontend": "pnpm --filter frontend dev",
     "dev:frontend-app": "pnpm --filter frontend-app dev",
+    "dev:frontend-app-demo": "pnpm --filter frontend-app-demo dev",
     "dev:backend": "pnpm --filter backend start:dev",
     "build:shared": "pnpm --filter shared build",
     "lint": "pnpm --filter frontend lint && pnpm --filter frontend-app lint",
     "lint:frontend": "pnpm --filter frontend lint",
     "lint:frontend-app": "pnpm --filter frontend-app lint",
+    "lint:frontend-app-demo": "pnpm --filter frontend-app-demo lint",
     "build:all": "pnpm --filter shared build && pnpm --filter frontend build && pnpm --filter frontend-app build"
   },
   "dependencies": {},

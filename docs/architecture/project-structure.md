@@ -102,6 +102,28 @@ frontend-app/
 └── eslint.config.mjs      # ESLint 配置
 ```
 
+## 前端产品Demo网站结构 (frontend-app-demo/)
+
+```
+frontend-app-demo/
+├── app/                    # Next.js App Router
+│   ├── globals.css        # 全局样式 (Tailwind v4)
+│   ├── layout.tsx         # 根布局
+│   └── page.tsx           # 首页
+├── components/            # 可复用组件
+├── lib/                   # 工具函数
+│   └── utils.ts           # 通用工具
+├── fonts/                 # 字体文件
+├── public/                # 静态资源
+│   └── images/
+│       └── avatar.jpg
+├── package.json           # 项目配置
+├── tsconfig.json          # TypeScript 配置
+├── next.config.ts         # Next.js 配置
+├── postcss.config.js      # PostCSS 配置
+└── eslint.config.mjs      # ESLint 配置
+```
+
 ## 后端API服务结构 (backend/)
 
 ```

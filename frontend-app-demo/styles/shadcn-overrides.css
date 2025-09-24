@@ -1,0 +1,69 @@
+/* ==== shadcn/ui 组件样式覆盖 ==== */
+@layer components {
+
+    /* Tabs 组件样式覆盖 - 精确匹配设计图效果 */
+    .dashboard-tab-trigger {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: none !important;
+        border-bottom: 3px solid transparent !important;
+        border-radius: 0 !important;
+        padding: 1rem 0 13px 0 !important;
+        margin: 0 !important;
+        font-size: 0.875rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.015em !important;
+        color: #618389 !important;
+        /* 设计图中非激活状态的颜色 */
+        background: transparent !important;
+        box-shadow: none !important;
+        height: auto !important;
+        transition: all 0.2s ease !important;
+        min-height: auto !important;
+        width: auto !important;
+        flex: none !important;
+        min-width: fit-content !important;
+    }
+
+    .dashboard-tab-trigger[data-state="active"] {
+        border-bottom: 3px solid #111718 !important;
+        /* 设计图中激活状态的边框颜色 */
+        color: #111718 !important;
+        /* 设计图中激活状态的文字颜色 */
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .dashboard-tab-trigger:hover {
+        color: #111718 !important;
+        background: transparent !important;
+        border-bottom-color: #111718 !important;
+    }
+
+    .dashboard-tab-trigger:focus-visible {
+        outline: 2px solid #111718 !important;
+        outline-offset: 2px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        border-bottom: 3px solid #111718 !important;
+    }
+
+    /* TabsList 样式调整 - 匹配设计图布局 */
+    .dashboard-tabs-list {
+        background: transparent !important;
+        border: none !important;
+        border-bottom: 1px solid #dbe4e6 !important;
+        border-radius: 0 !important;
+        height: auto !important;
+        padding: 0 1rem !important;
+        gap: 2rem !important;
+        /* 对应设计图中的 gap-8 */
+        display: flex !important;
+        justify-content: flex-start !important;
+        width: 100% !important;
+        box-shadow: none !important;
+    }
+}
