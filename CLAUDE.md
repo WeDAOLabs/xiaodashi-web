@@ -144,6 +144,11 @@ pnpm --filter frontend-app build      # 验证构建无错误
 
 参考文档: `docs/tailwind-v4-migration.md` - 包含完整的 v3 vs v4 语法对比和常见错误示例
 
+## 通用配置
 
 ### 指令集 - 前缀 "/"
    - faq-save: 使用 faq-agent-writer 整理并记录当前问题到FAQ中，以方便后续查询
+
+### 工具集
+   - 访问网站内容：不要使用内置工具 Fetch，要使用agent：website-visitor 访问网站内容
+
