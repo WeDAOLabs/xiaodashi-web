@@ -8,15 +8,16 @@ This is "xiaodashi-web" (智商180的AI全域营销大师 Web) - a modern full-s
 
 ## Architecture
 
-- **Monorepo Structure**: Uses pnpm workspaces with 4 main packages:
+- **Monorepo Structure**: Uses pnpm workspaces with 5 main packages:
   - `frontend/`: Main website (Next.js) - runs on port 3000
   - `frontend-app/`: Dashboard application (Next.js) - runs on port 3001
-  - `backend/`: NestJS API server - runs on port 3001 (default)
+  - `frontend-app-demo/`: Demo application (Next.js)
+  - `backend/`: NestJS API server - runs on port 2999
   - `shared/`: Shared TypeScript types and utilities
 
 - **Tech Stack**:
-  - Frontend: Next.js 15, React 19, TypeScript, Tailwind CSS 4.x
-  - Backend: NestJS 11, TypeScript, likely Prisma for ORM
+  - Frontend: Next.js 15.5.2, React 19.1.0, TypeScript 5.x, Tailwind CSS 4.1.13
+  - Backend: NestJS 11.0.1, TypeScript 5.7.3, TypeORM 0.3.27
   - Shared: TypeScript types and common utilities
 
 ## Development Commands
@@ -82,7 +83,7 @@ xiaodashi-web/
 3. **Port Configuration**:
    - Frontend (main): 3000
    - Frontend-app (dashboard): 3001
-   - Backend API: 3001 (default, may conflict with frontend-app)
+   - Backend API: 2999 (updated to avoid conflicts)
 4. **Documentation**: Extensive docs available in `docs/` directory including architecture, tech stack, and development guides
 
 ## Code Quality Workflow (推荐执行顺序)
@@ -109,7 +110,7 @@ pnpm --filter frontend-app build      # 验证构建无错误
 ## Common Issues
 
 - If you get TypeScript errors about shared types, ensure the shared package is built first
-- Both frontend-app and backend default to port 3001 - check actual backend port configuration
+- Backend now runs on port 2999 to avoid conflicts with frontend-app (port 3001)
 - The project uses Turbopack for faster Next.js builds (--turbopack flag)
 - frontend-app 测试用户名：zhangsan@example.com 密码:111111
 - ui界面组件优先使用 shadcn/ui, 可以使用shadcn工具查询.每次查询一个组件.如果在查询组件时遇到网络错误,可以尝试重试一次.
@@ -121,8 +122,7 @@ pnpm --filter frontend-app build      # 验证构建无错误
 ### 必须遵循的语法规则
 
 1. **透明度语法 (最常见错误)**:
-   - ❌ 错误: `bg-blue-500/50`, `text-white/80`
-   - ✅ 正确: `bg-blue-500\/50`, `text-white\/80`
+   - ✅ 正确: `bg-blue-500/50`, `text-white/80`
 
 2. **表单验证优先使用 user-* 变体**:
    - ❌ 避免: `invalid:border-red-500`

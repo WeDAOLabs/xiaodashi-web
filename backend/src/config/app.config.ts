@@ -30,7 +30,7 @@ export default registerAs(
     name: process.env.APP_NAME || 'xiaodashi-web',
     version: process.env.APP_VERSION || '1.0.0',
     env: process.env.NODE_ENV || 'development',
-    port: parseInt(process.env.PORT || '3001', 10),
+    port: parseInt(process.env.PORT || '2999', 10),
     apiPrefix: process.env.API_PREFIX || 'api',
     frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
     frontendAppUrl: process.env.FRONTEND_APP_URL || 'http://localhost:3001',

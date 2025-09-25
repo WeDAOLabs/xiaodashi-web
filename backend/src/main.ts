@@ -60,10 +60,10 @@ async function bootstrap() {
   }
 
   // 启动应用
-  await app.listen(appConfig?.port || 3001);
+  await app.listen(appConfig?.port || 2999);
 
   logger.log(`🚀 应用启动成功！`);
-  logger.log(`🌐 服务地址: http://localhost:${appConfig?.port || 3001}`);
+  logger.log(`🌐 服务地址: http://localhost:${appConfig?.port || 2999}`);
   logger.log(`🔧 运行环境: ${appConfig?.env || 'development'}`);
 }
 
