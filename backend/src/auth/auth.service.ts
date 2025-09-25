@@ -1,4 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +16,20 @@ import {
   LoginRequest,
   LoginResponse,
   RefreshTokenResponse,
+  RegisterRequest,
+  RegisterResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
+  VerifyEmailRequest,
+  VerifyEmailResponse,
+  LogoutRequest,
+  LogoutResponse,
+  UserStatus,
+  UserRole,
 } from '@xiaodashi/shared';
 import { User } from '../database/entities/user/user.entity';
 import { AuthConfig } from '../config/auth.config';
@@ -271,6 +291,26 @@ export class AuthService {
   }
 
   /**
+   * 生成邮箱验证token
+   *
+   * @param userId - 用户ID
+   * @returns string - 邮箱验证token
+   */
+  generateEmailVerificationToken(userId: string): string {
+    const payload = {
+      sub: userId,
+      type: 'email_verification',
+    };
+
+    return this.jwtService.sign(payload, {
+      secret: this.authConfig.jwt.accessSecret,
+      expiresIn: '24h', // 邮箱验证token有效期24小时
+      issuer: this.authConfig.jwt.issuer,
+      audience: this.authConfig.jwt.audience,
+    });
+  }
+
+  /**
    * 验证密码重置token
    *
    * @param token - 密码重置token
@@ -299,6 +339,406 @@ export class AuthService {
       }
       throw new UnauthorizedException('密码重置token无效或已过期');
     }
+  }
+
+  /**
+   * 验证邮箱验证token
+   *
+   * @param token - 邮箱验证token
+   * @returns string - 用户ID
+   * @throws UnauthorizedException - token无效时抛出
+   */
+  verifyEmailVerificationToken(token: string): string {
+    try {
+      const payload = this.jwtService.verify<{ sub: string; type: string }>(
+        token,
+        {
+          secret: this.authConfig.jwt.accessSecret,
+          issuer: this.authConfig.jwt.issuer,
+          audience: this.authConfig.jwt.audience,
+        },
+      );
+
+      if (payload.type !== 'email_verification') {
+        throw new UnauthorizedException('无效的邮箱验证token类型');
+      }
+
+      return payload.sub;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new UnauthorizedException('邮箱验证token无效或已过期');
+    }
+  }
+
+  /**
+   * 用户注册
+   *
+   * @param registerRequest - 注册请求参数
+   * @returns Promise<RegisterResponse> - 注册响应（用户信息和token）
+   * @throws ConflictException - 邮箱已存在时抛出
+   * @throws BadRequestException - 密码强度不符合要求时抛出
+   */
+  async register(registerRequest: RegisterRequest): Promise<RegisterResponse> {
+    const { email, name, password, confirmPassword, agreeToTerms } =
+      registerRequest;
+
+    // 验证密码确认
+    if (password !== confirmPassword) {
+      throw new BadRequestException('密码确认不匹配');
+    }
+
+    // 验证密码强度
+    if (!this.validatePasswordStrength(password)) {
+      throw new BadRequestException(
+        '密码强度不符合要求：至少8位，包含字母和数字',
+      );
+    }
+
+    // 验证服务条款同意
+    if (!agreeToTerms) {
+      throw new BadRequestException('必须同意服务条款');
+    }
+
+    // 检查邮箱是否已存在
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('邮箱已存在');
+    }
+
+    // 加密密码
+    const passwordHash = await this.hashPassword(password);
+
+    // 创建用户
+    const user = this.userRepository.create({
+      email,
+      name,
+      passwordHash,
+      status: UserStatus.INACTIVE, // 默认未激活，需要邮箱验证
+      role: UserRole.USER, // 默认角色
+    });
+
+    const savedUser = await this.userRepository.save(user);
+
+    // 生成邮箱验证token并存储
+    const emailVerificationToken = this.generateEmailVerificationToken(
+      savedUser.id,
+    );
+    await this.userRepository.update(savedUser.id, {
+      emailVerificationToken,
+      emailVerificationExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24小时
+    });
+
+    // 生成登录tokens
+    const tokens = this.generateTokens(savedUser);
+
+    // 构造响应
+    const userResponse = {
+      id: savedUser.id,
+      email: savedUser.email,
+      name: savedUser.name,
+      role: savedUser.role,
+      status: savedUser.status,
+      avatar: savedUser.avatar,
+      createdAt: savedUser.createdAt.toISOString(),
+      updatedAt: savedUser.updatedAt.toISOString(),
+    };
+
+    return {
+      user: userResponse,
+      tokens,
+      needEmailVerification: true,
+    };
+  }
+
+  /**
+   * 忘记密码处理
+   *
+   * @param forgotPasswordRequest - 忘记密码请求
+   * @returns Promise<ForgotPasswordResponse> - 忘记密码响应
+   */
+  async forgotPassword(
+    forgotPasswordRequest: ForgotPasswordRequest,
+  ): Promise<ForgotPasswordResponse> {
+    const { email } = forgotPasswordRequest;
+
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      // 为了安全，即使用户不存在也返回成功消息
+      return {
+        message: '如果该邮箱存在，重置密码邮件已发送',
+        resetTokenSent: false,
+      };
+    }
+
+    // 生成密码重置token
+    const resetToken = this.generatePasswordResetToken(user.id);
+
+    // 存储密码重置token到数据库
+    await this.userRepository.update(user.id, {
+      passwordResetToken: resetToken,
+      passwordResetExpiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1小时过期
+    });
+
+    // 这里应该发送邮件，目前先返回成功消息
+    // TODO: 集成邮件服务发送包含resetToken的重置邮件
+
+    return {
+      message: '密码重置邮件已发送到您的邮箱',
+      resetTokenSent: true,
+    };
+  }
+
+  /**
+   * 重置密码
+   *
+   * @param resetPasswordRequest - 重置密码请求
+   * @returns Promise<ResetPasswordResponse> - 重置密码响应
+   */
+  async resetPassword(
+    resetPasswordRequest: ResetPasswordRequest,
+  ): Promise<ResetPasswordResponse> {
+    const { resetToken, newPassword, confirmPassword } = resetPasswordRequest;
+
+    // 验证密码确认
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('密码确认不匹配');
+    }
+
+    // 验证密码强度
+    if (!this.validatePasswordStrength(newPassword)) {
+      throw new BadRequestException(
+        '密码强度不符合要求：至少8位，包含字母和数字',
+      );
+    }
+
+    // 从数据库查找并验证密码重置token
+    const user = await this.userRepository.findOne({
+      where: {
+        passwordResetToken: resetToken,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('密码重置token无效或已过期');
+    }
+
+    // 检查token是否过期
+    if (
+      user.passwordResetExpiresAt &&
+      user.passwordResetExpiresAt < new Date()
+    ) {
+      throw new BadRequestException('密码重置token已过期');
+    }
+
+    // 加密新密码
+    const passwordHash = await this.hashPassword(newPassword);
+
+    // 更新用户密码并清除重置token
+    await this.userRepository.update(user.id, {
+      passwordHash,
+      passwordResetToken: undefined,
+      passwordResetExpiresAt: undefined,
+      loginAttempts: 0, // 重置登录失败次数
+    });
+
+    return {
+      message: '密码重置成功',
+      success: true,
+    };
+  }
+
+  /**
+   * 修改密码
+   *
+   * @param userId - 用户ID
+   * @param changePasswordRequest - 修改密码请求
+   * @returns Promise<ChangePasswordResponse> - 修改密码响应
+   */
+  async changePassword(
+    userId: string,
+    changePasswordRequest: ChangePasswordRequest,
+  ): Promise<ChangePasswordResponse> {
+    const { currentPassword, newPassword, confirmPassword } =
+      changePasswordRequest;
+
+    // 验证密码确认
+    if (newPassword !== confirmPassword) {
+      throw new BadRequestException('密码确认不匹配');
+    }
+
+    // 验证密码强度
+    if (!this.validatePasswordStrength(newPassword)) {
+      throw new BadRequestException(
+        '密码强度不符合要求：至少8位，包含字母和数字',
+      );
+    }
+
+    // 获取用户信息
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    // 验证当前密码
+    const isCurrentPasswordValid = await this.comparePassword(
+      currentPassword,
+      user.passwordHash,
+    );
+
+    if (!isCurrentPasswordValid) {
+      throw new BadRequestException('当前密码错误');
+    }
+
+    // 加密新密码
+    const passwordHash = await this.hashPassword(newPassword);
+
+    // 更新密码
+    await this.userRepository.update(userId, {
+      passwordHash,
+    });
+
+    return {
+      message: '密码修改成功',
+      success: true,
+    };
+  }
+
+  /**
+   * 邮箱验证
+   *
+   * @param verifyEmailRequest - 邮箱验证请求
+   * @returns Promise<VerifyEmailResponse> - 邮箱验证响应
+   */
+  async verifyEmail(
+    verifyEmailRequest: VerifyEmailRequest,
+  ): Promise<VerifyEmailResponse> {
+    const { verificationToken } = verifyEmailRequest;
+
+    // 从数据库查找并验证邮箱验证token
+    const user = await this.userRepository.findOne({
+      where: {
+        emailVerificationToken: verificationToken,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('邮箱验证token无效或已过期');
+    }
+
+    // 检查token是否过期
+    if (
+      user.emailVerificationExpiresAt &&
+      user.emailVerificationExpiresAt < new Date()
+    ) {
+      throw new BadRequestException('邮箱验证token已过期');
+    }
+
+    // 激活用户账户并清除验证token
+    await this.userRepository.update(user.id, {
+      status: UserStatus.ACTIVE,
+      emailVerified: true,
+      emailVerificationToken: undefined,
+      emailVerificationExpiresAt: undefined,
+    });
+
+    // 获取更新后的用户信息
+    const updatedUser = await this.userRepository.findOne({
+      where: { id: user.id },
+    });
+
+    if (!updatedUser) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    const userResponse = {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      name: updatedUser.name,
+      role: updatedUser.role,
+      status: updatedUser.status,
+      avatar: updatedUser.avatar,
+      createdAt: updatedUser.createdAt.toISOString(),
+      updatedAt: updatedUser.updatedAt.toISOString(),
+      lastLoginAt: updatedUser.lastLoginAt?.toISOString(),
+    };
+
+    return {
+      message: '邮箱验证成功',
+      success: true,
+      user: userResponse,
+    };
+  }
+
+  /**
+   * 用户登出
+   *
+   * @param userId - 用户ID
+   * @param logoutRequest - 登出请求选项
+   * @returns Promise<LogoutResponse> - 登出响应
+   */
+  async logout(
+    userId: string,
+    logoutRequest?: LogoutRequest,
+  ): Promise<LogoutResponse> {
+    // TODO: 实现token黑名单机制
+    // 目前简单返回成功消息，实际应用中需要：
+    // 1. 将refresh token加入黑名单
+    // 2. 如果选择登出所有设备，则撤销该用户的所有token
+
+    // 为了演示数据库操作，可以记录登出日志
+    // 更新用户最后活动时间
+    await this.userRepository.update(userId, {
+      // 这里可以添加登出时间记录字段
+      updatedAt: new Date(),
+    });
+
+    const allDevices = logoutRequest?.allDevices || false;
+    const message = allDevices ? '已登出所有设备' : '登出成功';
+
+    return {
+      message,
+      success: true,
+    };
+  }
+
+  /**
+   * 获取用户资料
+   *
+   * @param userId - 用户ID
+   * @returns Promise<User> - 用户信息
+   */
+  async getUserProfile(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    // 返回安全的用户信息（不包含敏感数据）
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      status: user.status,
+      avatar: user.avatar,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+      lastLoginAt: user.lastLoginAt?.toISOString(),
+    };
   }
 
   /**

@@ -59,7 +59,7 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 255,
+    length: 1024,
     nullable: true,
     comment: '邮箱验证令牌',
   })
@@ -75,7 +75,7 @@ export class User {
 
   @Column({
     type: 'varchar',
-    length: 255,
+    length: 1024,
     nullable: true,
     comment: '密码重置令牌',
   })

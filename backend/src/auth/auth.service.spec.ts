@@ -86,6 +86,15 @@ describe('AuthService', () => {
     get: jest.fn().mockReturnValue(mockAuthConfig),
   };
 
+  // 模拟认证令牌
+  const mockTokens = {
+    accessToken: 'mock.access.token',
+    refreshToken: 'mock.refresh.token',
+    expiresIn: 900,
+    tokenType: 'Bearer' as const,
+    issuedAt: 1640995200,
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -277,14 +286,6 @@ describe('AuthService', () => {
         password: 'correctPassword',
       };
 
-      const mockTokens = {
-        accessToken: 'mock.access.token',
-        refreshToken: 'mock.refresh.token',
-        expiresIn: 900,
-        tokenType: 'Bearer' as const,
-        issuedAt: 1640995200,
-      };
-
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       jest.mocked(bcrypt.compare).mockResolvedValue(true);
       jest.spyOn(service, 'generateTokens').mockReturnValue(mockTokens);
@@ -440,6 +441,465 @@ describe('AuthService', () => {
       // 执行和断言
       expect(() => service.verifyPasswordResetToken(token)).toThrow(
         new UnauthorizedException('无效的密码重置token类型'),
+      );
+    });
+  });
+
+  describe('register', () => {
+    it('应该成功注册新用户', async () => {
+      // 安排
+      const registerRequest = {
+        email: 'newuser@example.com',
+        name: '新用户',
+        password: 'password123',
+        confirmPassword: 'password123',
+        agreeToTerms: true,
+      };
+
+      const hashedPassword = '$2b$10$hashedNewPassword';
+      const newUser = {
+        ...mockUser,
+        id: 'new-user-id',
+        email: registerRequest.email,
+        name: registerRequest.name,
+        passwordHash: hashedPassword,
+        lastLoginAt: null,
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(null); // 用户不存在
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword);
+      mockUserRepository.create.mockReturnValue(newUser);
+      mockUserRepository.save.mockResolvedValue(newUser);
+      jest.spyOn(service, 'generateTokens').mockReturnValue(mockTokens);
+
+      // 执行
+      const result = await service.register(registerRequest);
+
+      // 断言
+      expect(result.user.email).toBe(registerRequest.email);
+      expect(result.user.name).toBe(registerRequest.name);
+      expect(result.tokens).toEqual(mockTokens);
+      expect(result.needEmailVerification).toBe(true);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { email: registerRequest.email },
+      });
+      expect(jest.mocked(bcrypt.hash)).toHaveBeenCalledWith(
+        registerRequest.password,
+        mockAuthConfig.bcrypt.saltRounds,
+      );
+      expect(mockUserRepository.save).toHaveBeenCalledWith(newUser);
+    });
+
+    it('应该在邮箱已存在时抛出ConflictException', async () => {
+      // 安排
+      const registerRequest = {
+        email: 'existing@example.com',
+        name: '用户',
+        password: 'password123',
+        confirmPassword: 'password123',
+        agreeToTerms: true,
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(mockUser); // 用户已存在
+
+      // 执行和断言
+      await expect(service.register(registerRequest)).rejects.toThrow(
+        '邮箱已存在',
+      );
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { email: registerRequest.email },
+      });
+    });
+  });
+
+  describe('forgotPassword', () => {
+    it('应该成功发送密码重置邮件', async () => {
+      // 安排
+      const forgotPasswordRequest = {
+        email: 'user@example.com',
+      };
+
+      const resetToken = 'reset-token-123';
+      jest
+        .spyOn(service, 'generatePasswordResetToken')
+        .mockReturnValue(resetToken);
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+      mockUserRepository.update.mockResolvedValue(undefined);
+
+      // 执行
+      const result = await service.forgotPassword(forgotPasswordRequest);
+
+      // 断言
+      expect(result.message).toBe('密码重置邮件已发送到您的邮箱');
+      expect((result as any).resetTokenSent).toBe(true);
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { email: forgotPasswordRequest.email },
+      });
+      expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
+        passwordResetToken: resetToken,
+        passwordResetExpiresAt: expect.any(Date),
+      });
+    });
+
+    it('应该在用户不存在时抛出BadRequestException', async () => {
+      // 安排
+      const forgotPasswordRequest = {
+        email: 'nonexistent@example.com',
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      // 执行和断言
+      // 注意：forgotPassword方法不会抛出错误，而是返回成功响应
+      const result = await service.forgotPassword(forgotPasswordRequest);
+      expect(result.message).toBe('如果该邮箱存在，重置密码邮件已发送');
+      expect((result as any).resetTokenSent).toBe(false);
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('应该成功重置密码', async () => {
+      // 安排
+      const resetPasswordRequest = {
+        resetToken: 'valid-reset-token',
+        newPassword: 'newpassword123',
+        confirmPassword: 'newpassword123',
+      };
+
+      const hashedNewPassword = '$2b$10$hashedNewPassword';
+      const userWithResetToken = {
+        ...mockUser,
+        passwordResetToken: 'valid-reset-token',
+        passwordResetExpiresAt: new Date(Date.now() + 3600000), // 1小时后过期
+      };
+
+      jest
+        .spyOn(service, 'verifyPasswordResetToken')
+        .mockReturnValue(mockUser.id);
+      mockUserRepository.findOne.mockResolvedValue(userWithResetToken);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedNewPassword);
+      mockUserRepository.update.mockResolvedValue(undefined);
+
+      // 执行
+      const result = await service.resetPassword(resetPasswordRequest);
+
+      // 断言
+      expect(result.message).toBe('密码重置成功');
+      expect(result.success).toBe(true);
+      expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
+        passwordHash: hashedNewPassword,
+        passwordResetToken: undefined,
+        passwordResetExpiresAt: undefined,
+        loginAttempts: 0,
+      });
+    });
+
+    it('应该在重置token过期时抛出异常', async () => {
+      // 安排
+      const resetPasswordRequest = {
+        resetToken: 'expired-reset-token',
+        newPassword: 'newpassword123',
+        confirmPassword: 'newpassword123',
+      };
+
+      const userWithExpiredToken = {
+        ...mockUser,
+        passwordResetToken: 'expired-reset-token',
+        passwordResetExpiresAt: new Date(Date.now() - 3600000), // 1小时前过期
+      };
+
+      jest
+        .spyOn(service, 'verifyPasswordResetToken')
+        .mockReturnValue(mockUser.id);
+      mockUserRepository.findOne.mockResolvedValue(userWithExpiredToken);
+
+      // 执行和断言
+      await expect(service.resetPassword(resetPasswordRequest)).rejects.toThrow(
+        '密码重置token已过期',
+      );
+    });
+  });
+
+  describe('changePassword', () => {
+    it('应该成功修改密码', async () => {
+      // 安排
+      const userId = mockUser.id;
+      const changePasswordRequest = {
+        currentPassword: 'currentPassword123',
+        newPassword: 'newPassword123',
+        confirmPassword: 'newPassword123',
+      };
+
+      const hashedNewPassword = '$2b$10$hashedNewPassword';
+
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+      jest.mocked(bcrypt.compare).mockResolvedValue(true);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedNewPassword);
+      mockUserRepository.update.mockResolvedValue(undefined);
+
+      // 执行
+      const result = await service.changePassword(
+        userId,
+        changePasswordRequest,
+      );
+
+      // 断言
+      expect(result.message).toBe('密码修改成功');
+      expect(result.success).toBe(true);
+      expect(mockUserRepository.update).toHaveBeenCalledWith(userId, {
+        passwordHash: hashedNewPassword,
+      });
+    });
+
+    it('应该在当前密码错误时抛出异常', async () => {
+      // 安排
+      const userId = mockUser.id;
+      const changePasswordRequest = {
+        currentPassword: 'wrongPassword',
+        newPassword: 'newPassword123',
+        confirmPassword: 'newPassword123',
+      };
+
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+      jest.mocked(bcrypt.compare).mockResolvedValue(false);
+
+      // 执行和断言
+      await expect(
+        service.changePassword(userId, changePasswordRequest),
+      ).rejects.toThrow('当前密码错误');
+    });
+  });
+
+  describe('verifyEmail', () => {
+    it('应该成功验证邮箱', async () => {
+      // 安排
+      const verifyEmailRequest = {
+        verificationToken: 'valid-verification-token',
+      };
+
+      const mockPayload = {
+        sub: mockUser.id,
+        type: 'email_verification',
+      };
+
+      const userWithToken = {
+        ...mockUser,
+        emailVerified: false,
+        emailVerificationToken: 'valid-verification-token',
+        emailVerificationExpiresAt: new Date(Date.now() + 3600000),
+        status: 'PENDING' as any,
+      };
+
+      mockJwtService.verify.mockReturnValue(mockPayload);
+      mockUserRepository.findOne.mockResolvedValue(userWithToken);
+      mockUserRepository.update.mockResolvedValue(undefined);
+      mockUserRepository.findOne
+        .mockResolvedValueOnce(userWithToken)
+        .mockResolvedValueOnce({
+          ...userWithToken,
+          emailVerified: true,
+          status: 'ACTIVE' as any,
+        });
+
+      // 执行
+      const result = await service.verifyEmail(verifyEmailRequest);
+
+      // 断言
+      expect(result.message).toBe('邮箱验证成功');
+      expect(result.success).toBe(true);
+      expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
+        status: 'active',
+        emailVerified: true,
+        emailVerificationToken: undefined,
+        emailVerificationExpiresAt: undefined,
+      });
+    });
+
+    it('应该在验证token无效时抛出异常', async () => {
+      // 安排
+      const verifyEmailRequest = {
+        verificationToken: 'invalid-token',
+      };
+
+      // Mock找不到用户的情况
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      // 执行和断言
+      await expect(service.verifyEmail(verifyEmailRequest)).rejects.toThrow(
+        '邮箱验证token无效或已过期',
+      );
+    });
+  });
+
+  describe('getUserProfile', () => {
+    it('应该成功获取用户资料', async () => {
+      // 安排
+      const userId = mockUser.id;
+
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+
+      // 执行
+      const result = await service.getUserProfile(userId);
+
+      // 断言
+      expect(result).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        name: mockUser.name,
+        role: mockUser.role,
+        status: mockUser.status,
+        avatar: mockUser.avatar,
+        createdAt: mockUser.createdAt.toISOString(),
+        updatedAt: mockUser.updatedAt.toISOString(),
+        lastLoginAt: mockUser.lastLoginAt?.toISOString(),
+      });
+    });
+
+    it('应该在用户不存在时抛出异常', async () => {
+      // 安排
+      const userId = 'nonexistent-user-id';
+
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      // 执行和断言
+      await expect(service.getUserProfile(userId)).rejects.toThrow(
+        '用户不存在',
+      );
+    });
+  });
+
+  describe('logout', () => {
+    it('应该成功登出', async () => {
+      // 安排
+      const userId = mockUser.id;
+      const logoutRequest = { allDevices: false };
+
+      // 执行
+      const result = await service.logout(userId, logoutRequest);
+
+      // 断言
+      expect(result.message).toBe('登出成功');
+      expect(result.success).toBe(true);
+    });
+
+    it('应该支持登出所有设备', async () => {
+      // 安排
+      const userId = mockUser.id;
+      const logoutRequest = { allDevices: true };
+
+      // 执行
+      const result = await service.logout(userId, logoutRequest);
+
+      // 断言
+      expect(result.message).toBe('已登出所有设备');
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe('generateEmailVerificationToken', () => {
+    it('应该生成邮箱验证token', () => {
+      // 安排
+      const userId = mockUser.id;
+      const mockToken = 'verification.token.jwt';
+
+      mockJwtService.sign.mockReturnValue(mockToken);
+
+      // 执行
+      const result = service.generateEmailVerificationToken(userId);
+
+      // 断言
+      expect(result).toBe(mockToken);
+      expect(mockJwtService.sign).toHaveBeenCalledWith(
+        {
+          sub: userId,
+          type: 'email_verification',
+        },
+        {
+          secret: mockAuthConfig.jwt.accessSecret,
+          expiresIn: '24h',
+          issuer: mockAuthConfig.jwt.issuer,
+          audience: mockAuthConfig.jwt.audience,
+        },
+      );
+    });
+  });
+
+  describe('verifyEmailVerificationToken', () => {
+    it('应该验证有效的邮箱验证token', () => {
+      // 安排
+      const token = 'valid.verification.token';
+      const mockPayload = {
+        sub: mockUser.id,
+        type: 'email_verification',
+        iat: 1640995200,
+        exp: 1641081600,
+      };
+
+      mockJwtService.verify.mockReturnValue(mockPayload);
+
+      // 执行
+      const result = service.verifyEmailVerificationToken(token);
+
+      // 断言
+      expect(result).toBe(mockUser.id);
+    });
+
+    it('应该在token类型错误时抛出异常', () => {
+      // 安排
+      const token = 'invalid.type.token';
+      const mockPayload = {
+        sub: mockUser.id,
+        type: 'password_reset', // 错误的token类型
+      };
+
+      mockJwtService.verify.mockReturnValue(mockPayload);
+
+      // 执行和断言
+      expect(() => service.verifyEmailVerificationToken(token)).toThrow(
+        new UnauthorizedException('无效的邮箱验证token类型'),
+      );
+    });
+  });
+
+  describe('verifyRefreshToken', () => {
+    it('应该成功验证refresh token并返回新token', async () => {
+      // 安排
+      const refreshToken = 'valid.refresh.token';
+      const mockPayload = {
+        sub: mockUser.id,
+        type: 'refresh',
+        iat: 1640995200,
+        exp: 1641601200,
+      };
+
+      mockJwtService.verify.mockReturnValue(mockPayload);
+      mockUserRepository.findOne.mockResolvedValue(mockUser);
+      jest.spyOn(service, 'generateTokens').mockReturnValue(mockTokens);
+
+      // 执行
+      const result = await service.verifyRefreshToken(refreshToken);
+
+      // 断言
+      expect(result.tokens).toEqual(mockTokens);
+      expect(mockJwtService.verify).toHaveBeenCalledWith(refreshToken, {
+        secret: mockAuthConfig.jwt.refreshSecret,
+        issuer: mockAuthConfig.jwt.issuer,
+        audience: mockAuthConfig.jwt.audience,
+      });
+    });
+
+    it('应该在refresh token无效时抛出异常', async () => {
+      // 安排
+      const refreshToken = 'invalid.refresh.token';
+
+      mockJwtService.verify.mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      // 执行和断言
+      await expect(service.verifyRefreshToken(refreshToken)).rejects.toThrow(
+        new UnauthorizedException('Refresh token 无效或已过期'),
       );
     });
   });

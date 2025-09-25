@@ -62,7 +62,7 @@ export class User {
 #### 2. 生成 Migration
 ```bash
 # 生成 migration（推荐使用语义化命名）
-pnpm --filter backend run migration:generate -- src/database/migrations/AddUserPhoneNumber
+pnpm --filter backend run migration:generate src/database/migrations/AddUserPhoneNumber
 ```
 
 #### 3. 检查生成的 Migration
@@ -107,10 +107,10 @@ pnpm --filter backend build
 
 ```bash
 # 生成 migration（基于实体变化）
-pnpm --filter backend run migration:generate -- src/database/migrations/MigrationName
+pnpm --filter backend run migration:generate src/database/migrations/MigrationName
 
 # 创建空白 migration（用于数据迁移等）
-pnpm --filter backend run migration:create -- src/database/migrations/MigrationName
+pnpm --filter backend run migration:create src/database/migrations/MigrationName
 
 # 执行待运行的 migrations
 pnpm --filter backend run migration:run
@@ -126,14 +126,14 @@ pnpm --filter backend run migration:show
 
 ```bash
 # 开发阶段：完整流程
-pnpm --filter backend run migration:generate -- src/database/migrations/AddNewFeature
+pnpm --filter backend run migration:generate src/database/migrations/AddNewFeature
 pnpm --filter backend run migration:run
 pnpm --filter backend run migration:show
 
 # 出错回滚
 pnpm --filter backend run migration:revert
 # 修复实体定义后重新生成
-pnpm --filter backend run migration:generate -- src/database/migrations/FixNewFeature
+pnpm --filter backend run migration:generate src/database/migrations/FixNewFeature
 ```
 
 ### 预留的多数据库命令
@@ -298,7 +298,7 @@ node -e "console.log(require('./typeorm.config.ts').default)"
 #### 1. 查看 Migration SQL
 ```bash
 # 生成 migration 时查看生成的 SQL
-pnpm run migration:generate -- src/database/migrations/TestMigration
+pnpm run migration:generate src/database/migrations/TestMigration
 
 # 查看生成的文件内容
 cat src/database/migrations/*-TestMigration.ts

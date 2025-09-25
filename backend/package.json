@@ -51,6 +51,8 @@
     "@types/pg": "^8.15.5",
     "@xiaodashi/shared": "workspace:*",
     "bcrypt": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
     "dotenv": "^17.2.2",
     "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
@@ -94,9 +96,12 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.ts$": ["ts-jest", {
-        "transpilation": true
-      }]
+      "^.+\\.ts$": [
+        "ts-jest",
+        {
+          "transpilation": true
+        }
+      ]
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"

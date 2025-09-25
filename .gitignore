@@ -57,7 +57,7 @@ yarn-error.log*
 
 # NestJS & Testing
 .nest/
-/coverage/
+**/coverage/
 
 # Generated files
 /backend/openapi.json
