@@ -20,10 +20,20 @@ export class UserProfile {
   @Index()
   userId: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true, comment: '用户手机号码' })
+  @Column({
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+    comment: '用户手机号码',
+  })
   phone?: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true, comment: '用户所在公司' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    comment: '用户所在公司',
+  })
   @Index()
   company?: string;
 
@@ -33,7 +43,12 @@ export class UserProfile {
   @Column({ type: 'text', nullable: true, comment: '用户个人简介' })
   bio?: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true, comment: '用户所在地区' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    nullable: true,
+    comment: '用户所在地区',
+  })
   location?: string;
 
   @Column({ type: 'text', nullable: true, comment: '用户个人网站或博客地址' })
@@ -49,7 +64,13 @@ export class UserProfile {
   updatedAt: Date;
 
   // 关联关系
-  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
+  @OneToOne(() => User, (user) => user.profile, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
+  @JoinColumn({
+    name: 'userId',
+    referencedColumnName: 'id',
+  })
   user: User;
 }

@@ -18,3 +18,4 @@
 - docs/project/backend/database-entity-guide.md: 数据库实体新增指南，按业务域组织架构下的完整操作步骤，包含新增表、创建新业务域、核心要点和常见问题解答
 - docs/project/backend/migration-best-practices.md: Migration最佳实践指南，涵盖TypeORM Migration基础概念、日常开发流程、常用命令、生产环境部署和问题排查等完整实践
 - docs/project/shared/README.md: @xiaodashi/shared包文档，提供前后端统一的TypeScript类型定义，包含认证、用户、API相关类型和使用指南
+- docs/project/backend/backend-development-guide.md: 后端开发编码规范，包含ES6模块导入、类型安全要求、Entity规范、API验证和错误处理等NestJS最佳实践

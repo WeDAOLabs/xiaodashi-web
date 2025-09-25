@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthModule } from './health/health.module';
+import { AuthModule } from './auth/auth.module';
 import { configs } from './config';
 import { entities } from './database/entities';
 
@@ -16,14 +17,21 @@ import { entities } from './database/entities';
 
     // 数据库模块
     TypeOrmModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        ...configService.get('database'),
-        entities,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const databaseConfig = configService.get('database') as Record<
+          string,
+          unknown
+        >;
+        return {
+          ...databaseConfig,
+          entities,
+        };
+      },
       inject: [ConfigService],
     }),
 
     HealthModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

@@ -14,7 +14,12 @@ export class Permission {
   @PrimaryGeneratedColumn('uuid', { comment: '权限唯一标识符' })
   id: string;
 
-  @Column({ type: 'varchar', length: 100, unique: true, comment: '权限名称，系统内唯一' })
+  @Column({
+    type: 'varchar',
+    length: 100,
+    unique: true,
+    comment: '权限名称，系统内唯一',
+  })
   @Index()
   name: string;
 

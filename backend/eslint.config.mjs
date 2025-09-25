@@ -31,4 +31,23 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-argument': 'warn'
     },
   },
+  // 测试文件特殊规则 - 只放宽框架Mock相关的类型检查
+  {
+    files: ['**/*.spec.ts', '**/*.test.ts', '**/test/**/*.ts'],
+    rules: {
+      // 放宽Mock和框架集成相关的类型检查
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/require-await': 'off',
+
+      // 但保持代码质量检查
+      '@typescript-eslint/no-unused-vars': 'error',
+      'prefer-const': 'error',
+
+      // 测试特定的放宽规则
+      '@typescript-eslint/no-non-null-assertion': 'off', // 测试中可以使用!断言
+    },
+  },
 );

@@ -18,7 +18,12 @@ export class User {
   @PrimaryGeneratedColumn('uuid', { comment: '用户唯一标识符' })
   id: string;
 
-  @Column({ type: 'varchar', length: 320, unique: true, comment: '用户邮箱地址，作为登录用户名' })
+  @Column({
+    type: 'varchar',
+    length: 320,
+    unique: true,
+    comment: '用户邮箱地址，作为登录用户名',
+  })
   @Index()
   email: string;
 
@@ -52,18 +57,36 @@ export class User {
   @Column({ type: 'boolean', default: false, comment: '邮箱是否已验证' })
   emailVerified: boolean;
 
-  @Column({ type: 'varchar', length: 255, nullable: true, comment: '邮箱验证令牌' })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    comment: '邮箱验证令牌',
+  })
   @Index()
   emailVerificationToken?: string;
 
-  @Column({ type: 'timestamptz', nullable: true, comment: '邮箱验证令牌过期时间' })
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+    comment: '邮箱验证令牌过期时间',
+  })
   emailVerificationExpiresAt?: Date;
 
-  @Column({ type: 'varchar', length: 255, nullable: true, comment: '密码重置令牌' })
+  @Column({
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+    comment: '密码重置令牌',
+  })
   @Index()
   passwordResetToken?: string;
 
-  @Column({ type: 'timestamptz', nullable: true, comment: '密码重置令牌过期时间' })
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+    comment: '密码重置令牌过期时间',
+  })
   passwordResetExpiresAt?: Date;
 
   @Column({ type: 'timestamptz', nullable: true, comment: '最后登录时间' })
@@ -73,7 +96,11 @@ export class User {
   @Column({ type: 'int', default: 0, comment: '登录失败尝试次数' })
   loginAttempts: number;
 
-  @Column({ type: 'timestamptz', nullable: true, comment: '账户锁定至指定时间' })
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+    comment: '账户锁定至指定时间',
+  })
   lockedUntil?: Date;
 
   @CreateDateColumn({ type: 'timestamptz', comment: '创建时间' })
@@ -84,7 +111,9 @@ export class User {
   updatedAt: Date;
 
   // 关联关系
-  @OneToOne(() => UserProfile, (profile) => profile.user, { cascade: true })
+  @OneToOne(() => UserProfile, (profile) => profile.user, {
+    cascade: ['insert', 'update'],
+  })
   profile: UserProfile;
 
   @OneToMany(() => UserSession, (session) => session.user, { cascade: true })

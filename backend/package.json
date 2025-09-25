@@ -19,26 +19,22 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "openapi:gen": "ts-node scripts/generate-openapi.ts",
-
     "migration:generate": "typeorm-ts-node-commonjs migration:generate -d typeorm.config.ts",
     "migration:create": "typeorm-ts-node-commonjs migration:create",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d typeorm.config.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d typeorm.config.ts",
     "migration:show": "typeorm-ts-node-commonjs migration:show -d typeorm.config.ts",
-
     "_comment_multi_db": "=== 预留多数据库 Migration 脚本（未来使用时取消注释） ===",
     "_migration:user:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/datasources/user.datasource.ts",
     "_migration:user:create": "typeorm-ts-node-commonjs migration:create",
     "_migration:user:run": "typeorm-ts-node-commonjs migration:run -d src/database/datasources/user.datasource.ts",
     "_migration:user:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/datasources/user.datasource.ts",
     "_migration:user:show": "typeorm-ts-node-commonjs migration:show -d src/database/datasources/user.datasource.ts",
-
     "_migration:auth:generate": "typeorm-ts-node-commonjs migration:generate -d src/database/datasources/auth.datasource.ts",
     "_migration:auth:create": "typeorm-ts-node-commonjs migration:create",
     "_migration:auth:run": "typeorm-ts-node-commonjs migration:run -d src/database/datasources/auth.datasource.ts",
     "_migration:auth:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/datasources/auth.datasource.ts",
     "_migration:auth:show": "typeorm-ts-node-commonjs migration:show -d src/database/datasources/auth.datasource.ts",
-
     "_migration:all:run": "npm run migration:user:run && npm run migration:auth:run",
     "_migration:all:show": "npm run migration:user:show && npm run migration:auth:show",
     "_migration:all:revert": "npm run migration:auth:revert && npm run migration:user:revert"
@@ -47,12 +43,16 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.0.1",
     "@nestjs/typeorm": "^11.0.0",
     "@types/pg": "^8.15.5",
     "@xiaodashi/shared": "workspace:*",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.2",
+    "passport-jwt": "^4.0.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
@@ -64,9 +64,11 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -92,12 +94,17 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.ts$": ["ts-jest", {
+        "transpilation": true
+      }]
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@xiaodashi/shared$": "<rootDir>/../../shared/dist/index.js"
+    }
   }
 }

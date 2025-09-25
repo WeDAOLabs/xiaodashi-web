@@ -90,4 +90,4 @@ function validateEnvironment() {
   }
 }
 
-bootstrap();
+void bootstrap();

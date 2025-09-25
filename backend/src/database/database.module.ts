@@ -8,9 +8,15 @@ import databaseConfig from './database.config';
     ConfigModule.forFeature(databaseConfig),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        ...configService.get('database'),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const databaseConfig = configService.get('database') as Record<
+          string,
+          unknown
+        >;
+        return {
+          ...databaseConfig,
+        };
+      },
       inject: [ConfigService],
     }),
   ],
