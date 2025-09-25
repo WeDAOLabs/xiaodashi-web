@@ -61,31 +61,32 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity('user_notifications')
+@Entity('user_notifications', { comment: '用户通知表' })
 export class UserNotification {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '通知唯一标识符' })
   id: string;
 
-  @Column({ type: 'uuid' })
+  @Column({ type: 'uuid', comment: '用户ID，关联到用户表' })
   userId: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, comment: '通知标题' })
   title: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', comment: '通知内容详情' })
   content: string;
 
   @Column({
     type: 'varchar',
     length: 20,
-    default: 'unread'
+    default: 'unread',
+    comment: '通知状态：unread-未读，read-已读，archived-已归档'
   })
   status: 'unread' | 'read' | 'archived';
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamptz', comment: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamptz', comment: '更新时间' })
   updatedAt: Date;
 
   // 关联关系
@@ -226,24 +227,24 @@ mkdir -p backend/src/database/entities/business
 // backend/src/database/entities/business/order.entity.ts
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
-@Entity('orders')
+@Entity('orders', { comment: '订单表' })
 export class Order {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('uuid', { comment: '订单唯一标识符' })
   id: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 50, comment: '订单编号' })
   orderNumber: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, comment: '订单总金额' })
   totalAmount: number;
 
-  @Column({ type: 'varchar', length: 20, default: 'pending' })
+  @Column({ type: 'varchar', length: 20, default: 'pending', comment: '订单状态：pending-待支付，paid-已支付，shipped-已发货，delivered-已送达，cancelled-已取消' })
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamptz', comment: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamptz', comment: '更新时间' })
   updatedAt: Date;
 }
 ```
@@ -363,12 +364,18 @@ export interface UpdateOrderRequest {
    - 实体文件 → 域导出 → 主导出 → 共享类型
    - 每一层都要更新，确保完整性
 
-3. **使用 Migration 管理数据库变更**
+3. **必须添加 comment 字段**
+   - Entity 装饰器必须包含 comment 参数，描述表的用途
+   - 每个 Column 装饰器必须包含 comment 参数，描述字段含义
+   - comment 使用中文，清晰描述字段用途和可能的枚举值
+   - 遵循可读性优于简洁性原则，让代码更易理解
+
+4. **使用 Migration 管理数据库变更**
    - 总是使用 `migration:generate` 自动生成
    - 检查生成的 SQL 是否符合预期
    - 先在开发环境测试
 
-4. **完整测试验证**
+5. **完整测试验证**
    - Backend 构建测试
    - Shared 包构建测试
    - Frontend 类型检查
