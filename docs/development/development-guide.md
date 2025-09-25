@@ -1,4 +1,4 @@
-# 开发指南
+# 肖大师营销大师 Web 开发指南
 
 ## 环境搭建
 
@@ -6,9 +6,20 @@
 
 - **Node.js**: 20.x LTS 或更高版本
 - **包管理器**: pnpm 8.x (推荐)
-- **数据库**: PostgreSQL 16.x
-- **缓存**: Redis 7.x
+- **数据库**: PostgreSQL 16.x 或 17.x
+- **缓存**: Redis 7.x（可选，当前使用 PostgreSQL 作为缓存）
 - **Git**: 2.x 或更高版本
+
+### 项目架构 (Monorepo)
+
+```
+xiaodashi-web/
+├── frontend/           # 主网站 (Next.js) - :3000
+├── frontend-app/       # 管理后台 (Next.js) - :3001
+├── frontend-app-demo/  # 演示应用 (Next.js)
+├── backend/           # API 服务 (NestJS) - :2999
+└── shared/            # 共享类型库 (TypeScript)
+```
 
 ### 开发环境安装
 
@@ -34,24 +45,46 @@ cp backend/.env.example backend/.env
 
 #### 4. 数据库设置
 ```bash
-# 启动 PostgreSQL 和 Redis (使用 Docker)
-docker-compose up -d postgres redis
+# 启动 PostgreSQL (使用 Docker 或本地安装)
+docker-compose up -d postgres
 
 # 运行数据库迁移
 cd backend
-pnpm prisma migrate dev
-pnpm prisma db seed
+# 使用 TypeORM 迁移
+pnpm run migration:run
 ```
 
 #### 5. 启动开发服务器
-```bash
-# 启动后端服务
-cd backend
-pnpm dev
 
-# 启动前端服务 (新终端)
-cd frontend
-pnpm dev
+使用 Monorepo 统一命令（从项目根目录执行）：
+
+```bash
+# 启动后端 API 服务 (http://localhost:2999)
+pnpm run dev:backend
+
+# 启动主网站 (http://localhost:3000)
+pnpm run dev:frontend
+
+# 启动管理后台 (http://localhost:3001)
+pnpm run dev:frontend-app
+
+# 启动演示应用
+pnpm run dev:frontend-app-demo
+
+# 构建共享类型库 (当 shared 类型变更时优先执行)
+pnpm run build:shared
+```
+
+#### 6. 代码质量检查
+```bash
+# 前端代码检查
+pnpm run lint                    # 所有前端项目
+pnpm run lint:frontend           # 主网站
+pnpm run lint:frontend-app       # 管理后台
+
+# 后端代码检查和格式化
+pnpm --filter backend lint       # 包含自动修复
+pnpm --filter backend format     # Prettier 格式化
 ```
 
 ## 开发规范
@@ -146,29 +179,88 @@ Closes #123
 
 ## 后端开发指南
 
-### NestJS 应用结构
+### NestJS 11.0.1 应用结构
 
-NestJS 强制使用一种有组织的、基于模块的架构。核心概念包括模块（Modules）、控制器（Controllers）和服务（Services）。
+项目使用 NestJS 11.0.1 + TypeScript 5.7.3，采用模块化架构：
 
-- **模块 (`@Module`)**: 用于组织应用结构。每个应用至少有一个根模块 (`AppModule`)。
-- **控制器 (`@Controller`)**: 负责处理传入的请求和向客户端返回响应。通过装饰器（如 `@Get`, `@Post`）将路由绑定到处理方法。
-- **服务 (`@Injectable`)**: 负责处理业务逻辑。服务是“可注入的”，意味着可以被控制器或其他服务依赖。
+- **模块 (`@Module`)**: 组织应用结构，根模块 `AppModule`
+- **控制器 (`@Controller`)**: 处理 HTTP 请求，路由绑定
+- **服务 (`@Injectable`)**: 业务逻辑处理，依赖注入
 
-#### 应用入口文件 (`main.ts`)
+### 当前项目结构
+
+```
+backend/
+├── src/
+│   ├── app.module.ts           # 根模块
+│   ├── main.ts                 # 应用入口，端口 2999
+│   ├── config/                 # 配置文件
+│   │   ├── app.config.ts
+│   │   ├── auth.config.ts
+│   │   └── security.config.ts
+│   ├── database/               # 数据库配置
+│   │   ├── database.config.ts
+│   │   └── entities/           # TypeORM 实体
+│   │       ├── user/           # 用户模块实体
+│   │       └── auth/           # 认证模块实体
+│   ├── health/                 # 健康检查
+│   └── common/                 # 共享组件
+└── test/                       # 测试文件
+```
+
+#### 实际应用入口文件 (`main.ts`)
 ```typescript
 import { NestFactory } from '@nestjs/core';
+import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // 设置全局 API 前缀, e.g., /api/v1
-  app.setGlobalPrefix('api/v1');
-  
-  // 启用 CORS
-  app.enableCors();
-  
-  await app.listen(process.env.PORT || 3001);
+  const configService = app.get(ConfigService);
+  const logger = new Logger('Bootstrap');
+
+  const appConfig = configService.get('app');
+  const securityConfig = configService.get('security');
+
+  // 全局验证管道
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
+
+  // API 路径前缀
+  if (appConfig?.apiPrefix) {
+    app.setGlobalPrefix(appConfig.apiPrefix);
+  }
+
+  // CORS 配置
+  app.enableCors({
+    origin: securityConfig?.cors.origins || ['http://localhost:3000'],
+    credentials: securityConfig?.cors.credentials || true,
+  });
+
+  // Swagger 文档配置
+  if (appConfig?.swagger.enabled) {
+    const config = new DocumentBuilder()
+      .setTitle(`${appConfig.name} API`)
+      .setDescription('肖大师营销大师 Web API 文档')
+      .setVersion(appConfig.version)
+      .addBearerAuth()
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup(appConfig.swagger.path, app, document);
+  }
+
+  // 启动应用 - 端口 2999
+  await app.listen(appConfig?.port || 2999);
+
+  logger.log(`🚀 应用启动成功！`);
+  logger.log(`🌐 服务地址: http://localhost:${appConfig?.port || 2999}`);
 }
 bootstrap();
 ```
@@ -192,14 +284,23 @@ export class UserController {
 #### 服务层模式 (`*.service.ts`)
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service'; // 假设 Prisma 服务已创建
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../database/entities/user/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+  ) {}
 
   async findAll() {
-    const users = await this.prisma.user.findMany();
+    const users = await this.userRepository.find({
+      select: ['id', 'email', 'name', 'createdAt'],
+      order: { createdAt: 'DESC' },
+    });
+
     // 遵循统一响应格式
     return {
       success: true,
@@ -212,56 +313,68 @@ export class UserService {
 }
 ```
 
-### 数据库操作 (Prisma)
+### 数据库操作 (TypeORM 0.3.27)
 
-NestJS 与 Prisma 的集成非常成熟。通常会创建一个 `PrismaModule` 和 `PrismaService` 来在整个应用中共享数据库连接。
+项目使用 TypeORM 0.3.27 与 NestJS 11.0.1 深度集成，支持 PostgreSQL。
 
-#### Schema 定义
-```prisma
-// prisma/schema.prisma
-generator client {
-  provider = "prisma-client-js"
-}
+#### 实体定义示例
+```typescript
+// src/database/entities/user/user.entity.ts
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @Column({ unique: true })
+  email: string;
 
-  @@map("users")
-}
+  @Column()
+  name: string;
 
-enum Role {
-  USER
-  ADMIN
-  MODERATOR
+  @Column()
+  password: string;
+
+  @Column({ type: 'enum', enum: ['USER', 'ADMIN', 'MODERATOR'], default: 'USER' })
+  role: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
 ```
 
-#### 数据库迁移
+#### 数据库迁移 (TypeORM)
 ```bash
-# 创建迁移
-npx prisma migrate dev --name add_user_table
+# 生成迁移
+pnpm run migration:generate --name AddUserTable
 
-# 应用迁移
-npx prisma migrate deploy
+# 运行迁移
+pnpm run migration:run
 
-# 生成 Prisma Client
-npx prisma generate
+# 回滚迁移
+pnpm run migration:revert
+
+# 查看迁移状态
+pnpm run migration:show
 ```
 
-### 数据验证 (Pipes & DTOs)
+#### 已配置的实体模块
+- **用户模块**: User、UserProfile、UserSession、UserLoginLog
+- **权限模块**: Permission、RolePermission
 
-NestJS 使用管道（Pipes）和数据传输对象（DTOs）来处理输入验证，通常与 `class-validator` 和 `class-transformer` 库结合使用。
+### 数据验证 (DTOs & Validation)
+
+项目计划使用 `class-validator` 和 `class-transformer` 进行数据验证（待实现）。
 
 #### 创建 DTO (`create-user.dto.ts`)
 ```typescript
@@ -300,7 +413,12 @@ export class UserController {
 
 ## 测试指南
 
-### 前端测试
+### 前端测试 (待配置)
+
+**推荐技术栈**: Jest + React Testing Library
+- Jest 是 React 官方推荐的测试框架
+- React Testing Library 专注于用户行为测试
+- 与 Next.js 集成良好
 
 #### 组件测试
 ```typescript
@@ -348,7 +466,22 @@ describe('useAuth', () => {
 });
 ```
 
-### 后端测试
+### 后端测试 (Jest 30.0.0 + Supertest 7.0.0)
+
+**当前配置**: 已配置完整的测试环境
+```bash
+# 运行测试
+pnpm --filter backend test
+
+# 监视模式
+pnpm --filter backend test:watch
+
+# 测试覆盖率
+pnpm --filter backend test:cov
+
+# E2E 测试
+pnpm --filter backend test:e2e
+```
 
 #### 单元测试
 ```typescript
@@ -393,54 +526,63 @@ describe('UserService', () => {
 });
 ```
 
-#### 集成测试
+#### E2E 测试示例
 ```typescript
-// tests/integration/auth.test.ts
-import request from 'supertest';
-import app from '../../src/app';
+// test/auth.e2e-spec.ts
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { AppModule } from './../src/app.module';
 
-describe('Auth API', () => {
-  describe('POST /api/v1/auth/login', () => {
-    it('should login with valid credentials', async () => {
-      const response = await request(app)
-        .post('/api/v1/auth/login')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-        });
+describe('AuthController (e2e)', () => {
+  let app: INestApplication;
 
-      expect(response.status).toBe(200);
-      expect(response.body.success).toBe(true);
-      expect(response.body.data.token).toBeDefined();
-    });
+  beforeEach(async () => {
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
-    it('should return error with invalid credentials', async () => {
-      const response = await request(app)
-        .post('/api/v1/auth/login')
-        .send({
-          email: 'test@example.com',
-          password: 'wrongpassword',
-        });
+    app = moduleFixture.createNestApplication();
+    await app.init();
+  });
 
-      expect(response.status).toBe(401);
-      expect(response.body.success).toBe(false);
-    });
+  it('/auth/login (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'test@example.com',
+        password: 'password123',
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.success).toBe(true);
+        expect(res.body.data.token).toBeDefined();
+      });
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 });
 ```
 
-## 部署指南
+## 部署指南 (待配置)
 
-### 开发环境部署
+### 推荐部署方案
 
-#### Docker Compose 配置
+- **容器化**: Docker + Docker Compose
+- **反向代理**: Nginx
+- **进程管理**: PM2
+- **错误监控**: Sentry
+
+### 开发环境 Docker Compose 示例
 ```yaml
 # docker-compose.dev.yml
 version: '3.8'
 
 services:
   postgres:
-    image: postgres:15
+    image: postgres:16
     environment:
       POSTGRES_DB: xiaodashi_dev
       POSTGRES_USER: postgres
@@ -450,6 +592,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  # Redis 可选，当前使用 PostgreSQL 作为缓存
   redis:
     image: redis:7-alpine
     ports:
@@ -460,17 +603,16 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     ports:
-      - "8000:8000"
+      - "2999:2999"  # 更新端口
     environment:
       - NODE_ENV=development
+      - PORT=2999
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/xiaodashi_dev
-      - REDIS_URL=redis://redis:6379
     volumes:
       - ./backend:/app
       - /app/node_modules
     depends_on:
       - postgres
-      - redis
 
   frontend:
     build:
@@ -479,9 +621,23 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+      - NEXT_PUBLIC_API_URL=http://localhost:2999/api
     volumes:
       - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  frontend-app:
+    build:
+      context: ./frontend-app
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:2999/api
+    volumes:
+      - ./frontend-app:/app
       - /app/node_modules
     depends_on:
       - backend
@@ -490,55 +646,68 @@ volumes:
   postgres_data:
 ```
 
-#### 启动开发环境
+#### 开发环境命令
 ```bash
 # 启动所有服务
 docker-compose -f docker-compose.dev.yml up -d
 
 # 查看日志
-docker-compose -f docker-compose.dev.yml logs -f
+docker-compose -f docker-compose.dev.yml logs -f backend
+
+# 重建并启动
+docker-compose -f docker-compose.dev.yml up --build
 
 # 停止服务
 docker-compose -f docker-compose.dev.yml down
+
+# 清理数据卷
+docker-compose -f docker-compose.dev.yml down -v
 ```
 
 ### 生产环境部署
 
-#### 生产 Dockerfile
+#### 生产 Dockerfile 示例
 ```dockerfile
 # backend/Dockerfile
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
+
+# 安装 pnpm
+RUN npm install -g pnpm@8
 
 WORKDIR /app
-COPY package*.json ./
-RUN pnpm install --prod --frozen-lockfile
+COPY package*.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --prod
 
 COPY . .
 RUN pnpm run build
 
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
+
+RUN npm install -g pnpm@8
 
 WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
-EXPOSE 8000
-CMD ["pnpm", "start"]
+EXPOSE 2999
+CMD ["pnpm", "run", "start:prod"]
 ```
 
 ```dockerfile
-# frontend/Dockerfile
-FROM node:18-alpine AS builder
+# frontend/Dockerfile (主网站)
+FROM node:20-alpine AS builder
+
+RUN npm install -g pnpm@8
 
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm run build
 
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 
 WORKDIR /app
 COPY --from=builder /app/.next/standalone ./
@@ -549,9 +718,38 @@ EXPOSE 3000
 CMD ["node", "server.js"]
 ```
 
+```dockerfile
+# frontend-app/Dockerfile (管理后台)
+FROM node:20-alpine AS builder
+
+RUN npm install -g pnpm@8
+
+WORKDIR /app
+COPY package*.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+RUN pnpm run build
+
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+EXPOSE 3001
+CMD ["node", "server.js"]
+```
+
 ## 性能优化
 
-### 前端优化
+### 前端优化 (Next.js 15 + Turbopack)
+
+**当前优化**:
+- 使用 Turbopack 加速开发构建
+- Next.js 15 内置性能优化
+- Tailwind CSS v4 更小运行时开销
 
 #### 代码分割
 ```typescript
@@ -585,35 +783,49 @@ const OptimizedImage = () => {
 };
 ```
 
-### 后端优化
+### 后端优化 (NestJS + TypeORM)
 
 #### 数据库查询优化
 ```typescript
-// 使用 Prisma 的 select 和 include
-const users = await prisma.user.findMany({
-  select: {
-    id: true,
-    name: true,
-    email: true,
-    posts: {
-      select: {
-        id: true,
-        title: true,
-      },
-    },
-  },
+// 使用 TypeORM 的 select 和 relations
+const users = await this.userRepository.find({
+  select: ['id', 'name', 'email', 'createdAt'],
+  relations: ['profile'],
   where: {
     active: true,
   },
-  orderBy: {
-    createdAt: 'desc',
+  order: {
+    createdAt: 'DESC',
   },
   take: 20,
+  skip: (page - 1) * 20,
 });
+
+// 使用 QueryBuilder 复杂查询
+const users = await this.userRepository
+  .createQueryBuilder('user')
+  .leftJoinAndSelect('user.profile', 'profile')
+  .where('user.active = :active', { active: true })
+  .orderBy('user.createdAt', 'DESC')
+  .limit(20)
+  .getMany();
 ```
 
-#### 缓存策略
+#### 连接池优化
 ```typescript
+// database.config.ts 中已配置
+extra: {
+  connectionLimit: 10,
+  acquireTimeout: 60000,
+  timeout: 60000,
+},
+```
+
+#### 缓存策略 (待实现)
+```typescript
+// 当前使用 PostgreSQL 作为缓存
+// 后续可集成 Redis
+
 import Redis from 'ioredis';
 
 const redis = new Redis(process.env.REDIS_URL);
@@ -621,14 +833,14 @@ const redis = new Redis(process.env.REDIS_URL);
 export const getCachedUsers = async () => {
   const cacheKey = 'users:list';
   const cached = await redis.get(cacheKey);
-  
+
   if (cached) {
     return JSON.parse(cached);
   }
-  
+
   const users = await userService.getUsers();
   await redis.setex(cacheKey, 300, JSON.stringify(users)); // 5 分钟缓存
-  
+
   return users;
 };
 ```
@@ -665,9 +877,11 @@ function App() {
 }
 ```
 
-### 日志记录
+### 日志记录 (待实现)
+
+**推荐方案**: Winston
 ```typescript
-// 后端日志中间件
+// 后端日志配置示例
 import winston from 'winston';
 
 const logger = winston.createLogger({
@@ -678,40 +892,58 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'logs/combined.log' }),
+    new winston.transports.Console({
+      format: winston.format.simple()
+    }),
   ],
 });
 
+// NestJS 中间件
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     logger.info({
       method: req.method,
       url: req.url,
       status: res.statusCode,
-      duration,
+      duration: `${duration}ms`,
       userAgent: req.get('User-Agent'),
+      timestamp: new Date().toISOString(),
     });
   });
-  
+
   next();
 };
 ```
 
 ## 总结
 
-本开发指南涵盖了智商180的AI全域营销大师 Web 项目的完整开发流程，包括：
+本开发指南涵盖了肖大师营销大师 Web 项目的完整开发流程：
 
-1. **环境搭建**: 详细的开发环境配置步骤
-2. **开发规范**: 代码风格、命名规范、Git 工作流
-3. **前端开发**: React 组件、状态管理、样式开发、API 集成
-4. **后端开发**: NestJS 应用结构、数据库操作、DTO 及验证管道
-5. **测试指南**: 前端和后端的测试策略
-6. **部署指南**: 开发和生产环境的部署方案
-7. **性能优化**: 前后端性能优化技巧
-8. **监控日志**: 错误监控和日志记录
+### 已完成配置
+1. **Monorepo 架构**: pnpm workspaces 管理 5 个子包
+2. **后端框架**: NestJS 11.0.1 + TypeScript 5.7.3 + TypeORM 0.3.27
+3. **前端框架**: Next.js 15.5.2 + React 19.1.0 + Tailwind CSS 4.1.13
+4. **数据库**: PostgreSQL 连接配置和实体定义
+5. **测试环境**: Jest 30.0.0 + Supertest 7.0.0 (后端)
+6. **开发工具**: ESLint 9.x + Prettier (后端)
 
-遵循这些指南可以确保项目的代码质量、可维护性和性能表现。建议团队成员仔细阅读并严格执行这些规范。
+### 待实现功能
+1. **认证系统**: JWT + bcrypt
+2. **数据验证**: class-validator + class-transformer
+3. **前端状态**: Zustand + TanStack Query
+4. **HTTP 客户端**: Axios
+5. **日志系统**: Winston
+6. **部署配置**: Docker + CI/CD
+
+### 开发优先级
+1. 先完成认证系统和核心业务功能
+2. 关键业务逻辑优先编写测试
+3. 及时更新 API 文档和组件文档
+4. 充分利用 TypeScript 和 ESLint 保证代码质量
+
+遵循这些指南可以确保项目的代码质量、可维护性和性能表现。
