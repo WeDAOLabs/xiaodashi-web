@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import type { Request } from 'express';
 import {
   AuthToken,
   JWTPayload,
@@ -32,6 +33,7 @@ import {
   UserRole,
 } from '@xiaodashi/shared';
 import { User } from '../database/entities/user/user.entity';
+import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
 
 /**
@@ -51,6 +53,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserLoginLog)
+    private readonly userLoginLogRepository: Repository<UserLoginLog>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {
@@ -191,14 +195,96 @@ export class AuthService {
   }
 
   /**
+   * 提取设备信息
+   *
+   * @param request - Express请求对象
+   * @returns 设备信息对象
+   * @private
+   */
+  private extractDeviceInfo(request: Request) {
+    const userAgent = request.headers['user-agent'] || '';
+    const ipAddress = this.getClientIP(request);
+
+    return {
+      userAgent,
+      ipAddress,
+      location: undefined, // TODO: 可以集成IP地理位置服务
+    };
+  }
+
+  /**
+   * 获取客户端真实IP地址
+   *
+   * @param request - Express请求对象
+   * @returns 客户端IP地址
+   * @private
+   */
+  private getClientIP(request: Request): string {
+    return (
+      (request.headers['x-forwarded-for'] as string)?.split(',')[0] ||
+      (request.headers['x-real-ip'] as string) ||
+      request.connection?.remoteAddress ||
+      request.socket?.remoteAddress ||
+      ''
+    );
+  }
+
+  /**
+   * 记录登录日志
+   *
+   * @param email - 登录邮箱
+   * @param userId - 用户ID（可选，登录失败时为空）
+   * @param success - 登录是否成功
+   * @param deviceInfo - 设备信息
+   * @param failureReason - 登录失败原因（可选）
+   * @private
+   */
+  private async logLoginAttempt(
+    email: string,
+    userId: string | undefined,
+    success: boolean,
+    deviceInfo: {
+      userAgent: string;
+      ipAddress: string;
+      location?: string;
+    },
+    failureReason?: string,
+  ): Promise<void> {
+    try {
+      const loginLog = this.userLoginLogRepository.create({
+        userId,
+        email,
+        ipAddress: deviceInfo.ipAddress,
+        userAgent: deviceInfo.userAgent,
+        location: deviceInfo.location,
+        success,
+        failureReason,
+      });
+      await this.userLoginLogRepository.save(loginLog);
+    } catch (error) {
+      // 登录日志记录失败不应影响正常登录流程
+      console.error('登录日志记录失败:', error);
+    }
+  }
+
+  /**
    * 用户登录验证
    *
    * @param loginRequest - 登录请求参数（邮箱、密码等）
+   * @param request - Express请求对象（用于提取设备信息）
    * @returns Promise<LoginResponse> - 登录响应（用户信息和token）
    * @throws UnauthorizedException - 邮箱不存在或密码错误时抛出
    */
-  async login(loginRequest: LoginRequest): Promise<LoginResponse> {
+  async login(
+    loginRequest: LoginRequest,
+    request?: Request,
+  ): Promise<LoginResponse> {
     const { email, password } = loginRequest;
+
+    // 提取设备信息
+    const deviceInfo = request
+      ? this.extractDeviceInfo(request)
+      : { userAgent: '', ipAddress: '', location: undefined };
 
     // 查找用户
     const user = await this.userRepository.findOne({
@@ -206,6 +292,14 @@ export class AuthService {
     });
 
     if (!user) {
+      // 记录登录失败日志
+      await this.logLoginAttempt(
+        email,
+        undefined,
+        false,
+        deviceInfo,
+        '用户不存在',
+      );
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
@@ -215,6 +309,11 @@ export class AuthService {
       user.passwordHash,
     );
     if (!isPasswordValid) {
+      // 增加失败次数并记录日志
+      await this.userRepository.update(user.id, {
+        loginAttempts: user.loginAttempts + 1,
+      });
+      await this.logLoginAttempt(email, user.id, false, deviceInfo, '密码错误');
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
@@ -226,6 +325,9 @@ export class AuthService {
       lastLoginAt: new Date(),
       loginAttempts: 0, // 成功登录后重置失败次数
     });
+
+    // 记录登录成功日志
+    await this.logLoginAttempt(email, user.id, true, deviceInfo);
 
     // 构造响应（不包含敏感信息）
     const userResponse: LoginResponse['user'] = {

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { configs } from './config';
@@ -29,6 +30,14 @@ import { entities } from './database/entities';
       },
       inject: [ConfigService],
     }),
+
+    // 限流模块
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 时间窗口：60秒
+        limit: 10, // 默认限制：每分钟10次请求
+      },
+    ]),
 
     HealthModule,
     AuthModule,

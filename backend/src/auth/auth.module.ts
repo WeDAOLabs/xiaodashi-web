@@ -8,6 +8,7 @@ import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { User } from '../database/entities/user/user.entity';
+import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
 
 /**
@@ -54,8 +55,8 @@ import { AuthConfig } from '../config/auth.config';
       inject: [ConfigService],
     }),
 
-    // TypeORM模块 - 注册User实体以供AuthService使用
-    TypeOrmModule.forFeature([User]),
+    // TypeORM模块 - 注册User和UserLoginLog实体以供AuthService使用
+    TypeOrmModule.forFeature([User, UserLoginLog]),
   ],
 
   controllers: [

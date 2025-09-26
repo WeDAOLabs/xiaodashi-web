@@ -10,7 +10,8 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { Request as ExpressRequest } from 'express';
+import type { Request as ExpressRequest } from 'express';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiOperation,
@@ -78,10 +79,13 @@ export class AuthController {
    * 用户登录
    */
   @Post('login')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 5, ttl: 300000 } }) // 5分钟内最多5次登录尝试
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: '用户登录',
-    description: '使用邮箱和密码登录，返回JWT双token',
+    description:
+      '使用邮箱和密码登录，返回JWT双token。为防止暴力破解，5分钟内限制5次尝试。',
   })
   @ApiBody({ type: LoginDto, description: '登录信息' })
   @ApiResponse({
@@ -92,8 +96,15 @@ export class AuthController {
     status: 401,
     description: '邮箱或密码错误',
   })
-  async login(@Body() loginRequest: LoginDto): Promise<LoginResponse> {
-    return this.authService.login(loginRequest);
+  @ApiResponse({
+    status: 429,
+    description: '请求过于频繁，请稍后再试',
+  })
+  async login(
+    @Body() loginRequest: LoginDto,
+    @Request() req: ExpressRequest,
+  ): Promise<LoginResponse> {
+    return this.authService.login(loginRequest, req);
   }
 
   /**
