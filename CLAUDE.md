@@ -147,7 +147,8 @@ pnpm --filter frontend-app build      # 验证构建无错误
 ## 通用配置
 
 ### 指令集 - 前缀 "/"
-   - faq-save: 使用 faq-agent-writer 整理并记录当前问题到FAQ中，以方便后续查询
+   - faq-save: 使用 faq-record-assistant 整理并记录当前问题到FAQ中，以方便后续查询
+   - faq-query: 使用 faq-query-assistant 查询问题
 
 ### 工具集
    - 访问网站内容：不要使用内置工具 Fetch，要使用agent：website-visitor 访问网站内容
