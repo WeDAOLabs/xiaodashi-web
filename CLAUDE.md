@@ -112,7 +112,7 @@ pnpm --filter frontend-app build      # 验证构建无错误
 - If you get TypeScript errors about shared types, ensure the shared package is built first
 - Backend now runs on port 2999 to avoid conflicts with frontend-app (port 3001)
 - The project uses Turbopack for faster Next.js builds (--turbopack flag)
-- frontend-app 测试用户名：zhangsan@example.com 密码:111111
+- frontend-app 测试用户名：zhangsan@example.com 密码:password123
 - ui界面组件优先使用 shadcn/ui, 可以使用shadcn工具查询.每次查询一个组件.如果在查询组件时遇到网络错误,可以尝试重试一次.
 
 ## Tailwind CSS v4 开发规范 🚨

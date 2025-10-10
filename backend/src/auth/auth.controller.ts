@@ -70,7 +70,7 @@ interface AuthenticatedRequest extends ExpressRequest {
  * - 用户登出
  */
 @ApiTags('认证管理')
-@Controller('api/v1/auth')
+@Controller('v1/auth')
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

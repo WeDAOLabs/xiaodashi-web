@@ -55,7 +55,7 @@ interface AuthenticatedRequest extends Request {
  * 所有接口均需要JWT认证
  */
 @ApiTags('会话管理')
-@Controller('api/v1/sessions')
+@Controller('v1/sessions')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))

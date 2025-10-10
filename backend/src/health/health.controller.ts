@@ -3,7 +3,7 @@ import { HealthService } from './health.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Health') // 在 Swagger UI 中为接口分组
-@Controller('api/v1/health')
+@Controller('v1/health')
 export class HealthController {
   constructor(private readonly healthService: HealthService) {}
 
