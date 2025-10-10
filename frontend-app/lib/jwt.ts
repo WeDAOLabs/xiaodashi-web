@@ -29,7 +29,21 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
     // 验证 JWT
     const { payload } = await jwtVerify(token, secret);
 
-    return payload as JWTPayload;
+    // 类型安全转换：验证必需字段是否存在
+    if (
+      payload &&
+      typeof payload.sub === 'string' &&
+      typeof payload.email === 'string' &&
+      typeof payload.name === 'string' &&
+      typeof payload.role === 'string' &&
+      typeof payload.iat === 'number' &&
+      typeof payload.exp === 'number'
+    ) {
+      return payload as unknown as JWTPayload;
+    }
+
+    console.error('JWT Payload 格式无效，缺少必需字段');
+    return null;
   } catch (error) {
     if (error instanceof Error) {
       if (error.message.includes('expired')) {
