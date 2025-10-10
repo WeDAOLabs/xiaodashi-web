@@ -4,6 +4,7 @@
  */
 
 import { User, UserRole } from './user';
+import type { DeviceInfo, SessionInfo } from './session';
 
 // JWT令牌信息
 export interface AuthToken {
@@ -167,44 +168,14 @@ export interface LogoutResponse {
   success: boolean;
 }
 
-// 会话信息
-export interface SessionInfo {
-  sessionId: string;
-  userId: string;
-  deviceInfo: DeviceInfo;
-  ipAddress: string;
-  userAgent: string;
-  createdAt: string;
-  lastActiveAt: string;
-  isActive: boolean;
-}
-
-// 设备信息
-export interface DeviceInfo {
-  deviceId: string;
-  deviceName: string;
-  deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown';
-  os: string;
-  browser: string;
-  location?: string;       // 大概的地理位置
-}
-
-// 获取会话列表响应
-export interface SessionListResponse {
-  sessions: SessionInfo[];
-  currentSessionId: string;
-}
-
-// 撤销会话请求
-export interface RevokeSessionRequest {
-  sessionId: string;
-}
-
-// 撤销会话响应
-export interface RevokeSessionResponse {
-  message: string;
-  success: boolean;
-}
+// 重新导出会话相关类型（从session.ts导入，避免重复定义）
+export type {
+  DeviceInfo,
+  SessionInfo,
+  SessionListResponse,
+  RevokeSessionRequest,
+  RevokeSessionResponse
+} from './session';
 
 // 认证上下文（前端使用）
 export interface AuthContext {

@@ -2,8 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
+import { SessionModule } from './session/session.module';
 import { configs } from './config';
 import { entities } from './database/entities';
 
@@ -31,6 +33,9 @@ import { entities } from './database/entities';
       inject: [ConfigService],
     }),
 
+    // 定时任务模块
+    ScheduleModule.forRoot(),
+
     // 限流模块
     ThrottlerModule.forRoot([
       {
@@ -41,6 +46,7 @@ import { entities } from './database/entities';
 
     HealthModule,
     AuthModule,
+    SessionModule,
   ],
   controllers: [],
   providers: [],

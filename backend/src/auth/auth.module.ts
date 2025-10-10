@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { User } from '../database/entities/user/user.entity';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
+import { SessionModule } from '../session/session.module';
 
 /**
  * 认证模块
@@ -57,6 +58,9 @@ import { AuthConfig } from '../config/auth.config';
 
     // TypeORM模块 - 注册User和UserLoginLog实体以供AuthService使用
     TypeOrmModule.forFeature([User, UserLoginLog]),
+
+    // SessionModule - 会话管理模块
+    SessionModule,
   ],
 
   controllers: [

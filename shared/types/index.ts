@@ -13,6 +13,9 @@ export * from './user';
 // 导出认证相关类型
 export * from './auth';
 
+// 导出会话相关类型
+export * from './session';
+
 // 重新导出一些常用类型的别名，提供更简洁的导入方式
 export type {
   User,
@@ -46,6 +49,9 @@ export * as UserDomain from './user';
 // 认证域类型命名空间
 export * as AuthDomain from './auth';
 
+// 会话域类型命名空间
+export * as SessionDomain from './session';
+
 // 通用API类型命名空间
 export * as ApiTypes from './api.types';
 
@@ -56,10 +62,12 @@ export * as ApiTypes from './api.types';
 // 域类型集合（为未来按域使用提供便利）
 import * as UserTypes from './user';
 import * as AuthTypes from './auth';
+import * as SessionTypes from './session';
 
 export const DomainTypes = {
   User: UserTypes,
   Auth: AuthTypes,
+  Session: SessionTypes,
   // Business: BusinessTypes,
   // Analytics: AnalyticsTypes,
 } as const;

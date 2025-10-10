@@ -35,6 +35,8 @@ import {
 import { User } from '../database/entities/user/user.entity';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
+import { SessionService } from '../session/session.service';
+import type { DeviceInfo } from '@xiaodashi/shared';
 
 /**
  * 认证服务类
@@ -57,6 +59,7 @@ export class AuthService {
     private readonly userLoginLogRepository: Repository<UserLoginLog>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly sessionService: SessionService,
   ) {
     this.authConfig = this.configService.get<AuthConfig>('auth')!;
   }
@@ -213,6 +216,57 @@ export class AuthService {
   }
 
   /**
+   * 解析User-Agent获取设备信息
+   *
+   * @param userAgent - User-Agent字符串
+   * @returns DeviceInfo - 设备信息
+   * @private
+   */
+  private parseDeviceInfo(userAgent: string): DeviceInfo {
+    const ua = userAgent.toLowerCase();
+
+    // 简单的设备类型检测
+    let deviceType: DeviceInfo['deviceType'] = 'unknown';
+    if (
+      ua.includes('mobile') ||
+      ua.includes('android') ||
+      ua.includes('iphone')
+    ) {
+      deviceType = 'mobile';
+    } else if (ua.includes('tablet') || ua.includes('ipad')) {
+      deviceType = 'tablet';
+    } else if (
+      ua.includes('windows') ||
+      ua.includes('macintosh') ||
+      ua.includes('linux')
+    ) {
+      deviceType = 'desktop';
+    }
+
+    // 简单的浏览器检测
+    let browser = 'Unknown';
+    if (ua.includes('chrome')) browser = 'Chrome';
+    else if (ua.includes('safari')) browser = 'Safari';
+    else if (ua.includes('firefox')) browser = 'Firefox';
+    else if (ua.includes('edge')) browser = 'Edge';
+
+    // 简单的操作系统检测
+    let os = 'Unknown';
+    if (ua.includes('windows')) os = 'Windows';
+    else if (ua.includes('mac os')) os = 'macOS';
+    else if (ua.includes('linux')) os = 'Linux';
+    else if (ua.includes('android')) os = 'Android';
+    else if (ua.includes('ios') || ua.includes('iphone') || ua.includes('ipad'))
+      os = 'iOS';
+
+    return {
+      deviceType,
+      browser,
+      os,
+    };
+  }
+
+  /**
    * 获取客户端真实IP地址
    *
    * @param request - Express请求对象
@@ -319,6 +373,21 @@ export class AuthService {
 
     // 生成tokens
     const tokens = this.generateTokens(user);
+
+    // 解析设备信息
+    const parsedDeviceInfo: DeviceInfo = {
+      ...this.parseDeviceInfo(deviceInfo.userAgent),
+      location: deviceInfo.location,
+    };
+
+    // 创建会话
+    await this.sessionService.createSession(
+      user.id,
+      parsedDeviceInfo,
+      tokens.refreshToken,
+      deviceInfo.ipAddress,
+      deviceInfo.userAgent,
+    );
 
     // 更新最后登录时间
     await this.userRepository.update(user.id, {
@@ -793,19 +862,28 @@ export class AuthService {
     userId: string,
     logoutRequest?: LogoutRequest,
   ): Promise<LogoutResponse> {
-    // TODO: 实现token黑名单机制
-    // 目前简单返回成功消息，实际应用中需要：
-    // 1. 将refresh token加入黑名单
-    // 2. 如果选择登出所有设备，则撤销该用户的所有token
+    const allDevices = logoutRequest?.allDevices || false;
 
-    // 为了演示数据库操作，可以记录登出日志
+    if (allDevices) {
+      // 登出所有设备
+      await this.sessionService.revokeAllSessions(userId);
+    } else if (logoutRequest?.refreshToken) {
+      // 登出当前设备 - 通过refresh token查找会话并撤销
+      const session = await this.sessionService.findSessionByRefreshToken(
+        userId,
+        logoutRequest.refreshToken,
+      );
+
+      if (session) {
+        await this.sessionService.revokeSession(session.id, userId);
+      }
+    }
+
     // 更新用户最后活动时间
     await this.userRepository.update(userId, {
-      // 这里可以添加登出时间记录字段
       updatedAt: new Date(),
     });
 
-    const allDevices = logoutRequest?.allDevices || false;
     const message = allDevices ? '已登出所有设备' : '登出成功';
 
     return {
