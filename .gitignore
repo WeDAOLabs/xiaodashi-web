@@ -66,3 +66,6 @@ yarn-error.log*
 # Design files
 /frontend-design/
 /web-frontend-design/
+
+# tmp
+screenshots

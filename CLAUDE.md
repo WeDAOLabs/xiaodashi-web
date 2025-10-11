@@ -151,5 +151,5 @@ pnpm --filter frontend-app build      # 验证构建无错误
    - faq-query: 使用 faq-query-assistant 查询问题
 
 ### 工具集
-   - 访问网站内容：不要使用内置工具 Fetch，要使用agent：website-visitor 访问网站内容
+   - 搜索网络内容:使用工具 web-search-prime
 
