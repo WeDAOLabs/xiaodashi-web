@@ -4,6 +4,7 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -67,6 +68,7 @@ describe('AuthController', () => {
 
   // 模拟JWT用户信息（从请求中提取）
   const mockJwtUser = {
+    id: mockUser.id,
     sub: mockUser.id,
     email: mockUser.email,
     name: mockUser.name,
@@ -88,6 +90,14 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        ThrottlerModule.forRoot([
+          {
+            ttl: 60000, // 时间窗口：60秒
+            limit: 10, // 默认限制：每分钟10次请求
+          },
+        ]),
+      ],
       controllers: [AuthController],
       providers: [
         {
@@ -97,7 +107,9 @@ describe('AuthController', () => {
       ],
     })
       .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: jest.fn(() => true) })
+      .useValue({
+        canActivate: jest.fn(() => true),
+      })
       .compile();
 
     controller = module.get<AuthController>(AuthController);
@@ -129,11 +141,12 @@ describe('AuthController', () => {
       mockAuthService.login.mockResolvedValue(expectedResponse);
 
       // 执行
-      const result = await controller.login(loginDto);
+      const mockRequest = { headers: {}, connection: {}, socket: {} };
+      const result = await controller.login(loginDto, mockRequest);
 
       // 断言
       expect(result).toEqual(expectedResponse);
-      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto, mockRequest);
       expect(mockAuthService.login).toHaveBeenCalledTimes(1);
     });
 
@@ -149,10 +162,11 @@ describe('AuthController', () => {
       );
 
       // 执行和断言
-      await expect(controller.login(loginDto)).rejects.toThrow(
+      const mockRequest = { headers: {}, connection: {}, socket: {} };
+      await expect(controller.login(loginDto, mockRequest)).rejects.toThrow(
         new UnauthorizedException('邮箱或密码错误'),
       );
-      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto, mockRequest);
     });
 
     it('应该处理带验证码的登录请求', async () => {
@@ -174,11 +188,12 @@ describe('AuthController', () => {
       mockAuthService.login.mockResolvedValue(expectedResponse);
 
       // 执行
-      const result = await controller.login(loginDto);
+      const mockRequest = { headers: {}, connection: {}, socket: {} };
+      const result = await controller.login(loginDto, mockRequest);
 
       // 断言
       expect(result).toEqual(expectedResponse);
-      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto, mockRequest);
     });
   });
 
@@ -308,7 +323,7 @@ describe('AuthController', () => {
   describe('POST /api/v1/auth/logout', () => {
     const mockRequest = {
       user: mockJwtUser,
-    };
+    } as any;
 
     it('应该成功登出', async () => {
       // 安排
@@ -510,7 +525,7 @@ describe('AuthController', () => {
   describe('POST /api/v1/auth/change-password', () => {
     const mockRequest = {
       user: mockJwtUser,
-    };
+    } as any;
 
     it('应该成功修改密码', async () => {
       // 安排
@@ -612,7 +627,7 @@ describe('AuthController', () => {
   describe('GET /api/v1/auth/me', () => {
     const mockRequest = {
       user: mockJwtUser,
-    };
+    } as any;
 
     it('应该成功获取当前用户信息', async () => {
       // 安排

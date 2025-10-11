@@ -5,6 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { User } from '../database/entities/user/user.entity';
+import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
+import { SessionService } from '../session/session.service';
+import { AccountLockoutService } from '../security/services/account-lockout.service';
 import { UserRole, UserStatus, LoginRequest } from '@xiaodashi/shared';
 import * as bcrypt from 'bcrypt';
 
@@ -75,6 +78,15 @@ describe('AuthService', () => {
     create: jest.fn(),
   };
 
+  // Mock UserLoginLog Repository
+  const mockUserLoginLogRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    find: jest.fn(),
+    findOne: jest.fn(),
+    remove: jest.fn(),
+  };
+
   // Mock JWT Service
   const mockJwtService = {
     sign: jest.fn(),
@@ -84,6 +96,29 @@ describe('AuthService', () => {
   // Mock Config Service
   const mockConfigService = {
     get: jest.fn().mockReturnValue(mockAuthConfig),
+  };
+
+  // Mock Session Service
+  const mockSessionService = {
+    createSession: jest.fn(),
+    getUserSessions: jest.fn(),
+    revokeSession: jest.fn(),
+    revokeAllSessions: jest.fn(),
+    updateSessionActivity: jest.fn(),
+    validateRefreshToken: jest.fn(),
+    findSessionByRefreshToken: jest.fn(),
+    checkDeviceLimit: jest.fn(),
+    detectSuspiciousLogin: jest.fn(),
+    cleanExpiredSessions: jest.fn(),
+  };
+
+  // Mock AccountLockoutService
+  const mockAccountLockoutService = {
+    checkAccountLocked: jest.fn().mockResolvedValue({ isLocked: false }),
+    recordFailedAttempt: jest.fn().mockResolvedValue(undefined),
+    resetFailedAttempts: jest.fn().mockResolvedValue(undefined),
+    isAccountLocked: jest.fn().mockResolvedValue(false),
+    getLockoutInfo: jest.fn().mockResolvedValue({}),
   };
 
   // 模拟认证令牌
@@ -104,12 +139,24 @@ describe('AuthService', () => {
           useValue: mockUserRepository,
         },
         {
+          provide: getRepositoryToken(UserLoginLog),
+          useValue: mockUserLoginLogRepository,
+        },
+        {
           provide: JwtService,
           useValue: mockJwtService,
         },
         {
           provide: ConfigService,
           useValue: mockConfigService,
+        },
+        {
+          provide: SessionService,
+          useValue: mockSessionService,
+        },
+        {
+          provide: AccountLockoutService,
+          useValue: mockAccountLockoutService,
         },
       ],
     }).compile();

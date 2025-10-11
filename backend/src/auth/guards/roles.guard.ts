@@ -113,7 +113,10 @@ export class RolesGuard implements CanActivate {
    * @param requiredRoles - 所需角色列表
    * @returns boolean - 是否满足角色要求
    */
-  private checkUserRole(userRole: UserRole, requiredRoles: UserRole[]): boolean {
+  private checkUserRole(
+    userRole: UserRole,
+    requiredRoles: UserRole[],
+  ): boolean {
     // 如果用户角色在所需角色列表中，直接返回 true
     if (requiredRoles.includes(userRole)) {
       return true;
@@ -139,7 +142,10 @@ export class RolesGuard implements CanActivate {
    * @param requiredRole - 所需角色
    * @returns boolean - 是否足够
    */
-  private isRoleSufficient(userRole: UserRole, requiredRole: UserRole): boolean {
+  private isRoleSufficient(
+    userRole: UserRole,
+    requiredRole: UserRole,
+  ): boolean {
     const roleHierarchy = {
       [UserRole.USER]: 1,
       [UserRole.PREMIUM]: 2,

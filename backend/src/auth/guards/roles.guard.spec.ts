@@ -40,13 +40,14 @@ describe('RolesGuard', () => {
 
     const mockContext = {
       switchToHttp: () => ({
-        getRequest: () => ({
-          user,
-          method: 'GET',
-          url: '/test',
-          ip: '127.0.0.1',
-          get: () => 'test-agent',
-        } as AuthenticatedRequest),
+        getRequest: () =>
+          ({
+            user,
+            method: 'GET',
+            url: '/test',
+            ip: '127.0.0.1',
+            get: () => 'test-agent',
+          }) as AuthenticatedRequest,
       }),
       getHandler: () => mockHandler,
       getClass: () => mockClass,
@@ -123,13 +124,17 @@ describe('RolesGuard', () => {
       });
 
       it('应该允许PREMIUM角色访问PREMIUM资源', () => {
-        const context = createMockExecutionContext(mockPremiumUser, [UserRole.PREMIUM]);
+        const context = createMockExecutionContext(mockPremiumUser, [
+          UserRole.PREMIUM,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
 
       it('应该允许ADMIN角色访问ADMIN资源', () => {
-        const context = createMockExecutionContext(mockAdminUser, [UserRole.ADMIN]);
+        const context = createMockExecutionContext(mockAdminUser, [
+          UserRole.ADMIN,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
@@ -137,19 +142,28 @@ describe('RolesGuard', () => {
 
     describe('当多个角色允许时', () => {
       it('应该允许USER角色访问USER或PREMIUM资源', () => {
-        const context = createMockExecutionContext(mockUser, [UserRole.USER, UserRole.PREMIUM]);
+        const context = createMockExecutionContext(mockUser, [
+          UserRole.USER,
+          UserRole.PREMIUM,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
 
       it('应该允许PREMIUM角色访问USER或PREMIUM资源', () => {
-        const context = createMockExecutionContext(mockPremiumUser, [UserRole.USER, UserRole.PREMIUM]);
+        const context = createMockExecutionContext(mockPremiumUser, [
+          UserRole.USER,
+          UserRole.PREMIUM,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
 
       it('应该允许ADMIN角色访问任何角色资源', () => {
-        const context = createMockExecutionContext(mockAdminUser, [UserRole.USER, UserRole.PREMIUM]);
+        const context = createMockExecutionContext(mockAdminUser, [
+          UserRole.USER,
+          UserRole.PREMIUM,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
@@ -157,19 +171,25 @@ describe('RolesGuard', () => {
 
     describe('角色继承机制', () => {
       it('应该允许ADMIN角色访问USER资源', () => {
-        const context = createMockExecutionContext(mockAdminUser, [UserRole.USER]);
+        const context = createMockExecutionContext(mockAdminUser, [
+          UserRole.USER,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
 
       it('应该允许ADMIN角色访问PREMIUM资源', () => {
-        const context = createMockExecutionContext(mockAdminUser, [UserRole.PREMIUM]);
+        const context = createMockExecutionContext(mockAdminUser, [
+          UserRole.PREMIUM,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
 
       it('应该允许PREMIUM角色访问USER资源', () => {
-        const context = createMockExecutionContext(mockPremiumUser, [UserRole.USER]);
+        const context = createMockExecutionContext(mockPremiumUser, [
+          UserRole.USER,
+        ]);
 
         expect(guard.canActivate(context)).toBe(true);
       });
@@ -180,21 +200,31 @@ describe('RolesGuard', () => {
         const context = createMockExecutionContext(mockUser, [UserRole.ADMIN]);
 
         expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
-        expect(() => guard.canActivate(context)).toThrow('权限不足，需要 admin 角色才能访问');
+        expect(() => guard.canActivate(context)).toThrow(
+          '权限不足，需要 admin 角色才能访问',
+        );
       });
 
       it('应该拒绝USER角色访问PREMIUM资源', () => {
-        const context = createMockExecutionContext(mockUser, [UserRole.PREMIUM]);
+        const context = createMockExecutionContext(mockUser, [
+          UserRole.PREMIUM,
+        ]);
 
         expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
-        expect(() => guard.canActivate(context)).toThrow('权限不足，需要 premium 角色才能访问');
+        expect(() => guard.canActivate(context)).toThrow(
+          '权限不足，需要 premium 角色才能访问',
+        );
       });
 
       it('应该拒绝PREMIUM角色访问ADMIN资源', () => {
-        const context = createMockExecutionContext(mockPremiumUser, [UserRole.ADMIN]);
+        const context = createMockExecutionContext(mockPremiumUser, [
+          UserRole.ADMIN,
+        ]);
 
         expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
-        expect(() => guard.canActivate(context)).toThrow('权限不足，需要 admin 角色才能访问');
+        expect(() => guard.canActivate(context)).toThrow(
+          '权限不足，需要 admin 角色才能访问',
+        );
       });
     });
 

@@ -63,4 +63,5 @@ export const Premium = () => Roles(UserRole.PREMIUM, UserRole.ADMIN);
  * getProfile() {}
  * ```
  */
-export const Authenticated = () => Roles(UserRole.USER, UserRole.PREMIUM, UserRole.ADMIN);
+export const Authenticated = () =>
+  Roles(UserRole.USER, UserRole.PREMIUM, UserRole.ADMIN);
