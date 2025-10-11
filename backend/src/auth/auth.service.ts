@@ -36,6 +36,7 @@ import { User } from '../database/entities/user/user.entity';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
 import { SessionService } from '../session/session.service';
+import { AccountLockoutService } from '../security/services/account-lockout.service';
 import type { DeviceInfo } from '@xiaodashi/shared';
 
 /**
@@ -60,6 +61,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly sessionService: SessionService,
+    private readonly accountLockoutService: AccountLockoutService,
   ) {
     this.authConfig = this.configService.get<AuthConfig>('auth')!;
   }
@@ -357,16 +359,37 @@ export class AuthService {
       throw new UnauthorizedException('邮箱或密码错误');
     }
 
+    // 检查账户锁定状态
+    const lockoutStatus = await this.accountLockoutService.checkAccountLocked(
+      user.id,
+    );
+    if (lockoutStatus.isLocked) {
+      // 账户被锁定，记录登录失败日志
+      await this.logLoginAttempt(
+        email,
+        user.id,
+        false,
+        deviceInfo,
+        '账户已被锁定',
+      );
+
+      // 抛出账户锁定异常，包含锁定信息
+      throw new UnauthorizedException(
+        `账户已被锁定，锁定时间：${lockoutStatus.lockoutDuration}分钟。请稍后再试或联系管理员。`,
+      );
+    }
+
     // 验证密码
     const isPasswordValid = await this.comparePassword(
       password,
       user.passwordHash,
     );
     if (!isPasswordValid) {
-      // 增加失败次数并记录日志
-      await this.userRepository.update(user.id, {
-        loginAttempts: user.loginAttempts + 1,
-      });
+      // 使用AccountLockoutService记录失败尝试（会自动处理锁定逻辑）
+      const ipAddress = deviceInfo.ipAddress;
+      await this.accountLockoutService.recordFailedAttempt(user.id, ipAddress);
+
+      // 记录登录失败日志
       await this.logLoginAttempt(email, user.id, false, deviceInfo, '密码错误');
       throw new UnauthorizedException('邮箱或密码错误');
     }
@@ -389,7 +412,7 @@ export class AuthService {
       deviceInfo.userAgent,
     );
 
-    // 更新最后登录时间
+    // 更新最后登录时间，成功登录时重置失败次数
     await this.userRepository.update(user.id, {
       lastLoginAt: new Date(),
       loginAttempts: 0, // 成功登录后重置失败次数

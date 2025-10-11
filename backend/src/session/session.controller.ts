@@ -26,23 +26,7 @@ import type {
 import { SessionService } from './session.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RevokeAllSessionsDto } from './dto/session.dto';
-
-/**
- * JWT认证用户接口
- */
-interface JwtUser {
-  sub: string;
-  email: string;
-  name: string;
-  role: string;
-}
-
-/**
- * 带JWT用户信息的请求接口
- */
-interface AuthenticatedRequest extends Request {
-  user: JwtUser;
-}
+import type { AuthenticatedRequest } from '../types';
 
 /**
  * SessionController - 会话管理控制器
@@ -82,7 +66,7 @@ export class SessionController {
   async getUserSessions(
     @Request() req: AuthenticatedRequest,
   ): Promise<SessionListResponse> {
-    const userId = req.user.sub;
+    const userId = req.user.id;
     return this.sessionService.getUserSessions(userId);
   }
 
@@ -116,7 +100,7 @@ export class SessionController {
     @Param('sessionId') sessionId: string,
     @Request() req: AuthenticatedRequest,
   ): Promise<RevokeSessionResponse> {
-    const userId = req.user.sub;
+    const userId = req.user.id;
     return this.sessionService.revokeSession(sessionId, userId);
   }
 
@@ -141,7 +125,7 @@ export class SessionController {
     @Request() req: AuthenticatedRequest,
     @Body() revokeAllDto?: RevokeAllSessionsDto,
   ): Promise<RevokeAllSessionsResponse> {
-    const userId = req.user.sub;
+    const userId = req.user.id;
 
     // TODO: 需要从JWT或请求中获取当前会话ID
     // 目前简化处理，不保留当前会话

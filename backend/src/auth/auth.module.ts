@@ -11,6 +11,7 @@ import { User } from '../database/entities/user/user.entity';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
 import { SessionModule } from '../session/session.module';
+import { SecurityModule } from '../security/security.module';
 
 /**
  * 认证模块
@@ -61,6 +62,9 @@ import { SessionModule } from '../session/session.module';
 
     // SessionModule - 会话管理模块
     SessionModule,
+
+    // SecurityModule - 安全模块，提供账户锁定等功能
+    SecurityModule,
   ],
 
   controllers: [

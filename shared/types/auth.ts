@@ -26,6 +26,14 @@ export interface JWTPayload {
   jti?: string;            // JWT ID，用于撤销令牌
 }
 
+// 认证用户信息（用于前后端共享）
+export interface AuthenticatedUser {
+  id: string;             // 用户ID（对应 JWT sub）
+  email: string;
+  name: string;
+  role: UserRole;
+}
+
 // 登录请求
 export interface LoginRequest {
   email: string;
@@ -189,4 +197,80 @@ export interface AuthContext {
   logout: (allDevices?: boolean) => Promise<void>;
   refreshToken: () => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<User>;
+}
+
+// === 账户锁定相关类型 ===
+
+// 账户锁定状态
+export interface AccountLockoutStatus {
+  isLocked: boolean;              // 账户是否被锁定
+  lockedUntil?: string;           // 锁定截止时间（ISO字符串）
+  remainingAttempts: number;      // 剩余尝试次数（0表示已达到最高惩罚等级）
+  currentAttempts: number;        // 当前失败次数
+  lockoutDuration?: number;       // 锁定时长（分钟）
+  lockReason?: string;            // 锁定原因
+  nextLockThreshold?: number | null;  // 下次锁定阈值，null表示已达到最高惩罚等级
+  nextLockDuration?: number;      // 下次锁定时长（分钟），0表示无更高等级
+}
+
+// 管理员解锁账户请求
+export interface UnlockAccountRequest {
+  userId: string;                 // 要解锁的用户ID
+  reason: string;                 // 解锁原因
+}
+
+// 管理员解锁账户响应
+export interface UnlockAccountResponse {
+  success: boolean;               // 解锁是否成功
+  message: string;                // 操作结果消息
+  unlockedAt: string;             // 解锁时间（ISO字符串）
+}
+
+// 用户锁定状态查询响应
+export interface LockStatusResponse {
+  userId: string;                 // 用户ID
+  email: string;                  // 用户邮箱
+  status: AccountLockoutStatus;   // 锁定状态详情
+}
+
+// 登录失败锁定信息（用于错误响应）
+export interface LoginLockoutError {
+  code: 'ACCOUNT_LOCKED';         // 错误代码
+  message: string;                // 错误消息
+  lockoutStatus: AccountLockoutStatus; // 锁定状态详情
+}
+
+// 渐进式锁定策略配置
+export interface ProgressiveLockoutConfig {
+  levels: Array<{
+    attempts: number;             // 失败尝试次数阈值
+    duration: number;             // 锁定时长（分钟）
+  }>;
+  resetPeriod: number;            // 重置周期（小时）
+}
+
+// 管理员安全操作日志
+export interface SecurityAuditLog {
+  id: string;                     // 日志ID
+  adminUserId: string;            // 管理员用户ID
+  targetUserId: string;           // 目标用户ID
+  action: 'UNLOCK_ACCOUNT' | 'VIEW_LOCK_STATUS'; // 操作类型
+  reason?: string;                // 操作原因
+  ipAddress: string;              // 操作IP地址
+  userAgent: string;              // 用户代理
+  timestamp: string;              // 操作时间（ISO字符串）
+}
+
+// === 后端适配类型 ===
+
+// 后端认证请求基础接口（无框架依赖）
+export interface AuthenticatedRequestBase {
+  user: AuthenticatedUser;
+}
+
+// JWT 验证后的用户信息（用于 JWT Strategy）
+export interface ValidatedJwtUser extends AuthenticatedUser {
+  iat: number;
+  exp: number;
+  jti?: string;
 }

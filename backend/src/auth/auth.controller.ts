@@ -41,23 +41,7 @@ import {
   VerifyEmailDto,
   LogoutDto,
 } from './dto/auth.dto';
-
-/**
- * JWT认证用户接口
- */
-interface JwtUser {
-  sub: string;
-  email: string;
-  name: string;
-  role: string;
-}
-
-/**
- * 带JWT用户信息的请求接口
- */
-interface AuthenticatedRequest extends ExpressRequest {
-  user: JwtUser;
-}
+import type { AuthenticatedRequest } from '../types';
 
 /**
  * 认证控制器
@@ -185,7 +169,7 @@ export class AuthController {
     @Request() req: AuthenticatedRequest,
     @Body() logoutRequest?: LogoutDto,
   ): Promise<LogoutResponse> {
-    const userId = req.user.sub;
+    const userId = req.user.id;
     return await this.authService.logout(userId, logoutRequest);
   }
 
@@ -265,7 +249,7 @@ export class AuthController {
     @Request() req: AuthenticatedRequest,
     @Body() changePasswordRequest: ChangePasswordDto,
   ): Promise<ChangePasswordResponse> {
-    const userId = req.user.sub;
+    const userId = req.user.id;
     return this.authService.changePassword(userId, changePasswordRequest);
   }
 
@@ -312,7 +296,7 @@ export class AuthController {
     description: '未授权访问',
   })
   async getCurrentUser(@Request() req: AuthenticatedRequest) {
-    const userId = req.user.sub;
+    const userId = req.user.id;
     return this.authService.getUserProfile(userId);
   }
 }

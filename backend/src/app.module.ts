@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { SessionModule } from './session/session.module';
+import { SecurityModule } from './security/security.module';
 import { configs } from './config';
 import { entities } from './database/entities';
 
@@ -47,6 +48,7 @@ import { entities } from './database/entities';
     HealthModule,
     AuthModule,
     SessionModule,
+    SecurityModule,
   ],
   controllers: [],
   providers: [],
