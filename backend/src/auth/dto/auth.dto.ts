@@ -11,6 +11,26 @@ import {
 import { Match } from '../validators/match.validator';
 
 /**
+ * 验证码信息DTO
+ */
+export class CaptchaDto {
+  @ApiProperty({
+    description: '会话ID',
+    example: 'captcha_1k2j3h4g5f6d7s8a9b0c',
+  })
+  @IsString({ message: '会话ID必须是字符串' })
+  @Matches(/^captcha_[a-z0-9]+_[a-z0-9]+$/, { message: '会话ID格式不正确' })
+  sessionId!: string;
+
+  @ApiProperty({
+    description: '验证码内容',
+    example: '1234',
+  })
+  @IsString({ message: '验证码必须是字符串' })
+  code!: string;
+}
+
+/**
  * 登录请求DTO
  */
 export class LoginDto {
@@ -39,13 +59,15 @@ export class LoginDto {
   rememberMe?: boolean;
 
   @ApiProperty({
-    description: '验证码',
-    example: '1234',
+    description: '验证码信息',
     required: false,
+    example: {
+      sessionId: 'captcha_1k2j3h4g5f6d7s8a9b0c',
+      code: '1234',
+    },
   })
   @IsOptional()
-  @IsString({ message: '验证码必须是字符串' })
-  captcha?: string;
+  captcha?: CaptchaDto;
 }
 
 /**
@@ -104,13 +126,15 @@ export class RegisterDto {
   inviteCode?: string;
 
   @ApiProperty({
-    description: '验证码',
-    example: '1234',
+    description: '验证码信息',
     required: false,
+    example: {
+      sessionId: 'captcha_1k2j3h4g5f6d7s8a9b0c',
+      code: '1234',
+    },
   })
   @IsOptional()
-  @IsString({ message: '验证码必须是字符串' })
-  captcha?: string;
+  captcha?: CaptchaDto;
 }
 
 /**
@@ -137,13 +161,15 @@ export class ForgotPasswordDto {
   email!: string;
 
   @ApiProperty({
-    description: '验证码',
-    example: '1234',
+    description: '验证码信息',
     required: false,
+    example: {
+      sessionId: 'captcha_1k2j3h4g5f6d7s8a9b0c',
+      code: '1234',
+    },
   })
   @IsOptional()
-  @IsString({ message: '验证码必须是字符串' })
-  captcha?: string;
+  captcha?: CaptchaDto;
 }
 
 /**

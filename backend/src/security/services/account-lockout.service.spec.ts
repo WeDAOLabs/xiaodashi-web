@@ -28,6 +28,15 @@ describe('AccountLockoutService', () => {
         ],
         resetPeriod: 24,
       },
+      captcha: {
+        enabled: true,
+        triggerAttempts: 3,
+        expireTime: 5,
+        maxAttempts: 3,
+        cleanupInterval: 60,
+        complexity: 3,
+        suspiciousIpThreshold: 5,
+      },
     },
   };
 

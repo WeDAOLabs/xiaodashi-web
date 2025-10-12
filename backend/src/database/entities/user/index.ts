@@ -8,6 +8,7 @@ import { User } from './user.entity';
 import { UserProfile } from './user-profile.entity';
 import { UserSession } from './user-session.entity';
 import { UserLoginLog } from './user-login-log.entity';
+import { CaptchaSession } from './captcha-session.entity';
 
 // 用户基础实体
 export { User } from './user.entity';
@@ -17,5 +18,14 @@ export { UserProfile } from './user-profile.entity';
 export { UserSession } from './user-session.entity';
 export { UserLoginLog } from './user-login-log.entity';
 
+// 安全相关实体
+export { CaptchaSession } from './captcha-session.entity';
+
 // 用户域实体数组，用于 TypeORM 配置
-export const userEntities = [User, UserProfile, UserSession, UserLoginLog];
+export const userEntities = [
+  User,
+  UserProfile,
+  UserSession,
+  UserLoginLog,
+  CaptchaSession,
+];

@@ -28,6 +28,9 @@ import type {
   ChangePasswordResponse,
   VerifyEmailResponse,
   LogoutResponse,
+  CaptchaGenerateResponse,
+  CaptchaVerifyResponse,
+  CaptchaRequiredResponse,
 } from '@xiaodashi/shared';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -41,6 +44,11 @@ import {
   VerifyEmailDto,
   LogoutDto,
 } from './dto/auth.dto';
+import {
+  CaptchaGenerateDto,
+  CaptchaVerifyDto,
+} from '../security/dto/captcha.dto';
+import { CaptchaService } from '../security/services/captcha.service';
 import type { AuthenticatedRequest } from '../types';
 
 /**
@@ -57,7 +65,10 @@ import type { AuthenticatedRequest } from '../types';
 @Controller('v1/auth')
 @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly captchaService: CaptchaService,
+  ) {}
 
   /**
    * 用户登录
@@ -298,5 +309,182 @@ export class AuthController {
   async getCurrentUser(@Request() req: AuthenticatedRequest) {
     const userId = req.user.id;
     return this.authService.getUserProfile(userId);
+  }
+
+  /**
+   * 生成验证码
+   */
+  @Post('captcha/generate')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60000 } }) // 1分钟内最多10次生成请求
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: '生成验证码',
+    description: '生成图片验证码或滑块验证码，用于登录安全验证',
+  })
+  @ApiBody({
+    type: CaptchaGenerateDto,
+    description: '验证码生成参数',
+    required: false,
+  })
+  @ApiResponse({
+    status: 200,
+    description: '验证码生成成功',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        sessionId: { type: 'string', example: 'captcha_1k2j3h4g5f6d7s8a9b0c' },
+        captchaImage: {
+          type: 'string',
+          description: 'Base64编码的验证码图片（图片验证码）',
+        },
+        sliderData: {
+          type: 'object',
+          description: '滑块验证码数据（滑块验证码）',
+        },
+        type: { type: 'string', enum: ['image', 'slider'], example: 'image' },
+        expiresIn: { type: 'number', example: 300 },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: '验证码生成参数错误',
+  })
+  @ApiResponse({
+    status: 429,
+    description: '请求过于频繁，请稍后再试',
+  })
+  async generateCaptcha(
+    @Request() req: ExpressRequest,
+    @Body() generateRequest?: CaptchaGenerateDto,
+  ): Promise<CaptchaGenerateResponse> {
+    const clientInfo = {
+      ipAddress: this.getClientIP(req),
+      userAgent: req.headers['user-agent'] || '',
+    };
+
+    return this.captchaService.generateCaptcha(
+      generateRequest || {},
+      clientInfo,
+    );
+  }
+
+  /**
+   * 验证验证码
+   */
+  @Post('captcha/verify')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 20, ttl: 60000 } }) // 1分钟内最多20次验证请求
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: '验证验证码',
+    description: '验证用户提交的验证码是否正确',
+  })
+  @ApiBody({ type: CaptchaVerifyDto, description: '验证码验证参数' })
+  @ApiResponse({
+    status: 200,
+    description: '验证码验证成功',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: { type: 'string', example: '验证码验证成功' },
+        attemptsRemaining: { type: 'number', example: 2 },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: '验证码验证失败或参数错误',
+  })
+  @ApiResponse({
+    status: 429,
+    description: '请求过于频繁，请稍后再试',
+  })
+  async verifyCaptcha(
+    @Body() verifyRequest: CaptchaVerifyDto,
+    @Request() req: ExpressRequest,
+  ): Promise<CaptchaVerifyResponse> {
+    const clientInfo = {
+      ipAddress: this.getClientIP(req),
+      userAgent: req.headers['user-agent'] || '',
+    };
+
+    return this.captchaService.verifyCaptcha(
+      verifyRequest.sessionId,
+      verifyRequest.code,
+      undefined, // 非绑定用户验证
+      clientInfo.ipAddress,
+      false, // 预验证模式，不标记为已使用
+    );
+  }
+
+  /**
+   * 检查是否需要验证码
+   */
+  @Get('captcha/required')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 15, ttl: 60000 } }) // 1分钟内最多15次查询请求
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: '检查是否需要验证码',
+    description: '根据IP地址或用户ID判断当前是否需要验证码验证',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '查询成功',
+    schema: {
+      type: 'object',
+      properties: {
+        required: { type: 'boolean', example: true },
+        reason: { type: 'string', example: '检测到多次登录失败' },
+        type: { type: 'string', enum: ['image', 'slider'], example: 'image' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 429,
+    description: '请求过于频繁，请稍后再试',
+  })
+  async checkCaptchaRequired(
+    @Request() req: ExpressRequest,
+  ): Promise<CaptchaRequiredResponse> {
+    const clientInfo = {
+      ipAddress: this.getClientIP(req),
+      userAgent: req.headers['user-agent'] || '',
+    };
+
+    // 检查IP地址是否需要验证码
+    const captchaAssessment = await this.captchaService.shouldRequireCaptcha(
+      undefined, // 非绑定用户
+      undefined, // 邮箱
+      clientInfo.ipAddress,
+      clientInfo.userAgent,
+    );
+
+    return {
+      required: captchaAssessment.required,
+      reason: captchaAssessment.reason,
+      riskScore: captchaAssessment.riskScore,
+    };
+  }
+
+  /**
+   * 获取客户端真实IP地址
+   *
+   * @param request - Express请求对象
+   * @returns 客户端IP地址
+   * @private
+   */
+  private getClientIP(request: ExpressRequest): string {
+    return (
+      (request.headers['x-forwarded-for'] as string)?.split(',')[0] ||
+      (request.headers['x-real-ip'] as string) ||
+      request.connection?.remoteAddress ||
+      request.socket?.remoteAddress ||
+      ''
+    );
   }
 }

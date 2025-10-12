@@ -279,7 +279,7 @@ describe('JwtAuthGuard', () => {
       expect(() => {
         guard.handleRequest(
           null,
-          undefined as false, // 用户为undefined
+          undefined as unknown as false, // 用户为undefined
           undefined,
           mockExecutionContext,
         );

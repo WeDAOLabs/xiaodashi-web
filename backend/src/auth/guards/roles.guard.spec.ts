@@ -47,7 +47,7 @@ describe('RolesGuard', () => {
             url: '/test',
             ip: '127.0.0.1',
             get: () => 'test-agent',
-          }) as AuthenticatedRequest,
+          }) as unknown as AuthenticatedRequest,
       }),
       getHandler: () => mockHandler,
       getClass: () => mockClass,

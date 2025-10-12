@@ -43,10 +43,19 @@ Run all commands from the project root directory:
 - All frontend: `pnpm run lint` (runs both frontend workspaces)
 
 ### Testing (Backend)
-- `pnpm --filter backend test` - Run unit tests
-- `pnpm --filter backend test:watch` - Run tests in watch mode
-- `pnpm --filter backend test:cov` - Run tests with coverage
-- `pnpm --filter backend test:e2e` - Run end-to-end tests
+- `pnpm --filter backend test` - Run unit tests with verbose output
+- `pnpm --filter backend test:watch` - Run tests in watch mode with verbose output
+- `pnpm --filter backend test:cov` - Run tests with coverage and verbose output
+- `pnpm --filter backend test:e2e` - Run end-to-end tests with verbose output
+- `pnpm --filter backend test:warnings` - Run tests specifically to check for warnings and errors
+- `pnpm --filter backend test:ci` - Run tests in CI mode (no watch, coverage enabled)
+- `pnpm --filter backend check:warnings` - Comprehensive warning and error check (TypeScript + Jest)
+
+### Code Quality & Linting (Backend)
+- `pnpm --filter backend lint` - Run ESLint with auto-fix
+- `pnpm --filter backend lint:warnings` - Run ESLint with zero warnings tolerance
+- `pnpm --filter backend quality-check` - Comprehensive quality check (lint + test + build)
+- `pnpm --filter backend quality-check:ci` - CI-ready quality check (strict lint + test + build)
 
 ### Backend Specific Commands
 - `pnpm --filter backend format` - Format code with Prettier
@@ -88,6 +97,7 @@ xiaodashi-web/
 
 ## Code Quality Workflow (推荐执行顺序)
 
+### 前端开发质量检查
 **开发期间质量检查**：
 1. Lint 检查：`pnpm run lint:frontend-app` 或 `pnpm run lint:frontend`
 2. 类型检查：`pnpm --filter frontend-app build` (确保无 TypeScript 错误)
@@ -100,6 +110,35 @@ pnpm run lint                         # 检查所有前端代码
 pnpm run build:shared                 # 构建共享类型
 pnpm --filter frontend-app build      # 验证构建无错误
 ```
+
+### 后端开发质量检查
+**开发期间质量检查**：
+1. Lint 检查：`pnpm --filter backend lint:warnings` (零容忍警告)
+2. 警告检查：`pnpm --filter backend check:warnings` (TypeScript + 测试警告)
+3. 测试运行：`pnpm --filter backend test` (verbose模式显示所有信息)
+
+**代码提交前检查**：
+```bash
+# 全面质量检查
+pnpm --filter backend quality-check    # lint + test + build
+# 或 CI模式严格检查
+pnpm --filter backend quality-check:ci # 严格lint + 测试覆盖率 + build
+```
+
+**快速警告检查命令**：
+```bash
+# 只检查警告，不运行完整测试
+pnpm --filter backend test:warnings    # Jest警告检查
+pnpm --filter backend check:warnings   # 全面警告检查
+```
+
+### 🔥 新功能：Warning显示优化
+现在后端测试支持显示所有TypeScript编译警告和Jest警告：
+
+- ✅ **IDE级警告显示**: 命令行现在能显示与IDE相同的警告信息
+- ✅ **详细输出**: 所有测试命令都使用 `--verbose` 模式
+- ✅ **专门检查**: `test:warnings` 和 `check:warnings` 专门检查警告
+- ✅ **质量保证**: `quality-check` 确保代码质量标准
 
 ## Build Order for Deployment
 
@@ -114,6 +153,14 @@ pnpm --filter frontend-app build      # 验证构建无错误
 - The project uses Turbopack for faster Next.js builds (--turbopack flag)
 - frontend-app 测试用户名：zhangsan@example.com 密码:password123
 - ui界面组件优先使用 shadcn/ui, 可以使用shadcn工具查询.每次查询一个组件.如果在查询组件时遇到网络错误,可以尝试重试一次.
+
+### 🆕 后端Warning显示问题解决
+**问题**: IDE中能看到TypeScript编译警告，但命令行测试时看不到
+**解决方案**:
+- 使用 `pnpm --filter backend test:warnings` 查看Jest测试警告
+- 使用 `pnpm --filter backend check:warnings` 查看TypeScript编译警告
+- 所有测试命令现在都使用 `--verbose` 模式显示详细信息
+- 如果需要CI/CD中的严格检查，使用 `pnpm --filter backend quality-check:ci`
 
 ## Tailwind CSS v4 开发规范 🚨
 

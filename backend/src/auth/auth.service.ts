@@ -37,6 +37,7 @@ import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
 import { SessionService } from '../session/session.service';
 import { AccountLockoutService } from '../security/services/account-lockout.service';
+import { CaptchaService } from '../security/services/captcha.service';
 import type { DeviceInfo } from '@xiaodashi/shared';
 
 /**
@@ -62,6 +63,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly sessionService: SessionService,
     private readonly accountLockoutService: AccountLockoutService,
+    private readonly captchaService: CaptchaService,
   ) {
     this.authConfig = this.configService.get<AuthConfig>('auth')!;
   }
@@ -335,7 +337,7 @@ export class AuthService {
     loginRequest: LoginRequest,
     request?: Request,
   ): Promise<LoginResponse> {
-    const { email, password } = loginRequest;
+    const { email, password, captcha } = loginRequest;
 
     // 提取设备信息
     const deviceInfo = request
@@ -392,6 +394,51 @@ export class AuthService {
       // 记录登录失败日志
       await this.logLoginAttempt(email, user.id, false, deviceInfo, '密码错误');
       throw new UnauthorizedException('邮箱或密码错误');
+    }
+
+    // 检查是否需要验证码验证
+    const captchaAssessment = await this.captchaService.shouldRequireCaptcha(
+      user.id,
+      email,
+      deviceInfo.ipAddress,
+      deviceInfo.userAgent,
+    );
+
+    const shouldRequireCaptcha = captchaAssessment.required;
+
+    if (shouldRequireCaptcha) {
+      // 如果需要验证码但未提供，则拒绝登录
+      if (!captcha || !captcha.sessionId || !captcha.code) {
+        await this.logLoginAttempt(
+          email,
+          user.id,
+          false,
+          deviceInfo,
+          '需要验证码但未提供',
+        );
+        throw new UnauthorizedException('当前需要验证码验证，请提供验证码');
+      }
+
+      // 验证验证码
+      const captchaResult = await this.captchaService.verifyCaptcha(
+        captcha.sessionId,
+        captcha.code,
+        user.id,
+        deviceInfo.ipAddress,
+      );
+
+      if (!captchaResult.success) {
+        await this.logLoginAttempt(
+          email,
+          user.id,
+          false,
+          deviceInfo,
+          `验证码验证失败: ${captchaResult.message}`,
+        );
+        throw new UnauthorizedException(
+          `验证码验证失败: ${captchaResult.message}`,
+        );
+      }
     }
 
     // 生成tokens

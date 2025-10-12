@@ -1,5 +1,6 @@
 import { ValidationArguments } from 'class-validator';
-import { MatchConstraint, Match } from './match.validator';
+import { MatchConstraint } from './match.validator';
+import { Match as MatchDecorator } from './match.validator';
 
 /**
  * Match验证器单元测试
@@ -268,7 +269,7 @@ describe('Match Decorator', () => {
     const property = 'password';
     const validationOptions = { message: '自定义错误消息' };
 
-    const decorator = Match(property, validationOptions);
+    const decorator = MatchDecorator(property, validationOptions);
     expect(typeof decorator).toBe('function');
   });
 });
@@ -325,11 +326,3 @@ describe('Match Validator Integration', () => {
     expect(errorMessage).toBe('confirmPassword 必须与 password 匹配');
   });
 });
-
-// 自定义装饰器函数，用于测试
-function Match(_property: string, _validationOptions?: any) {
-  return function (_target: any, _propertyName: string) {
-    // 这是一个简化的装饰器实现，用于测试
-    // 实际的装饰器会调用class-validator的registerDecorator
-  };
-}

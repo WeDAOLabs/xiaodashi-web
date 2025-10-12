@@ -9,6 +9,7 @@ import {
   UserProfile,
   UserSession,
   UserLoginLog,
+  CaptchaSession,
   userEntities,
 } from './user';
 
@@ -22,11 +23,12 @@ export {
   RolePermission,
   UserSession,
   UserLoginLog,
+  CaptchaSession,
 };
 
 // 按域导出实体（为未来多数据库预留）
 export const UserDomainEntities = {
-  entities: [User, UserProfile, UserSession, UserLoginLog],
+  entities: [User, UserProfile, UserSession, UserLoginLog, CaptchaSession],
   entityClasses: userEntities,
 };
 
@@ -43,6 +45,7 @@ export const entities = [
   RolePermission,
   UserSession,
   UserLoginLog,
+  CaptchaSession,
 ];
 
 // 未来多数据库时可以使用的分域配置（预留）

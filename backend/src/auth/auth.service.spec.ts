@@ -8,6 +8,7 @@ import { User } from '../database/entities/user/user.entity';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { SessionService } from '../session/session.service';
 import { AccountLockoutService } from '../security/services/account-lockout.service';
+import { CaptchaService } from '../security/services/captcha.service';
 import { UserRole, UserStatus, LoginRequest } from '@xiaodashi/shared';
 import * as bcrypt from 'bcrypt';
 
@@ -121,6 +122,20 @@ describe('AuthService', () => {
     getLockoutInfo: jest.fn().mockResolvedValue({}),
   };
 
+  // Mock CaptchaService
+  const mockCaptchaService = {
+    shouldRequireCaptcha: jest.fn().mockResolvedValue(false),
+    verifyCaptcha: jest.fn().mockResolvedValue({
+      success: true,
+      message: '验证码验证成功',
+    }),
+    generateCaptcha: jest.fn().mockResolvedValue({
+      sessionId: 'test-session-id',
+      expiresAt: new Date(Date.now() + 300000).toISOString(),
+      captchaImage: 'data:image/svg+xml;base64,test',
+    }),
+  };
+
   // 模拟认证令牌
   const mockTokens = {
     accessToken: 'mock.access.token',
@@ -157,6 +172,10 @@ describe('AuthService', () => {
         {
           provide: AccountLockoutService,
           useValue: mockAccountLockoutService,
+        },
+        {
+          provide: CaptchaService,
+          useValue: mockCaptchaService,
         },
       ],
     }).compile();
@@ -280,7 +299,7 @@ describe('AuthService', () => {
       const password = 'plainPassword123';
       const hashedPassword = '$2b$10$hashedResult';
 
-      jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword as never);
 
       // 执行
       const result = await service.hashPassword(password);
@@ -300,7 +319,7 @@ describe('AuthService', () => {
       const password = 'plainPassword123';
       const hash = '$2b$10$hashedPassword';
 
-      jest.mocked(bcrypt.compare).mockResolvedValue(true);
+      jest.mocked(bcrypt.compare).mockResolvedValue(true as never);
 
       // 执行
       const result = await service.comparePassword(password, hash);
@@ -315,7 +334,7 @@ describe('AuthService', () => {
       const password = 'wrongPassword';
       const hash = '$2b$10$hashedPassword';
 
-      jest.mocked(bcrypt.compare).mockResolvedValue(false);
+      jest.mocked(bcrypt.compare).mockResolvedValue(false as never);
 
       // 执行
       const result = await service.comparePassword(password, hash);
@@ -334,7 +353,7 @@ describe('AuthService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
-      jest.mocked(bcrypt.compare).mockResolvedValue(true);
+      jest.mocked(bcrypt.compare).mockResolvedValue(true as never);
       jest.spyOn(service, 'generateTokens').mockReturnValue(mockTokens);
       mockUserRepository.update.mockResolvedValue(undefined);
 
@@ -388,7 +407,7 @@ describe('AuthService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
-      jest.mocked(bcrypt.compare).mockResolvedValue(false);
+      jest.mocked(bcrypt.compare).mockResolvedValue(false as never);
 
       // 执行和断言
       await expect(service.login(loginRequest)).rejects.toThrow(
@@ -514,7 +533,7 @@ describe('AuthService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(null); // 用户不存在
-      jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword as never);
       mockUserRepository.create.mockReturnValue(newUser);
       mockUserRepository.save.mockResolvedValue(newUser);
       jest.spyOn(service, 'generateTokens').mockReturnValue(mockTokens);
@@ -625,7 +644,7 @@ describe('AuthService', () => {
         .spyOn(service, 'verifyPasswordResetToken')
         .mockReturnValue(mockUser.id);
       mockUserRepository.findOne.mockResolvedValue(userWithResetToken);
-      jest.mocked(bcrypt.hash).mockResolvedValue(hashedNewPassword);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedNewPassword as never);
       mockUserRepository.update.mockResolvedValue(undefined);
 
       // 执行
@@ -681,8 +700,8 @@ describe('AuthService', () => {
       const hashedNewPassword = '$2b$10$hashedNewPassword';
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
-      jest.mocked(bcrypt.compare).mockResolvedValue(true);
-      jest.mocked(bcrypt.hash).mockResolvedValue(hashedNewPassword);
+      jest.mocked(bcrypt.compare).mockResolvedValue(true as never);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedNewPassword as never);
       mockUserRepository.update.mockResolvedValue(undefined);
 
       // 执行
@@ -709,7 +728,7 @@ describe('AuthService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
-      jest.mocked(bcrypt.compare).mockResolvedValue(false);
+      jest.mocked(bcrypt.compare).mockResolvedValue(false as never);
 
       // 执行和断言
       await expect(

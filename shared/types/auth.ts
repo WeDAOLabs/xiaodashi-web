@@ -39,7 +39,10 @@ export interface LoginRequest {
   email: string;
   password: string;
   rememberMe?: boolean;    // 是否记住登录状态
-  captcha?: string;        // 验证码（如需要）
+  captcha?: {             // 验证码信息（如需要）
+    sessionId: string;
+    code: string;
+  };
 }
 
 // 登录响应
@@ -57,7 +60,10 @@ export interface RegisterRequest {
   confirmPassword: string;
   agreeToTerms: boolean;   // 是否同意服务条款
   inviteCode?: string;     // 邀请码（如有）
-  captcha?: string;        // 验证码
+  captcha?: {              // 验证码信息
+    sessionId: string;
+    code: string;
+  };
 }
 
 // 注册响应
@@ -80,7 +86,10 @@ export interface RefreshTokenResponse {
 // 忘记密码请求
 export interface ForgotPasswordRequest {
   email: string;
-  captcha?: string;
+  captcha?: {              // 验证码信息
+    sessionId: string;
+    code: string;
+  };
 }
 
 // 忘记密码响应
@@ -273,4 +282,53 @@ export interface ValidatedJwtUser extends AuthenticatedUser {
   iat: number;
   exp: number;
   jti?: string;
+}
+
+// === 验证码相关类型 ===
+
+// 验证码类型枚举
+export enum CaptchaType {
+  IMAGE = 'image',         // 图形验证码
+  SLIDER = 'slider'       // 滑动验证码
+}
+
+// 验证码生成请求
+export interface CaptchaGenerateRequest {
+  type?: CaptchaType;      // 验证码类型，默认图形验证码
+  complexity?: number;     // 复杂度 1-5，默认3
+}
+
+// 验证码生成响应
+export interface CaptchaGenerateResponse {
+  sessionId: string;       // 会话ID，用于验证时提交
+  captchaImage?: string;   // Base64编码的图片（图形验证码）
+  sliderData?: {           // 滑动验证数据
+    backgroundImage: string; // 背景图Base64
+    puzzlePiece: string;    // 拼图块Base64
+    xPosition: number;      // 正确X位置（加密）
+    tolerance: number;      // 容差范围
+  };
+  expiresAt: string;       // 过期时间（ISO 8601格式）
+}
+
+// 验证码验证请求
+export interface CaptchaVerifyRequest {
+  sessionId: string;
+  code: string;            // 用户输入的验证码或滑动位置
+}
+
+// 验证码验证响应
+export interface CaptchaVerifyResponse {
+  success: boolean;
+  message: string;
+  attemptsRemaining?: number;
+}
+
+// 验证码必需检查响应
+export interface CaptchaRequiredResponse {
+  required: boolean;
+  reason?: string;          // 需要验证码的详细原因
+  riskScore?: number;        // 风险评分（0-100）
+  sessionId?: string;      // 如果需要验证码，预生成会话ID
+  requiredType?: CaptchaType;
 }

@@ -26,6 +26,16 @@ export interface SecurityConfig {
       }>;
       resetPeriod: number; // 重置周期（小时）
     };
+    // 验证码配置
+    captcha: {
+      enabled: boolean; // 是否启用验证码
+      triggerAttempts: number; // 触发验证码的失败次数阈值
+      expireTime: number; // 验证码过期时间（分钟）
+      maxAttempts: number; // 最大验证尝试次数
+      cleanupInterval: number; // 清理间隔（分钟）
+      complexity: number; // 验证码复杂度 1-5
+      suspiciousIpThreshold: number; // 可疑IP阈值
+    };
   };
 }
 
@@ -72,6 +82,25 @@ export default registerAs(
           process.env.LOCKOUT_RESET_PERIOD_HOURS || '24',
           10,
         ), // 24小时重置周期
+      },
+      // 验证码配置
+      captcha: {
+        enabled: process.env.CAPTCHA_ENABLED === 'true',
+        triggerAttempts: parseInt(
+          process.env.CAPTCHA_TRIGGER_ATTEMPTS || '2',
+          10,
+        ),
+        expireTime: parseInt(process.env.CAPTCHA_EXPIRE_TIME || '5', 10), // 5分钟
+        maxAttempts: parseInt(process.env.CAPTCHA_MAX_ATTEMPTS || '3', 10),
+        cleanupInterval: parseInt(
+          process.env.CAPTCHA_CLEANUP_INTERVAL || '60',
+          10,
+        ), // 60分钟
+        complexity: parseInt(process.env.CAPTCHA_COMPLEXITY || '3', 10), // 复杂度3
+        suspiciousIpThreshold: parseInt(
+          process.env.CAPTCHA_SUSPICIOUS_IP_THRESHOLD || '5',
+          10,
+        ),
       },
     },
   }),

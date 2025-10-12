@@ -8,6 +8,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CaptchaService } from '../security/services/captcha.service';
 import {
   LoginDto,
   RegisterDto,
@@ -30,6 +31,7 @@ import {
   UserRole,
   UserStatus,
 } from '@xiaodashi/shared';
+import { AuthenticatedRequest } from '../types/auth.types';
 
 /**
  * AuthController单元测试
@@ -88,6 +90,13 @@ describe('AuthController', () => {
     getUserProfile: jest.fn(),
   };
 
+  // Mock CaptchaService
+  const mockCaptchaService = {
+    generateCaptcha: jest.fn(),
+    verifyCaptcha: jest.fn(),
+    shouldRequireCaptcha: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -103,6 +112,10 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: CaptchaService,
+          useValue: mockCaptchaService,
         },
       ],
     })
@@ -132,7 +145,6 @@ describe('AuthController', () => {
       };
 
       const expectedResponse: LoginResponse = {
-        message: '登录成功',
         user: mockUser,
         tokens: mockTokens,
         firstLogin: false,
@@ -141,7 +153,7 @@ describe('AuthController', () => {
       mockAuthService.login.mockResolvedValue(expectedResponse);
 
       // 执行
-      const mockRequest = { headers: {}, connection: {}, socket: {} };
+      const mockRequest = { headers: {}, connection: {}, socket: {} } as any;
       const result = await controller.login(loginDto, mockRequest);
 
       // 断言
@@ -162,7 +174,7 @@ describe('AuthController', () => {
       );
 
       // 执行和断言
-      const mockRequest = { headers: {}, connection: {}, socket: {} };
+      const mockRequest = { headers: {}, connection: {}, socket: {} } as any;
       await expect(controller.login(loginDto, mockRequest)).rejects.toThrow(
         new UnauthorizedException('邮箱或密码错误'),
       );
@@ -174,12 +186,14 @@ describe('AuthController', () => {
       const loginDto: LoginDto = {
         email: 'test@example.com',
         password: 'password123',
-        captcha: '1234',
+        captcha: {
+          sessionId: 'test-session-123',
+          code: '1234',
+        },
         rememberMe: true,
       };
 
       const expectedResponse: LoginResponse = {
-        message: '登录成功',
         user: mockUser,
         tokens: mockTokens,
         firstLogin: false,
@@ -188,7 +202,7 @@ describe('AuthController', () => {
       mockAuthService.login.mockResolvedValue(expectedResponse);
 
       // 执行
-      const mockRequest = { headers: {}, connection: {}, socket: {} };
+      const mockRequest = { headers: {}, connection: {}, socket: {} } as any;
       const result = await controller.login(loginDto, mockRequest);
 
       // 断言
@@ -209,9 +223,9 @@ describe('AuthController', () => {
       };
 
       const expectedResponse: RegisterResponse = {
-        message: '注册成功',
         user: { ...mockUser, email: 'new@example.com', name: '新用户' },
         tokens: mockTokens,
+        needEmailVerification: false,
       };
 
       mockAuthService.register.mockResolvedValue(expectedResponse);
@@ -255,13 +269,16 @@ describe('AuthController', () => {
         confirmPassword: 'password123',
         agreeToTerms: true,
         inviteCode: 'INVITE123',
-        captcha: '5678',
+        captcha: {
+          sessionId: 'test-session-456',
+          code: '5678',
+        },
       };
 
       const expectedResponse: RegisterResponse = {
-        message: '注册成功',
         user: mockUser,
         tokens: mockTokens,
+        needEmailVerification: false,
       };
 
       mockAuthService.register.mockResolvedValue(expectedResponse);
@@ -283,7 +300,6 @@ describe('AuthController', () => {
       };
 
       const expectedResponse: RefreshTokenResponse = {
-        message: 'Token刷新成功',
         tokens: mockTokens,
       };
 
@@ -413,7 +429,7 @@ describe('AuthController', () => {
 
       const expectedResponse: ForgotPasswordResponse = {
         message: '密码重置邮件已发送',
-        success: true,
+        resetTokenSent: true,
       };
 
       mockAuthService.forgotPassword.mockResolvedValue(expectedResponse);
@@ -452,12 +468,15 @@ describe('AuthController', () => {
       // 安排
       const forgotPasswordDto: ForgotPasswordDto = {
         email: 'user@example.com',
-        captcha: '9999',
+        captcha: {
+          sessionId: 'test-session-999',
+          code: '9999',
+        },
       };
 
       const expectedResponse: ForgotPasswordResponse = {
         message: '密码重置邮件已发送',
-        success: true,
+        resetTokenSent: true,
       };
 
       mockAuthService.forgotPassword.mockResolvedValue(expectedResponse);
@@ -593,6 +612,7 @@ describe('AuthController', () => {
       const expectedResponse: VerifyEmailResponse = {
         message: '邮箱验证成功',
         success: true,
+        user: mockUser,
       };
 
       mockAuthService.verifyEmail.mockResolvedValue(expectedResponse);
