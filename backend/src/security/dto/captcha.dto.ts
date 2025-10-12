@@ -66,7 +66,6 @@ export class CaptchaGenerateResponseDto {
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
       puzzlePiece:
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
-      xPosition: 150,
       tolerance: 5,
     },
   })
@@ -74,7 +73,8 @@ export class CaptchaGenerateResponseDto {
   sliderData?: {
     backgroundImage: string;
     puzzlePiece: string;
-    xPosition: number;
+    // 注意：为了安全考虑，不返回 xPosition
+    // 前端应该通过用户拖拽行为来收集位置数据
     tolerance: number;
   };
 

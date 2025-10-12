@@ -81,7 +81,6 @@ export class CaptchaService {
       | {
           backgroundImage: string;
           puzzlePiece: string;
-          xPosition: number;
           tolerance: number;
         }
       | undefined;
@@ -111,8 +110,9 @@ export class CaptchaService {
         sliderData = {
           backgroundImage: sliderPuzzle.backgroundImage,
           puzzlePiece: sliderPuzzle.puzzlePiece,
-          xPosition: sliderPuzzle.xPosition,
           tolerance: 5, // 容差范围
+          // 注意：绝不返回 xPosition，这是安全关键
+          // 前端应该通过用户拖拽行为来获取位置，而不是直接知道答案
         };
 
         this.logger.debug(

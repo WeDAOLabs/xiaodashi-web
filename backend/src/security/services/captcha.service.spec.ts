@@ -184,7 +184,8 @@ describe('CaptchaService', () => {
       expect(result).toHaveProperty('sliderData');
       expect(result.sliderData).toHaveProperty('backgroundImage');
       expect(result.sliderData).toHaveProperty('puzzlePiece');
-      expect(result.sliderData).toHaveProperty('xPosition');
+      // 注意：为了安全考虑，不应该返回xPosition给前端
+      expect(result.sliderData).not.toHaveProperty('xPosition');
       expect(result.sliderData).toHaveProperty('tolerance');
     });
   });
@@ -290,6 +291,126 @@ describe('CaptchaService', () => {
       await expect(
         service.verifyCaptcha('max_attempts_session', 'code'),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('应该支持验证码预验证模式', async () => {
+      // Act - 使用预验证模式（markAsUsed: false）
+      const result = await service.verifyCaptcha(
+        'test_session_id',
+        'correct_code',
+        undefined,
+        undefined,
+        false, // 预验证模式
+      );
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('验证码预验证成功');
+      expect(captchaSessionRepository.update).toHaveBeenCalledWith('1', {
+        isVerified: true,
+        // 不包含 isUsed: true
+      });
+    });
+
+    it('应该支持已预验证验证码的正式验证', async () => {
+      // Arrange - 模拟已预验证的会话
+      const preVerifiedSession = {
+        ...mockSession,
+        isVerified: true,
+        isUsed: false,
+      };
+      captchaSessionRepository.findOne.mockResolvedValue(preVerifiedSession);
+
+      // Act - 正式验证已预验证的验证码
+      const result = await service.verifyCaptcha(
+        'pre_verified_session',
+        'correct_code',
+      );
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('验证码验证成功');
+      expect(captchaSessionRepository.update).toHaveBeenCalledWith('1', {
+        isUsed: true,
+      });
+    });
+
+    it('应该拒绝已预验证验证码的重复预验证', async () => {
+      // Arrange - 模拟已预验证的会话
+      const preVerifiedSession = {
+        ...mockSession,
+        isVerified: true,
+        isUsed: false,
+      };
+      captchaSessionRepository.findOne.mockResolvedValue(preVerifiedSession);
+
+      // Act & Assert - 尝试重复预验证
+      await expect(
+        service.verifyCaptcha('pre_verified_session', 'code', undefined, undefined, false),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('应该验证滑动验证码的位置', async () => {
+      // Arrange - 模拟滑动验证码会话（加密的位置数据）
+      const sliderSession = {
+        ...mockSession,
+        captchaType: CaptchaType.SLIDER,
+        captchaData: 'encrypted_slider_data',
+      };
+      captchaSessionRepository.findOne.mockResolvedValue(sliderSession);
+
+      // Mock 解密函数返回正确位置
+      const correctPosition = '100,50'; // x=100, y=50
+      jest.spyOn(service as any, 'decryptSliderData').mockReturnValue(correctPosition);
+
+      // Act - 验证接近正确位置的用户输入
+      const result = await service.verifyCaptcha('slider_session', '103'); // 用户输入x=103，容差为5
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(result.message).toBe('验证码验证成功');
+    });
+
+    it('应该拒绝超出容差范围的滑动验证码', async () => {
+      // Arrange - 模拟滑动验证码会话
+      const sliderSession = {
+        ...mockSession,
+        captchaType: CaptchaType.SLIDER,
+        captchaData: 'encrypted_slider_data',
+      };
+      captchaSessionRepository.findOne.mockResolvedValue(sliderSession);
+
+      // Mock 解密函数返回正确位置
+      const correctPosition = '100,50'; // x=100, y=50
+      jest.spyOn(service as any, 'decryptSliderData').mockReturnValue(correctPosition);
+
+      // Act - 验证超出容差的用户输入
+      const result = await service.verifyCaptcha('slider_session', '150'); // 用户输入x=150，超出容差
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('验证码错误，请重新输入');
+      expect(result.attemptsRemaining).toBe(2);
+    });
+
+    it('应该处理滑动验证码解密失败的情况', async () => {
+      // Arrange - 模拟滑动验证码会话
+      const sliderSession = {
+        ...mockSession,
+        captchaType: CaptchaType.SLIDER,
+        captchaData: 'invalid_encrypted_data',
+      };
+      captchaSessionRepository.findOne.mockResolvedValue(sliderSession);
+
+      // Mock 解密函数返回null（解密失败）
+      jest.spyOn(service as any, 'decryptSliderData').mockReturnValue(null);
+
+      // Act
+      const result = await service.verifyCaptcha('slider_session', '100');
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(result.message).toBe('验证码错误，请重新输入');
     });
   });
 

@@ -305,7 +305,8 @@ export interface CaptchaGenerateResponse {
   sliderData?: {           // 滑动验证数据
     backgroundImage: string; // 背景图Base64
     puzzlePiece: string;    // 拼图块Base64
-    xPosition: number;      // 正确X位置（加密）
+    // 注意：为了安全考虑，不返回 xPosition
+    // 前端应该通过用户拖拽行为来收集位置数据
     tolerance: number;      // 容差范围
   };
   expiresAt: string;       // 过期时间（ISO 8601格式）

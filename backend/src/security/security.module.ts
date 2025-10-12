@@ -8,7 +8,7 @@ import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AccountLockoutService } from './services/account-lockout.service';
 import { CaptchaService } from './services/captcha.service';
 import { LoginRiskAssessmentService } from './services/login-risk-assessment.service';
-import { CaptchaGuard } from './guards/captcha.guard';
+// import { CaptchaGuard } from './guards/captcha.guard'; // 暂时禁用
 import { SecurityController } from './controllers/security.controller';
 
 /**
@@ -33,13 +33,13 @@ import { SecurityController } from './controllers/security.controller';
     AccountLockoutService,
     CaptchaService,
     LoginRiskAssessmentService,
-    CaptchaGuard,
+    // CaptchaGuard, // 暂时禁用
   ],
   exports: [
     AccountLockoutService,
     CaptchaService,
     LoginRiskAssessmentService,
-    CaptchaGuard,
+    // CaptchaGuard, // 暂时禁用
   ], // 导出服务供其他模块使用
 })
 export class SecurityModule {}
