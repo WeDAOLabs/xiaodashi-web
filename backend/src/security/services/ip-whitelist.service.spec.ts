@@ -7,7 +7,7 @@ import { IPType } from '@xiaodashi/shared';
 
 describe('IPWhitelistService', () => {
   let service: IPWhitelistService;
-  let repository: jest.Mocked<Repository<IPWhitelist>>;
+  let _repository: jest.Mocked<Repository<IPWhitelist>>;
 
   const mockRepository = {
     findOne: jest.fn(),
@@ -41,7 +41,7 @@ describe('IPWhitelistService', () => {
     }).compile();
 
     service = module.get<IPWhitelistService>(IPWhitelistService);
-    repository = module.get(getRepositoryToken(IPWhitelist));
+    _repository = module.get(getRepositoryToken(IPWhitelist));
 
     jest.clearAllMocks();
   });

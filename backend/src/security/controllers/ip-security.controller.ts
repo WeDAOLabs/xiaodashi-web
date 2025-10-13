@@ -49,10 +49,7 @@ import {
   IPSecurityActionResponseDto,
   IPCheckResultDto,
 } from '../dto/ip-security-responses.dto';
-import type {
-  IPRiskReport,
-  IPRateLimitStatus,
-} from '@xiaodashi/shared';
+import type { IPRiskReport, IPRateLimitStatus } from '@xiaodashi/shared';
 
 /**
  * IP安全管理控制器
@@ -625,7 +622,7 @@ export class IPSecurityController {
           }
 
           return result;
-        } catch (error) {
+        } catch {
           // 单个IP检查失败时返回默认结果
           return {
             ipAddress,

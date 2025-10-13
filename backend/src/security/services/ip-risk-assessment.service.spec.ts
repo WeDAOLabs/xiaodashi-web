@@ -26,10 +26,10 @@ jest.mock('geoip-lite', () => ({
 
 describe('IPRiskAssessmentService', () => {
   let service: IPRiskAssessmentService;
-  let accessLogRepository: jest.Mocked<Repository<IPAccessLog>>;
-  let blacklistService: jest.Mocked<IPBlacklistService>;
-  let whitelistService: jest.Mocked<IPWhitelistService>;
-  let rateLimiterService: jest.Mocked<IPRateLimiterService>;
+  let _accessLogRepository: jest.Mocked<Repository<IPAccessLog>>;
+  let _blacklistService: jest.Mocked<IPBlacklistService>;
+  let _whitelistService: jest.Mocked<IPWhitelistService>;
+  let _rateLimiterService: jest.Mocked<IPRateLimiterService>;
 
   const mockAccessLogRepository = {
     find: jest.fn(),
@@ -88,10 +88,10 @@ describe('IPRiskAssessmentService', () => {
     }).compile();
 
     service = module.get<IPRiskAssessmentService>(IPRiskAssessmentService);
-    accessLogRepository = module.get(getRepositoryToken(IPAccessLog));
-    blacklistService = module.get(IPBlacklistService);
-    whitelistService = module.get(IPWhitelistService);
-    rateLimiterService = module.get(IPRateLimiterService);
+    _accessLogRepository = module.get(getRepositoryToken(IPAccessLog));
+    _blacklistService = module.get(IPBlacklistService);
+    _whitelistService = module.get(IPWhitelistService);
+    _rateLimiterService = module.get(IPRateLimiterService);
 
     jest.clearAllMocks();
   });

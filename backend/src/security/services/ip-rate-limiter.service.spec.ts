@@ -6,7 +6,7 @@ import { IPRateLimit } from '../../database/entities/security/ip-rate-limit.enti
 
 describe('IPRateLimiterService', () => {
   let service: IPRateLimiterService;
-  let repository: jest.Mocked<Repository<IPRateLimit>>;
+  let _repository: jest.Mocked<Repository<IPRateLimit>>;
 
   const mockRepository = {
     findOne: jest.fn(),
@@ -41,7 +41,7 @@ describe('IPRateLimiterService', () => {
     }).compile();
 
     service = module.get<IPRateLimiterService>(IPRateLimiterService);
-    repository = module.get(getRepositoryToken(IPRateLimit));
+    _repository = module.get(getRepositoryToken(IPRateLimit));
 
     jest.clearAllMocks();
     jest.useFakeTimers();

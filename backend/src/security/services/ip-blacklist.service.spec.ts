@@ -7,7 +7,7 @@ import { ThreatSeverity, IPType } from '@xiaodashi/shared';
 
 describe('IPBlacklistService', () => {
   let service: IPBlacklistService;
-  let repository: jest.Mocked<Repository<IPBlacklist>>;
+  let _repository: jest.Mocked<Repository<IPBlacklist>>;
 
   const mockRepository = {
     findOne: jest.fn(),
@@ -45,7 +45,7 @@ describe('IPBlacklistService', () => {
     }).compile();
 
     service = module.get<IPBlacklistService>(IPBlacklistService);
-    repository = module.get(getRepositoryToken(IPBlacklist));
+    _repository = module.get(getRepositoryToken(IPBlacklist));
 
     // 重置所有mock
     jest.clearAllMocks();
