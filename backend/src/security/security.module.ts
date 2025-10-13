@@ -19,6 +19,7 @@ import { IPRateLimiterService } from './services/ip-rate-limiter.service';
 import { IPRiskAssessmentService } from './services/ip-risk-assessment.service';
 // import { CaptchaGuard } from './guards/captcha.guard'; // 暂时禁用
 import { SecurityController } from './controllers/security.controller';
+import { IPSecurityController } from './controllers/ip-security.controller';
 
 /**
  * 安全模块
@@ -51,7 +52,7 @@ import { SecurityController } from './controllers/security.controller';
     ConfigModule,
     ScheduleModule, // 支持定时任务，用于清理过期锁定、验证码和频率限制记录
   ],
-  controllers: [SecurityController],
+  controllers: [SecurityController, IPSecurityController],
   providers: [
     AccountLockoutService,
     CaptchaService,
