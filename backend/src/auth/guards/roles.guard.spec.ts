@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Reflector } from '@nestjs/core';
-import { ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { ExecutionContext, ForbiddenException, Logger } from '@nestjs/common';
 import { RolesGuard } from './roles.guard';
 import { UserRole } from '@xiaodashi/shared';
 import { ROLES_KEY } from '../decorators/roles.decorator';
@@ -74,10 +74,17 @@ describe('RolesGuard', () => {
 
     guard = module.get<RolesGuard>(RolesGuard);
     reflector = module.get<Reflector>(Reflector);
+
+    // Mock logger methods to prevent console output during tests
+    jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+    jest.spyOn(Logger.prototype, 'warn').mockImplementation(() => undefined);
+    jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => undefined);
+    jest.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe('canActivate', () => {

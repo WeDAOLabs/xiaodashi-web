@@ -21,6 +21,7 @@ jest.mock('svg-captcha', () => ({
 describe('CaptchaService', () => {
   let service: CaptchaService;
   let captchaSessionRepository: jest.Mocked<Repository<CaptchaSession>>;
+  let loginRiskAssessmentService: jest.Mocked<LoginRiskAssessmentService>;
   let module: TestingModule;
   const bcryptHash = jest.requireMock('bcrypt').hash;
   const bcryptCompare = jest.requireMock('bcrypt').compare;
@@ -106,6 +107,7 @@ describe('CaptchaService', () => {
 
     service = module.get<CaptchaService>(CaptchaService);
     captchaSessionRepository = module.get(getRepositoryToken(CaptchaSession));
+    loginRiskAssessmentService = module.get(LoginRiskAssessmentService);
 
     // Setup default mocks
     bcryptHash.mockResolvedValue('encrypted_data');
@@ -346,7 +348,13 @@ describe('CaptchaService', () => {
 
       // Act & Assert - 尝试重复预验证
       await expect(
-        service.verifyCaptcha('pre_verified_session', 'code', undefined, undefined, false),
+        service.verifyCaptcha(
+          'pre_verified_session',
+          'code',
+          undefined,
+          undefined,
+          false,
+        ),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -361,7 +369,9 @@ describe('CaptchaService', () => {
 
       // Mock 解密函数返回正确位置
       const correctPosition = '100,50'; // x=100, y=50
-      jest.spyOn(service as any, 'decryptSliderData').mockReturnValue(correctPosition);
+      jest
+        .spyOn(service as any, 'decryptSliderData')
+        .mockReturnValue(correctPosition);
 
       // Act - 验证接近正确位置的用户输入
       const result = await service.verifyCaptcha('slider_session', '103'); // 用户输入x=103，容差为5
@@ -382,7 +392,9 @@ describe('CaptchaService', () => {
 
       // Mock 解密函数返回正确位置
       const correctPosition = '100,50'; // x=100, y=50
-      jest.spyOn(service as any, 'decryptSliderData').mockReturnValue(correctPosition);
+      jest
+        .spyOn(service as any, 'decryptSliderData')
+        .mockReturnValue(correctPosition);
 
       // Act - 验证超出容差的用户输入
       const result = await service.verifyCaptcha('slider_session', '150'); // 用户输入x=150，超出容差
@@ -435,10 +447,7 @@ describe('CaptchaService', () => {
 
     it('应该在风险评估失败时使用降级方案', async () => {
       // Arrange - 模拟风险评估服务失败
-      const mockLoginRiskAssessmentService = module.get(
-        LoginRiskAssessmentService,
-      );
-      mockLoginRiskAssessmentService.assessLoginRisk.mockRejectedValueOnce(
+      loginRiskAssessmentService.assessLoginRisk.mockRejectedValueOnce(
         new Error('风险评估失败'),
       );
 

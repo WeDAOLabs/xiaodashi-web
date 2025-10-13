@@ -1,44 +1,45 @@
 import {
-  Injectable,
-  UnauthorizedException,
-  ConflictException,
   BadRequestException,
+  ConflictException,
+  Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import type { Request } from 'express';
+import type { DeviceInfo } from '@xiaodashi/shared';
 import {
   AuthToken,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
   JWTPayload,
   LoginRequest,
   LoginResponse,
+  LogoutRequest,
+  LogoutResponse,
   RefreshTokenResponse,
   RegisterRequest,
   RegisterResponse,
-  ForgotPasswordRequest,
-  ForgotPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
-  ChangePasswordRequest,
-  ChangePasswordResponse,
+  UserRole,
+  UserStatus,
   VerifyEmailRequest,
   VerifyEmailResponse,
-  LogoutRequest,
-  LogoutResponse,
-  UserStatus,
-  UserRole,
 } from '@xiaodashi/shared';
-import { User } from '../database/entities/user/user.entity';
-import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
+import * as bcrypt from 'bcrypt';
+import type { Request } from 'express';
+import { Repository } from 'typeorm';
 import { AuthConfig } from '../config/auth.config';
-import { SessionService } from '../session/session.service';
+import { SecurityConfig } from '../config/security.config';
+import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
+import { User } from '../database/entities/user/user.entity';
 import { AccountLockoutService } from '../security/services/account-lockout.service';
 import { CaptchaService } from '../security/services/captcha.service';
-import type { DeviceInfo } from '@xiaodashi/shared';
+import { SessionService } from '../session/session.service';
 
 /**
  * 认证服务类
@@ -405,8 +406,12 @@ export class AuthService {
     );
 
     const shouldRequireCaptcha = captchaAssessment.required;
+    // 从安全配置中读取登录验证码开关
+    const enabledCaptcha =
+      this.configService.get<SecurityConfig>('security')!.security.captcha
+        .enabled;
 
-    if (shouldRequireCaptcha) {
+    if (enabledCaptcha && shouldRequireCaptcha) {
       // 如果需要验证码但未提供，则拒绝登录
       if (!captcha || !captcha.sessionId || !captcha.code) {
         await this.logLoginAttempt(

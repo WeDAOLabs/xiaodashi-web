@@ -47,6 +47,45 @@ describe('AuthService', () => {
     },
   };
 
+  // 模拟的安全配置
+  const mockSecurityConfig = {
+    cors: {
+      origins: ['http://localhost:3000'],
+      credentials: true,
+    },
+    rateLimit: {
+      windowMs: 900000,
+      maxRequests: 100,
+    },
+    loginRateLimit: {
+      windowMs: 900000,
+      maxAttempts: 5,
+    },
+    security: {
+      maxLoginAttempts: 5,
+      accountLockoutTime: 900000,
+      minUsernameLength: 2,
+      minPasswordLength: 8,
+      progressiveLockout: {
+        levels: [
+          { attempts: 3, duration: 5 },
+          { attempts: 5, duration: 15 },
+          { attempts: 10, duration: 60 },
+        ],
+        resetPeriod: 24,
+      },
+      captcha: {
+        enabled: false, // 默认关闭
+        triggerAttempts: 2,
+        expireTime: 5,
+        maxAttempts: 3,
+        cleanupInterval: 60,
+        complexity: 3,
+        suspiciousIpThreshold: 5,
+      },
+    },
+  };
+
   // 模拟用户数据
   const mockUser: User = {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -96,7 +135,15 @@ describe('AuthService', () => {
 
   // Mock Config Service
   const mockConfigService = {
-    get: jest.fn().mockReturnValue(mockAuthConfig),
+    get: jest.fn((key: string) => {
+      if (key === 'auth') {
+        return mockAuthConfig;
+      }
+      if (key === 'security') {
+        return mockSecurityConfig;
+      }
+      return undefined;
+    }),
   };
 
   // Mock Session Service

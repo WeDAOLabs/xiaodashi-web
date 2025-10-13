@@ -333,3 +333,160 @@ export interface CaptchaRequiredResponse {
   sessionId?: string;      // 如果需要验证码，预生成会话ID
   requiredType?: CaptchaType;
 }
+
+// === 登录审计日志相关类型 ===
+
+// 登录日志条目
+export interface LoginLogEntry {
+  id: string;                     // 日志ID
+  userId?: string;                // 用户ID（登录失败时可能为空）
+  email: string;                  // 尝试登录的邮箱
+  ipAddress?: string;             // 登录IP地址
+  userAgent?: string;             // 用户代理字符串
+  location?: string;              // 地理位置
+  success: boolean;               // 登录是否成功
+  failureReason?: string;         // 失败原因
+  createdAt: string;              // 登录时间（ISO字符串）
+}
+
+// 登录日志查询参数
+export interface LoginLogQueryParams {
+  userId?: string;                // 按用户ID筛选
+  email?: string;                 // 按邮箱筛选
+  success?: boolean;              // 按成功状态筛选
+  ipAddress?: string;             // 按IP地址筛选
+  startDate?: string;             // 开始日期（ISO字符串）
+  endDate?: string;               // 结束日期（ISO字符串）
+  page?: number;                  // 页码（默认1）
+  pageSize?: number;              // 每页数量（默认20，最大100）
+  sortBy?: 'createdAt' | 'email'; // 排序字段
+  sortOrder?: 'ASC' | 'DESC';     // 排序顺序（默认DESC）
+}
+
+// 登录日志查询响应
+export interface LoginLogQueryResponse {
+  logs: LoginLogEntry[];          // 日志列表
+  total: number;                  // 总记录数
+  page: number;                   // 当前页码
+  pageSize: number;               // 每页数量
+  totalPages: number;             // 总页数
+}
+
+// 登录异常类型枚举
+export enum LoginAnomalyType {
+  IP_CHANGE = 'ip_change',              // IP地址突变
+  LOCATION_JUMP = 'location_jump',      // 地理位置跳变
+  TIME_ANOMALY = 'time_anomaly',        // 异常时间登录
+  HIGH_FREQUENCY = 'high_frequency',    // 高频登录尝试
+  BRUTE_FORCE = 'brute_force',          // 疑似暴力破解
+  DEVICE_CHANGE = 'device_change',      // 设备变更
+}
+
+// 登录异常详情
+export interface LoginAnomaly {
+  type: LoginAnomalyType;         // 异常类型
+  severity: 'low' | 'medium' | 'high' | 'critical'; // 严重程度
+  userId?: string;                // 相关用户ID
+  email: string;                  // 相关邮箱
+  description: string;            // 异常描述
+  detectedAt: string;             // 检测时间（ISO字符串）
+  relatedLogs: string[];          // 相关日志ID列表
+  riskScore: number;              // 风险评分（0-100）
+  metadata?: Record<string, unknown>; // 额外元数据
+}
+
+// 登录异常报告
+export interface LoginAnomalyReport {
+  anomalies: LoginAnomaly[];      // 异常列表
+  total: number;                  // 异常总数
+  criticalCount: number;          // 严重异常数量
+  highCount: number;              // 高风险异常数量
+  mediumCount: number;            // 中风险异常数量
+  lowCount: number;               // 低风险异常数量
+  generatedAt: string;            // 报告生成时间（ISO字符串）
+  timeRange: {
+    startDate: string;            // 分析开始时间
+    endDate: string;              // 分析结束时间
+  };
+}
+
+// 登录统计信息
+export interface LoginStatistics {
+  totalAttempts: number;          // 总登录尝试次数
+  successfulLogins: number;       // 成功登录次数
+  failedLogins: number;           // 失败登录次数
+  successRate: number;            // 成功率（百分比）
+  uniqueUsers: number;            // 唯一用户数
+  uniqueIPs: number;              // 唯一IP数
+  topFailureReasons: Array<{
+    reason: string;
+    count: number;
+  }>;                             // 失败原因统计
+  hourlyDistribution: Array<{
+    hour: number;                 // 小时（0-23）
+    count: number;                // 登录次数
+  }>;                             // 按小时分布
+  dailyDistribution: Array<{
+    date: string;                 // 日期（ISO字符串）
+    attempts: number;             // 尝试次数
+    successes: number;            // 成功次数
+  }>;                             // 按日分布
+}
+
+// 安全审计报告
+export interface LoginSecurityReport {
+  summary: {
+    totalLogs: number;            // 总日志数
+    dateRange: {
+      startDate: string;
+      endDate: string;
+    };
+    generatedAt: string;          // 报告生成时间
+  };
+  statistics: LoginStatistics;    // 登录统计
+  anomalies: LoginAnomalyReport;  // 异常报告
+  topRiskUsers: Array<{
+    userId: string;
+    email: string;
+    riskScore: number;
+    anomalyCount: number;
+  }>;                             // 高风险用户列表
+  topRiskIPs: Array<{
+    ipAddress: string;
+    attemptCount: number;
+    failureCount: number;
+    riskScore: number;
+  }>;                             // 高风险IP列表
+  recommendations: string[];      // 安全建议
+}
+
+// 用户登录模式分析
+export interface UserLoginPattern {
+  userId: string;
+  email: string;
+  analysisData: {
+    commonLoginHours: number[];   // 常用登录时间（小时）
+    commonIPs: string[];          // 常用IP地址
+    commonLocations: string[];    // 常用登录地点
+    averageLoginFrequency: number; // 平均登录频率（次/天）
+    lastLoginAt?: string;         // 最后登录时间
+    deviceTypes: string[];        // 使用的设备类型
+  };
+  anomalyIndicators: {
+    hasUnusualIPActivity: boolean;    // 存在异常IP活动
+    hasUnusualTimeActivity: boolean;  // 存在异常时间活动
+    hasUnusualLocationActivity: boolean; // 存在异常地点活动
+    recentFailureRate: number;    // 近期失败率
+  };
+  riskAssessment: {
+    overallRiskScore: number;     // 总体风险评分（0-100）
+    riskLevel: 'low' | 'medium' | 'high' | 'critical'; // 风险等级
+    riskFactors: string[];        // 风险因素列表
+  };
+}
+
+// 登录模式分析响应
+export interface LoginPatternAnalysisResponse {
+  pattern: UserLoginPattern;
+  recommendations: string[];      // 针对该用户的安全建议
+}

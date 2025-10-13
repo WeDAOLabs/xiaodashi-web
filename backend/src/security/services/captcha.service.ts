@@ -51,7 +51,11 @@ export class CaptchaService {
     this.sliderPuzzleGenerator = new SliderPuzzleGenerator();
     // 生成滑动验证码加密密钥（32字节）
     let encryptionKey = this.configService.get<string>('SLIDER_ENCRYPTION_KEY');
-    if (!encryptionKey || typeof encryptionKey !== 'string' || encryptionKey.length < 32) {
+    if (
+      !encryptionKey ||
+      typeof encryptionKey !== 'string' ||
+      encryptionKey.length < 32
+    ) {
       encryptionKey = 'default-32-char-encryption-key-for-slider!';
     }
     // 确保密钥长度为32字节
@@ -205,9 +209,9 @@ export class CaptchaService {
   async verifyCaptcha(
     sessionId: string,
     code: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     userId?: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     ipAddress?: string,
     markAsUsed: boolean = true,
   ): Promise<CaptchaVerifyResponse> {
@@ -254,9 +258,7 @@ export class CaptchaService {
 
     // 如果验证码已经预验证过，直接使用预验证结果
     if (captchaSession.isVerified && !markAsUsed) {
-      this.logger.warn(
-        `预验证的验证码不应重复预验证: sessionId=${sessionId}`,
-      );
+      this.logger.warn(`预验证的验证码不应重复预验证: sessionId=${sessionId}`);
       throw new BadRequestException('验证码已预验证，请直接用于登录');
     }
 
@@ -314,16 +316,20 @@ export class CaptchaService {
     }
 
     // 验证成功，标记为已验证
-    const updateData: any = {
+    const updateData: Partial<Pick<CaptchaSession, 'isVerified' | 'isUsed'>> = {
       isVerified: true,
     };
 
     // 只有在正式验证时才标记为已使用
     if (markAsUsed) {
       updateData.isUsed = true;
-      this.logger.debug(`验证码正式验证成功并标记为已使用: sessionId=${sessionId}`);
+      this.logger.debug(
+        `验证码正式验证成功并标记为已使用: sessionId=${sessionId}`,
+      );
     } else {
-      this.logger.debug(`验证码预验证成功（未标记为已使用）: sessionId=${sessionId}`);
+      this.logger.debug(
+        `验证码预验证成功（未标记为已使用）: sessionId=${sessionId}`,
+      );
     }
 
     await this.captchaSessionRepository.update(captchaSession.id, updateData);
