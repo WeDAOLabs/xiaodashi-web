@@ -15,6 +15,14 @@ import {
 
 import { Permission, RolePermission, authEntities } from './auth';
 
+import {
+  IPBlacklist,
+  IPWhitelist,
+  IPRateLimit,
+  IPAccessLog,
+  securityEntities,
+} from './security';
+
 // 导出所有实体（保持向后兼容）
 export {
   User,
@@ -24,6 +32,10 @@ export {
   UserSession,
   UserLoginLog,
   CaptchaSession,
+  IPBlacklist,
+  IPWhitelist,
+  IPRateLimit,
+  IPAccessLog,
 };
 
 // 按域导出实体（为未来多数据库预留）
@@ -37,6 +49,11 @@ export const AuthDomainEntities = {
   entityClasses: authEntities,
 };
 
+export const SecurityDomainEntities = {
+  entities: [IPBlacklist, IPWhitelist, IPRateLimit, IPAccessLog],
+  entityClasses: securityEntities,
+};
+
 // 实体数组，用于TypeORM配置（当前单数据库使用）
 export const entities = [
   User,
@@ -46,10 +63,15 @@ export const entities = [
   UserSession,
   UserLoginLog,
   CaptchaSession,
+  IPBlacklist,
+  IPWhitelist,
+  IPRateLimit,
+  IPAccessLog,
 ];
 
 // 未来多数据库时可以使用的分域配置（预留）
 export const domainEntities = {
   user: UserDomainEntities.entities,
   auth: AuthDomainEntities.entities,
+  security: SecurityDomainEntities.entities,
 };

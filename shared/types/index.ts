@@ -16,6 +16,9 @@ export * from './auth';
 // 导出会话相关类型
 export * from './session';
 
+// 导出安全域相关类型
+export * from './security';
+
 // 重新导出一些常用类型的别名，提供更简洁的导入方式
 export type {
   User,
@@ -42,6 +45,23 @@ export type {
   ApiErrorResponse
 } from './api.types';
 
+// 导出枚举（作为值，不是类型）
+export { IPType, ThreatSeverity, IPRiskLevel } from './security';
+
+// 导出类型
+export type {
+  IPBlacklistEntry,
+  AddIPBlacklistRequest,
+  UpdateIPBlacklistRequest,
+  IPWhitelistEntry,
+  AddIPWhitelistRequest,
+  UpdateIPWhitelistRequest,
+  IPRiskReport,
+  IPCheckResponse,
+  IPRateLimitStatus,
+  IPAccessLogEntry
+} from './security';
+
 // === 按域命名空间导出（为未来多数据库扩展预留） ===
 // 用户域类型命名空间
 export * as UserDomain from './user';
@@ -51,6 +71,9 @@ export * as AuthDomain from './auth';
 
 // 会话域类型命名空间
 export * as SessionDomain from './session';
+
+// 安全域类型命名空间
+export * as SecurityDomain from './security';
 
 // 通用API类型命名空间
 export * as ApiTypes from './api.types';
@@ -63,11 +86,13 @@ export * as ApiTypes from './api.types';
 import * as UserTypes from './user';
 import * as AuthTypes from './auth';
 import * as SessionTypes from './session';
+import * as SecurityTypes from './security';
 
 export const DomainTypes = {
   User: UserTypes,
   Auth: AuthTypes,
   Session: SessionTypes,
+  Security: SecurityTypes,
   // Business: BusinessTypes,
   // Analytics: AnalyticsTypes,
 } as const;
