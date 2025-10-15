@@ -700,12 +700,14 @@ describe('AuthService', () => {
       // 断言
       expect(result.message).toBe('密码重置成功');
       expect(result.success).toBe(true);
-      expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
-        passwordHash: hashedNewPassword,
-        passwordResetToken: undefined,
-        passwordResetExpiresAt: undefined,
-        loginAttempts: 0,
-      });
+      expect(mockUserRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          passwordHash: hashedNewPassword,
+          passwordResetToken: null,
+          passwordResetExpiresAt: null,
+          loginAttempts: 0,
+        }),
+      );
     });
 
     it('应该在重置token过期时抛出异常', async () => {
@@ -821,12 +823,14 @@ describe('AuthService', () => {
       // 断言
       expect(result.message).toBe('邮箱验证成功');
       expect(result.success).toBe(true);
-      expect(mockUserRepository.update).toHaveBeenCalledWith(mockUser.id, {
-        status: 'active',
-        emailVerified: true,
-        emailVerificationToken: undefined,
-        emailVerificationExpiresAt: undefined,
-      });
+      expect(mockUserRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 'active',
+          emailVerified: true,
+          emailVerificationToken: null,
+          emailVerificationExpiresAt: null,
+        }),
+      );
     });
 
     it('应该在验证token无效时抛出异常', async () => {

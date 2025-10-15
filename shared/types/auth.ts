@@ -490,3 +490,25 @@ export interface LoginPatternAnalysisResponse {
   pattern: UserLoginPattern;
   recommendations: string[];      // 针对该用户的安全建议
 }
+
+// === 管理员密码重置相关类型 ===
+
+// 密码重置token状态枚举
+export enum PasswordResetTokenStatus {
+  VALID = 'valid',           // token有效
+  EXPIRED = 'expired',       // token已过期
+  NOT_FOUND = 'not_found',   // token不存在
+}
+
+// 管理员查询密码重置token响应
+export interface AdminPasswordResetTokenResponse {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
+  resetToken?: string;           // 重置token（仅当状态为valid时返回）
+  expiresAt?: string;            // 过期时间（ISO字符串，仅当token存在时返回）
+  status: PasswordResetTokenStatus;
+  message: string;               // 查询结果说明
+}

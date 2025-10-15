@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import type { DeviceInfo } from '@xiaodashi/shared';
 import {
+  AdminPasswordResetTokenResponse,
   AuthToken,
   ChangePasswordRequest,
   ChangePasswordResponse,
@@ -20,6 +21,7 @@ import {
   LoginResponse,
   LogoutRequest,
   LogoutResponse,
+  PasswordResetTokenStatus,
   RefreshTokenResponse,
   RegisterRequest,
   RegisterResponse,
@@ -788,12 +790,11 @@ export class AuthService {
     const passwordHash = await this.hashPassword(newPassword);
 
     // 更新用户密码并清除重置token
-    await this.userRepository.update(user.id, {
-      passwordHash,
-      passwordResetToken: undefined,
-      passwordResetExpiresAt: undefined,
-      loginAttempts: 0, // 重置登录失败次数
-    });
+    user.passwordHash = passwordHash;
+    user.passwordResetToken = null;
+    user.passwordResetExpiresAt = null;
+    user.loginAttempts = 0; // 重置登录失败次数
+    await this.userRepository.save(user);
 
     return {
       message: '密码重置成功',
@@ -891,12 +892,11 @@ export class AuthService {
     }
 
     // 激活用户账户并清除验证token
-    await this.userRepository.update(user.id, {
-      status: UserStatus.ACTIVE,
-      emailVerified: true,
-      emailVerificationToken: undefined,
-      emailVerificationExpiresAt: undefined,
-    });
+    user.status = UserStatus.ACTIVE;
+    user.emailVerified = true;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpiresAt = null;
+    await this.userRepository.save(user);
 
     // 获取更新后的用户信息
     const updatedUser = await this.userRepository.findOne({
@@ -993,6 +993,77 @@ export class AuthService {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
       lastLoginAt: user.lastLoginAt?.toISOString(),
+    };
+  }
+
+  /**
+   * 管理员查询用户密码重置token
+   *
+   * @param email - 用户邮箱
+   * @returns Promise<AdminPasswordResetTokenResponse> - 查询结果
+   * @throws NotFoundException - 用户不存在时抛出
+   */
+  async getPasswordResetToken(
+    email: string,
+  ): Promise<AdminPasswordResetTokenResponse> {
+    // 查找用户
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      return {
+        user: {
+          id: '',
+          email,
+          name: '',
+        },
+        status: PasswordResetTokenStatus.NOT_FOUND,
+        message: '用户不存在',
+      };
+    }
+
+    // 检查是否存在密码重置token
+    if (!user.passwordResetToken) {
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        },
+        status: PasswordResetTokenStatus.NOT_FOUND,
+        message: '该用户没有申请密码重置',
+      };
+    }
+
+    // 检查token是否过期
+    if (
+      user.passwordResetExpiresAt &&
+      user.passwordResetExpiresAt < new Date()
+    ) {
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        },
+        status: PasswordResetTokenStatus.EXPIRED,
+        message: '密码重置token已过期',
+        expiresAt: user.passwordResetExpiresAt.toISOString(),
+      };
+    }
+
+    // token有效
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+      resetToken: user.passwordResetToken,
+      expiresAt: user.passwordResetExpiresAt?.toISOString(),
+      status: PasswordResetTokenStatus.VALID,
+      message: '密码重置token有效',
     };
   }
 

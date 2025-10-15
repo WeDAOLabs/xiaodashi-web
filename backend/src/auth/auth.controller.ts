@@ -9,6 +9,8 @@ import {
   Get,
   ValidationPipe,
   UsePipes,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import type { Request as ExpressRequest } from 'express';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
@@ -20,6 +22,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import type {
+  AdminPasswordResetTokenResponse,
   LoginResponse,
   RegisterResponse,
   RefreshTokenResponse,
@@ -34,6 +37,8 @@ import type {
 } from '@xiaodashi/shared';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RolesGuard } from './guards/roles.guard';
+import { Admin } from './decorators/roles.decorator';
 import {
   LoginDto,
   RegisterDto,
@@ -469,6 +474,45 @@ export class AuthController {
       reason: captchaAssessment.reason,
       riskScore: captchaAssessment.riskScore,
     };
+  }
+
+  /**
+   * 管理员查询用户密码重置token
+   */
+  @Get('admin/password-reset/token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Admin()
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: '管理员查询密码重置token',
+    description: '管理员根据邮箱查询用户的密码重置token信息，仅ADMIN角色可访问',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '查询成功，返回用户和重置token信息',
+  })
+  @ApiResponse({
+    status: 401,
+    description: '未授权访问',
+  })
+  @ApiResponse({
+    status: 403,
+    description: '权限不足（非管理员）',
+  })
+  @ApiResponse({
+    status: 400,
+    description: '请求参数错误',
+  })
+  async getAdminPasswordResetToken(
+    @Query('email') email: string,
+  ): Promise<AdminPasswordResetTokenResponse> {
+    // 验证邮箱参数
+    if (!email || !email.includes('@')) {
+      throw new BadRequestException('邮箱格式不正确');
+    }
+
+    return this.authService.getPasswordResetToken(email.trim());
   }
 
   /**

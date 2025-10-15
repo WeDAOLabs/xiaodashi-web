@@ -64,14 +64,14 @@ export class User {
     comment: '邮箱验证令牌',
   })
   @Index()
-  emailVerificationToken?: string;
+  emailVerificationToken: string | null;
 
   @Column({
     type: 'timestamptz',
     nullable: true,
     comment: '邮箱验证令牌过期时间',
   })
-  emailVerificationExpiresAt?: Date;
+  emailVerificationExpiresAt: Date | null;
 
   @Column({
     type: 'varchar',
@@ -80,14 +80,14 @@ export class User {
     comment: '密码重置令牌',
   })
   @Index()
-  passwordResetToken?: string;
+  passwordResetToken: string | null;
 
   @Column({
     type: 'timestamptz',
     nullable: true,
     comment: '密码重置令牌过期时间',
   })
-  passwordResetExpiresAt?: Date;
+  passwordResetExpiresAt: Date | null;
 
   @Column({ type: 'timestamptz', nullable: true, comment: '最后登录时间' })
   @Index()
