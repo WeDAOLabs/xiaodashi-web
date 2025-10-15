@@ -20,7 +20,7 @@ async function bootstrap() {
   validateEnvironment();
 
   // 全局拦截器
-  app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new TransformInterceptor(configService));
 
   // 全局验证管道
   app.useGlobalPipes(

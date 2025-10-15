@@ -11,7 +11,7 @@ async function generateOpenApiSpec() {
   const config = new DocumentBuilder()
     .setTitle('智商180的AI全域营销大师 API')
     .setDescription('智赢 Web 应用 API 文档')
-    .setVersion('1.0')
+    .setVersion('1.0.0')
     .addBearerAuth()
     .build();
 

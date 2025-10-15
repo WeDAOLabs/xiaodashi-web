@@ -67,5 +67,8 @@ yarn-error.log*
 /frontend-design/
 /web-frontend-design/
 
+# openspec
+/openspec/
+
 # tmp
 screenshots

@@ -7,6 +7,8 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Response as ExpressResponse } from 'express';
+import { ConfigService } from '@nestjs/config';
+import type { AppConfig } from '../../config/app.config';
 
 export interface Response<T> {
   data: T;
@@ -20,6 +22,8 @@ export interface Response<T> {
 export class TransformInterceptor<T>
   implements NestInterceptor<T, Response<T>>
 {
+  constructor(private readonly configService: ConfigService) {}
+
   intercept(
     context: ExecutionContext,
     next: CallHandler,
@@ -27,6 +31,13 @@ export class TransformInterceptor<T>
     return next.handle().pipe(
       map((data: T) => {
         const response = context.switchToHttp().getResponse<ExpressResponse>();
+        const appConfig = this.configService.get<AppConfig>('app');
+
+        // 添加 API 版本响应头
+        if (appConfig?.version) {
+          response.setHeader('X-API-Version', appConfig.version);
+        }
+
         return {
           success: true,
           message: '操作成功',
