@@ -20,6 +20,7 @@
 
 import LogoIcon from '@/components/icons/LogoIcon';
 import { useAuth } from '@/components/layout/AuthContext';
+import { SOCIAL_LOGIN_ENABLED } from '@/config/featureFlags';
 import type { LoginRequest } from '@xiaodashi/shared';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -120,35 +121,39 @@ export default function LoginPage() {
           />
 
           {/* 第三方登录分隔线 */}
-          <div className="relative mt-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[var(--border-primary)]" />
+          {SOCIAL_LOGIN_ENABLED && (
+            <div className="relative mt-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[var(--border-primary)]" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-[var(--bg-primary)] text-[var(--text-secondary)]">
+                  或使用第三方登录
+                </span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-[var(--bg-primary)] text-[var(--text-secondary)]">
-                或使用第三方登录
-              </span>
-            </div>
-          </div>
+          )}
 
           {/* 第三方登录按钮 */}
-          <div className="mt-6">
-            <div className="flex justify-center">
-              <Link
-                href="/auth/feishu"
-                className="inline-flex items-center justify-center p-3 border border-[var(--border-primary)] rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:ring-offset-2"
-                aria-label="使用飞书登录"
-              >
-                <Image
-                  src="/images/feishu-logo.svg"
-                  alt="飞书"
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
-              </Link>
+          {SOCIAL_LOGIN_ENABLED && (
+            <div className="mt-6">
+              <div className="flex justify-center">
+                <Link
+                  href="/auth/feishu"
+                  className="inline-flex items-center justify-center p-3 border border-[var(--border-primary)] rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:ring-offset-2"
+                  aria-label="使用飞书登录"
+                >
+                  <Image
+                    src="/images/feishu-logo.svg"
+                    alt="飞书"
+                    width={24}
+                    height={24}
+                    className="w-6 h-6"
+                  />
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* 页脚链接 */}
           <div

@@ -1,5 +1,6 @@
 'use client';
 
+import { PHONE_LOGIN_ENABLED } from '@/config/featureFlags';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -145,13 +146,17 @@ export function LoginForm({ onSubmit, isLoading = false, error }: LoginFormProps
             >
               忘记密码?
             </Link>
-            <span className="text-[var(--text-secondary)] mx-2">/</span>
-            <Link
-              href="/phone-login"
-              className="font-medium text-[var(--primary-color)] hover:text-[var(--primary-hover)] transition-colors"
-            >
-              手机验证码登录
-            </Link>
+            {PHONE_LOGIN_ENABLED && (
+              <>
+                <span className="text-[var(--text-secondary)] mx-2">/</span>
+                <Link
+                  href="/phone-login"
+                  className="font-medium text-[var(--primary-color)] hover:text-[var(--primary-hover)] transition-colors"
+                >
+                  手机验证码登录
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
