@@ -241,6 +241,21 @@ build_image() {
     fi
 }
 
+# 为镜像打标签
+tag_image() {
+    local source_tag="$1"
+    local target_tag="$2"
+
+    log_step "为镜像打标签: $target_tag"
+
+    if docker tag "$source_tag" "$target_tag"; then
+        log_success "标签创建成功: $target_tag"
+    else
+        log_error "标签创建失败: $target_tag"
+        exit 1
+    fi
+}
+
 # 推送镜像
 push_image() {
     local tag="$1"
@@ -306,6 +321,13 @@ main() {
         "prod")
             PROD_TAG="${BASE_IMAGE_NAME}:${IMAGE_TAG}"
             build_image "prod" "$PROJECT_ROOT/backend/Dockerfile" "$PROD_TAG"
+            
+            # 如果使用默认 latest 标签，同时创建版本号标签
+            if [ "$IMAGE_TAG" = "latest" ]; then
+                VERSION_TAG="${BASE_IMAGE_NAME}:v${PROJECT_VERSION}"
+                tag_image "$PROD_TAG" "$VERSION_TAG"
+                log_info "已创建版本标签: $VERSION_TAG"
+            fi
             ;;
         "all")
             # 构建开发环境镜像
@@ -326,6 +348,11 @@ main() {
                 ;;
             "prod")
                 push_image "$PROD_TAG"
+                # 如果创建了版本标签，也推送版本标签
+                if [ "$IMAGE_TAG" = "latest" ]; then
+                    VERSION_TAG="${BASE_IMAGE_NAME}:v${PROJECT_VERSION}"
+                    push_image "$VERSION_TAG"
+                fi
                 ;;
             "all")
                 push_image "$DEV_TAG"

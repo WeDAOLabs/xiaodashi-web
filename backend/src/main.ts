@@ -6,6 +6,7 @@ import * as crypto from 'crypto';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -13,7 +14,7 @@ import type { AppConfig } from './config/app.config';
 import type { SecurityConfig } from './config/security.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
 
@@ -40,6 +41,10 @@ async function bootstrap() {
   if (appConfig?.apiPrefix) {
     app.setGlobalPrefix(appConfig.apiPrefix);
   }
+
+  // 信任反向代理（阿里云 SLB/ALB、Cloudflare 等）
+  // 确保 request.ip 能正确获取客户端真实 IP，而非代理内网 IP
+  app.set('trust proxy', true);
 
   // CORS配置
   app.enableCors({
@@ -90,7 +95,7 @@ function validateEnvironment() {
   if (missingEnvVars.length > 0) {
     throw new Error(
       `缺少必要的环境变量: ${missingEnvVars.join(', ')}\n` +
-        `请检查 .env 文件或设置相应的环境变量。`,
+      `请检查 .env 文件或设置相应的环境变量。`,
     );
   }
 }

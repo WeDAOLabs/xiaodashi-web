@@ -1,5 +1,35 @@
 # Docker 部署指南
 
+## 快速开始
+
+### 完整部署流程
+
+```bash
+# 1. 构建镜像（生成 latest 和 v1.0.0 两个标签）
+./backend/scripts/build-docker.sh prod
+
+# 2. 推送到阿里云（需先配置凭证）
+./backend/scripts/push-docker.sh \
+  registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest
+./backend/scripts/push-docker.sh \
+  registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:v1.0.0
+
+# 3. 服务器部署
+# 3.1 准备配置文件
+cp .env.example .env
+cp .env.docker.example .env.docker
+# 编辑配置文件...
+
+# 3.2 拉取镜像
+docker compose -f docker-compose.prod.yml pull
+
+# 3.3 执行 migration
+docker compose -f docker-compose.prod.yml run --rm migration
+
+# 3.4 启动应用
+docker compose -f docker-compose.prod.yml up -d backend
+```
+
 ## 目录结构
 
 ```
@@ -81,25 +111,93 @@ Docker Compose 读取配置的优先级（从低到高）：
 
 ## 3. 推送到阿里云
 
-### 配置镜像仓库信息
+### 前置条件
+
+1. 已通过 `build-docker.sh` 构建镜像
+2. 有阿里云镜像仓库的访问权限
+3. 已配置阿里云登录凭证
+
+### 配置推送凭证
 
 在 `backend/docker/.env.docker` 中配置：
 
 ```bash
-IMAGE_NAME=registry.cn-beijing.aliyuncs.com/your-namespace/xiaodashi-backend
-IMAGE_TAG=v1.0.0
-ALIYUN_ACCESS_KEY_ID=your_access_key
-ALIYUN_ACCESS_KEY_SECRET=your_secret_key
+# 阿里云镜像仓库凭证
+ALIYUN_DOCKER_USERNAME=布鲁托2000
+ALIYUN_DOCKER_PASSWORD=your_password
 ```
+
+**注意**：请妥善保管凭证，不要提交到代码仓库。
 
 ### 推送镜像
 
-```bash
-# 推送指定版本
-./backend/scripts/push-docker.sh xiaodashi/backend:v1.0.0
+#### 方式 1：使用配置文件（推荐）
 
-# 推送到多个区域
-./backend/scripts/push-docker.sh xiaodashi/backend:v1.0.0 --multi-region
+```bash
+# 构建镜像（自动生成 latest 和 v1.0.0 两个标签）
+./backend/scripts/build-docker.sh prod
+
+# 推送 latest 标签
+./backend/scripts/push-docker.sh \
+  registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest
+
+# 推送版本标签
+./backend/scripts/push-docker.sh \
+  registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:v1.0.0
+```
+
+#### 方式 2：命令行参数
+
+```bash
+# 推送时直接指定用户名和密码
+./backend/scripts/push-docker.sh \
+  registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest \
+  --username 布鲁托2000 \
+  --password 'your_password'
+```
+
+#### 方式 3：测试模式（Dry Run）
+
+```bash
+# 不实际推送，仅测试流程
+./backend/scripts/push-docker.sh \
+  registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest \
+  --dry-run
+```
+
+### 验证推送结果
+
+```bash
+# 查看阿里云镜像列表（需要阿里云 CLI）
+# 或访问阿里云容器镜像服务控制台查看
+
+# 本地测试拉取
+docker pull registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest
+docker pull registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:v1.0.0
+```
+
+### 推送常见问题
+
+#### Q: 推送提示"镜像不存在"？
+
+A: 请先使用 `build-docker.sh` 构建镜像：
+```bash
+./backend/scripts/build-docker.sh prod
+```
+
+#### Q: 推送提示"用户名或密码错误"？
+
+A: 检查 `backend/docker/.env.docker` 中的凭证配置是否正确。
+
+#### Q: 如何推送到不同的区域？
+
+A: 修改镜像名称中的 registry 地址：
+```bash
+# 北京区域
+registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest
+
+# 杭州区域
+registry.cn-hangzhou.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest
 ```
 
 ## 4. 服务器部署

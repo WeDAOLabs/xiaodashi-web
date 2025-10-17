@@ -46,29 +46,37 @@ Docker 镜像推送脚本 - xiaodashi-web Backend
     $0 [选项] <镜像名称>
 
 参数:
-    镜像名称          要推送的镜像名称 (必需)
+    镜像名称          要推送的镜像名称，必须包含完整路径 (必需)
+                     格式: registry.cn-beijing.aliyuncs.com/huyuan/app:tag
 
 选项:
-    -r, --registry REGISTRY  目标镜像仓库地址 (默认: 阿里云)
-    -u, --username USER      仓库用户名
-    -p, --password PASS      仓库密码
+    -u, --username USER      阿里云用户名
+    -p, --password PASS      阿里云密码
     --config-file FILE       配置文件路径
-    --multi-region           推送到多个区域仓库
     --dry-run               仅显示将要执行的命令，不实际执行
-    -f, --force             强制推送，覆盖已存在的镜像
     -h, --help              显示帮助信息
 
 示例:
-    $0 xiaodashi/backend:latest
-    $0 xiaodashi/backend:v1.0.0 -r registry.cn-hangzhou.aliyuncs.com
-    $0 xiaodashi/backend:latest --multi-region
-    $0 --config-file .docker.env xiaodashi/backend:latest
+    # 推送单个镜像
+    $0 registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest \\
+       --username 布鲁托2000 --password 'your_password'
+    
+    # 使用配置文件
+    $0 registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:v1.0.0 \\
+       --config-file backend/docker/.env.docker
+    
+    # 测试模式（不实际推送）
+    $0 registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend:latest \\
+       --username 布鲁托2000 --password 'your_password' --dry-run
 
-配置文件示例 (.docker.env):
-    DOCKER_REGISTRY=registry.cn-hangzhou.aliyuncs.com
-    DOCKER_USERNAME=your_username
-    DOCKER_PASSWORD=your_password
-    DOCKER_NAMESPACE=your_namespace
+配置文件示例 (backend/docker/.env.docker):
+    ALIYUN_DOCKER_USERNAME=布鲁托2000
+    ALIYUN_DOCKER_PASSWORD=your_password
+
+注意:
+    - 镜像名称必须包含完整的 registry 路径
+    - Registry 地址会从镜像名称自动提取
+    - 推送前请确保已通过 build-docker.sh 构建镜像
 
 EOF
 }
@@ -77,42 +85,28 @@ EOF
 parse_args() {
     # 默认值
     IMAGE_NAME=""
-    DOCKER_REGISTRY=""
-    DOCKER_USERNAME=""
-    DOCKER_PASSWORD=""
+    CLI_IMAGE_NAME=""  # 保存命令行参数，防止被配置文件覆盖
+    ALIYUN_DOCKER_USERNAME=""
+    ALIYUN_DOCKER_PASSWORD=""
     CONFIG_FILE=""
-    MULTI_REGION=false
     DRY_RUN=false
-    FORCE_PUSH=false
 
     while [[ $# -gt 0 ]]; do
         case $1 in
-            -r|--registry)
-                DOCKER_REGISTRY="$2"
-                shift 2
-                ;;
             -u|--username)
-                DOCKER_USERNAME="$2"
+                ALIYUN_DOCKER_USERNAME="$2"
                 shift 2
                 ;;
             -p|--password)
-                DOCKER_PASSWORD="$2"
+                ALIYUN_DOCKER_PASSWORD="$2"
                 shift 2
                 ;;
             --config-file)
                 CONFIG_FILE="$2"
                 shift 2
                 ;;
-            --multi-region)
-                MULTI_REGION=true
-                shift
-                ;;
             --dry-run)
                 DRY_RUN=true
-                shift
-                ;;
-            -f|--force)
-                FORCE_PUSH=true
                 shift
                 ;;
             -h|--help)
@@ -125,7 +119,8 @@ parse_args() {
                 exit 1
                 ;;
             *)
-                if [ -z "$IMAGE_NAME" ]; then
+                if [ -z "$CLI_IMAGE_NAME" ]; then
+                    CLI_IMAGE_NAME="$1"
                     IMAGE_NAME="$1"
                 else
                     log_error "多余的参数: $1"
@@ -138,7 +133,7 @@ parse_args() {
     done
 
     # 检查必需参数
-    if [ -z "$IMAGE_NAME" ]; then
+    if [ -z "$CLI_IMAGE_NAME" ]; then
         log_error "请指定要推送的镜像名称"
         show_usage
         exit 1
@@ -158,12 +153,11 @@ load_config() {
         set -a
         source "./docker/.env.docker"
         set +a
-    fi
-
-    # 设置默认的阿里云镜像仓库
-    if [ -z "$DOCKER_REGISTRY" ]; then
-        DOCKER_REGISTRY="registry.cn-hangzhou.aliyuncs.com"
-        log_info "使用默认镜像仓库: $DOCKER_REGISTRY"
+    elif [ -f "./backend/docker/.env.docker" ]; then
+        log_step "发现环境配置文件: ./backend/docker/.env.docker"
+        set -a
+        source "./backend/docker/.env.docker"
+        set +a
     fi
 }
 
@@ -190,7 +184,7 @@ check_image() {
 
     log_step "检查本地镜像: $image"
 
-    if ! docker images --format "table {{.Repository}}:{{.Tag}}" | grep -q "^${image}$"; then
+    if ! docker images --format "{{.Repository}}:{{.Tag}}" | grep -q "^${image}$"; then
         log_error "本地镜像不存在: $image"
         log_info "请先使用构建脚本构建镜像"
         exit 1
@@ -199,143 +193,67 @@ check_image() {
     log_success "本地镜像存在"
 }
 
-# 获取镜像标签信息
+# 获取镜像信息
 get_image_info() {
     local image="$1"
-
-    # 分离镜像名称和标签
-    if [[ "$image" == *":"* ]]; then
-        IMAGE_REPOSITORY="${image%:*}"
-        IMAGE_TAG="${image#*:}"
-    else
-        IMAGE_REPOSITORY="$image"
-        IMAGE_TAG="latest"
-    fi
-
+    
+    log_info "镜像: $image"
+    
     # 获取镜像大小
     IMAGE_SIZE=$(docker images --format "{{.Size}}" "$image" 2>/dev/null || echo "Unknown")
-
-    log_info "镜像仓库: $IMAGE_REPOSITORY"
-    log_info "镜像标签: $IMAGE_TAG"
     log_info "镜像大小: $IMAGE_SIZE"
 }
 
 # Docker登录
 docker_login() {
-    local registry="$1"
+    local image="$1"
     local username="$2"
     local password="$3"
-
+    
+    # 从镜像名称提取 registry（第一个 / 之前的部分）
+    local registry
+    if [[ "$image" == *"/"* ]]; then
+        registry="${image%%/*}"
+    else
+        log_error "镜像名称格式错误，应包含完整路径（例如: registry.cn-beijing.aliyuncs.com/huyuan/app:latest）"
+        exit 1
+    fi
+    
     log_step "登录镜像仓库: $registry"
-
+    
     if [ "$DRY_RUN" = true ]; then
-        log_info "[DRY RUN] docker login $registry"
+        log_info "[DRY RUN] docker login --username=$username $registry"
         return 0
     fi
-
+    
     if [ -n "$username" ] && [ -n "$password" ]; then
-        echo "$password" | docker login "$registry" -u "$username" --password-stdin
+        echo "$password" | docker login "$registry" --username "$username" --password-stdin
+        log_success "登录成功"
     else
-        log_warning "未提供登录凭证，尝试匿名登录"
-        docker login "$registry" || true
+        log_error "请提供阿里云用户名和密码"
+        log_info "使用方式: $0 <镜像名称> --username <用户名> --password <密码>"
+        log_info "或在配置文件中设置 ALIYUN_DOCKER_USERNAME 和 ALIYUN_DOCKER_PASSWORD"
+        exit 1
     fi
-
-    log_success "登录成功"
 }
 
 # 推送镜像
 push_image() {
-    local source_image="$1"
-    local target_registry="$2"
-    local namespace="$3"
-
-    # 构建目标镜像名称（如果有 namespace 则包含，否则直接使用）
-    if [ -n "$namespace" ]; then
-        local target_image="${target_registry}/${namespace}/${IMAGE_REPOSITORY}:${IMAGE_TAG}"
-    else
-        local target_image="${target_registry}/${IMAGE_REPOSITORY}:${IMAGE_TAG}"
-    fi
-
-    log_step "准备推送镜像:"
-    log_info "  源镜像: $source_image"
-    log_info "  目标镜像: $target_image"
-
-    # 标记镜像
-    if [ "$DRY_RUN" = false ]; then
-        log_info "标记镜像: docker tag $source_image $target_image"
-        docker tag "$source_image" "$target_image"
-    else
-        log_info "[DRY RUN] docker tag $source_image $target_image"
-    fi
-
-    # 推送镜像
-    local push_cmd="docker push"
-    if [ "$FORCE_PUSH" = true ]; then
-        # 对于某些仓库，可能需要特殊参数来强制推送
-        log_info "使用强制推送模式"
-    fi
-
-    push_cmd="$push_cmd $target_image"
-
+    local image="$1"
+    
+    log_step "推送镜像: $image"
+    
     if [ "$DRY_RUN" = true ]; then
-        log_info "[DRY RUN] $push_cmd"
-    else
-        log_info "执行推送命令: $push_cmd"
-        if eval "$push_cmd"; then
-            log_success "镜像推送成功: $target_image"
-        else
-            log_error "镜像推送失败: $target_image"
-            return 1
-        fi
-    fi
-
-    # 清理临时标签
-    if [ "$DRY_RUN" = false ] && [ "$source_image" != "$target_image" ]; then
-        log_info "清理临时标签: docker rmi $target_image"
-        docker rmi "$target_image" 2>/dev/null || true
-    fi
-}
-
-# 多区域推送
-push_multi_region() {
-    local source_image="$1"
-
-    log_step "多区域推送模式"
-
-    # 阿里云多个区域
-    local regions=(
-        "registry.cn-hangzhou.aliyuncs.com"
-        "registry.cn-beijing.aliyuncs.com"
-        "registry.cn-shanghai.aliyuncs.com"
-        "registry.cn-shenzhen.aliyuncs.com"
-    )
-
-    for region in "${regions[@]}"; do
-        log_info "推送到区域: $region"
-        if ! push_image "$source_image" "$region" "$DOCKER_NAMESPACE"; then
-            log_warning "区域推送失败: $region"
-        fi
-    done
-}
-
-# 验证推送结果
-verify_push() {
-    local target_image="$1"
-
-    log_step "验证推送结果: $target_image"
-
-    if [ "$DRY_RUN" = true ]; then
-        log_info "[DRY RUN] 验证镜像: $target_image"
+        log_info "[DRY RUN] docker push $image"
         return 0
     fi
-
-    # 尝试拉取镜像摘要来验证推送是否成功
-    if docker pull "$target_image" --quiet >/dev/null 2>&1; then
-        log_success "镜像推送验证成功"
-        # 清理验证时拉取的镜像
-        docker rmi "$target_image" 2>/dev/null || true
+    
+    log_info "执行推送命令: docker push $image"
+    if docker push "$image"; then
+        log_success "镜像推送成功: $image"
     else
-        log_warning "无法验证镜像推送，可能需要手动检查"
+        log_error "镜像推送失败: $image"
+        return 1
     fi
 }
 
@@ -343,51 +261,41 @@ verify_push() {
 main() {
     log_info "=== Docker 镜像推送脚本 ==="
     log_info "开始时间: $(date '+%Y-%m-%d %H:%M:%S')"
-
+    
     # 解析参数
     parse_args "$@"
-
+    
     # 加载配置
     load_config
-
+    
+    # 恢复命令行参数（防止被配置文件覆盖）
+    if [ -n "$CLI_IMAGE_NAME" ]; then
+        IMAGE_NAME="$CLI_IMAGE_NAME"
+    fi
+    
     # 检查环境
     check_docker
-
+    
     # 检查镜像
     check_image "$IMAGE_NAME"
-
+    
     # 获取镜像信息
     get_image_info "$IMAGE_NAME"
-
-    # 设置默认命名空间（可选，如果镜像名称已包含完整路径则不需要）
-    if [ -z "$DOCKER_NAMESPACE" ]; then
-        DOCKER_NAMESPACE=""
-    fi
-
+    
     # 登录镜像仓库
-    docker_login "$DOCKER_REGISTRY" "$DOCKER_USERNAME" "$DOCKER_PASSWORD"
-
+    docker_login "$IMAGE_NAME" "$ALIYUN_DOCKER_USERNAME" "$ALIYUN_DOCKER_PASSWORD"
+    
     # 推送镜像
-    if [ "$MULTI_REGION" = true ]; then
-        push_multi_region "$IMAGE_NAME"
-    else
-        target_image="${DOCKER_REGISTRY}/${DOCKER_NAMESPACE}/${IMAGE_REPOSITORY}:${IMAGE_TAG}"
-        push_image "$IMAGE_NAME" "$DOCKER_REGISTRY" "$DOCKER_NAMESPACE"
-
-        # 验证推送结果
-        verify_push "$target_image"
-    fi
-
+    push_image "$IMAGE_NAME"
+    
     log_success "镜像推送完成！"
     log_info "结束时间: $(date '+%Y-%m-%d %H:%M:%S')"
-
+    
     # 显示推送的镜像信息
     echo ""
     log_info "=== 推送镜像信息 ==="
-    log_info "源镜像: $IMAGE_NAME"
-    log_info "目标仓库: $DOCKER_REGISTRY"
-    log_info "命名空间: $DOCKER_NAMESPACE"
-    log_info "镜像大小: $IMAGE_SIZE"
+    log_info "镜像: $IMAGE_NAME"
+    log_info "大小: $IMAGE_SIZE"
 }
 
 # 执行主函数
