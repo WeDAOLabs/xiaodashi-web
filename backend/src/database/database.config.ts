@@ -33,7 +33,7 @@ export default registerAs(
 
     // SSL 配置（生产环境）
     ssl:
-      process.env.NODE_ENV === 'production'
+      process.env.DB_SSL === 'true'
         ? {
             rejectUnauthorized: false,
           }

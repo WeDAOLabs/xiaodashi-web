@@ -1,7 +1,12 @@
-import { NestFactory } from '@nestjs/core';
+// 修复 @nestjs/typeorm@11.0.0 bug: crypto 未导入
+import * as crypto from 'crypto';
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+(globalThis as any).crypto = crypto;
+
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import type { AppConfig } from './config/app.config';

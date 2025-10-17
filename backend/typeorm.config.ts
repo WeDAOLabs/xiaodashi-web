@@ -1,5 +1,5 @@
-import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
+import { DataSource } from 'typeorm';
 
 // 加载环境变量
 config();
@@ -33,8 +33,8 @@ export default new DataSource({
   synchronize: false, // Migration 模式下必须为 false
   logging: process.env.NODE_ENV === 'development',
 
-  // SSL 配置
-  ssl: process.env.NODE_ENV === 'production' ? {
+  // SSL 配置 - 根据 DB_SSL 环境变量决定
+  ssl: process.env.DB_SSL === 'true' ? {
     rejectUnauthorized: false,
   } : false,
 });

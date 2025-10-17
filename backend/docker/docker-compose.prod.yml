@@ -1,0 +1,119 @@
+# =============================================================================
+# 生产环境 Docker Compose 配置 - xiaodashi-web Backend
+# =============================================================================
+# 特性：生产级配置、外部数据库连接、安全优化
+# 用途：生产环境部署
+# =============================================================================
+
+# Docker Compose 项目名称配置
+# 用于标识和管理容器组，支持环境变量配置
+name: ${COMPOSE_PROJECT_NAME:-xiaodashi-app-backend}
+
+services:
+  # xiaodashi-web 后端服务
+  backend:
+    image: ${IMAGE_NAME:-registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend}:${IMAGE_TAG:-latest}
+    container_name: xiaodashi-backend-prod
+    restart: always
+
+    # 端口映射（可根据需要调整）
+    ports:
+      - "${PORT:-2999}:2999"
+
+    # 环境变量（生产环境配置）
+    env_file:
+      - .env.docker
+
+    # 额外的环境变量覆盖
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT:-2999}
+
+      # 生产环境特定配置
+      SWAGGER_ENABLED: false
+      DEBUG: false
+      SHOW_ERROR_DETAILS: false
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+    # 资源限制
+    deploy:
+      resources:
+        limits:
+          cpus: '${CPU_LIMIT:-2.0}'
+          memory: ${MEMORY_LIMIT:-2G}
+        reservations:
+          cpus: '${CPU_RESERVATION:-0.5}'
+          memory: ${MEMORY_RESERVATION:-512M}
+
+    # 网络配置
+    networks:
+      - xiaodashi-network
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2999/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "${LOG_MAX_SIZE:-10m}"
+        max-file: "${LOG_MAX_FILES:-3}"
+        labels: "service=xiaodashi-backend"
+
+    # 安全配置
+    security_opt:
+      - no-new-privileges:true
+    user: "1001:1001"
+
+    # 临时文件系统
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+      - /var/run:noexec,nosuid,size=100m
+
+    # 依赖外部服务（通过health check间接保证）
+    depends_on: []
+
+  # Migration 执行服务（仅手动运行）
+  migration:
+    # 使用 profiles 确保不会自动启动
+    profiles:
+      - tools
+    
+    image: ${IMAGE_NAME:-registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend}:${IMAGE_TAG:-latest}
+    container_name: xiaodashi-migration
+    
+    # 环境变量
+    env_file:
+      - .env.docker
+    
+    environment:
+      NODE_ENV: production
+    
+    # 网络配置
+    networks:
+      - xiaodashi-network
+    
+    # 一次性任务，执行完自动退出
+    restart: "no"
+    
+    # 执行 Migration 脚本
+    command: ["./run-migration.sh"]
+    
+    # 日志配置
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# 网络配置
+networks:
+  xiaodashi-network:
+    name: xiaodashi-prod-network
+    driver: bridge
+

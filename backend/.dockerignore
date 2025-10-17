@@ -1,0 +1,149 @@
+# =============================================================================
+# Docker 构建忽略文件 - xiaodashi-web Backend
+# =============================================================================
+# 优化Docker构建上下文，排除不必要的文件
+# =============================================================================
+
+# 开发工具和配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node.js 相关
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 构建输出
+dist/
+build/
+*.tsbuildinfo
+
+# 环境变量文件
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+
+# 日志文件
+logs/
+*.log
+
+# 运行时数据
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# 测试相关
+coverage/
+.nyc_output/
+test-results/
+*.lcov
+
+# 文档和示例
+docs/
+README.md
+CHANGELOG.md
+LICENSE
+
+# Git 相关
+.git/
+.gitignore
+.gitattributes
+
+# Docker 相关（避免递归）
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# 部分脚本文件（entrypoint.sh 和 wait-for-db.sh 将单独复制）
+scripts/generate-openapi.ts
+scripts/check-warnings.ts
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时文件
+*.tmp
+*.temp
+
+# 编辑器备份文件
+*.bak
+*.backup
+
+# 前端相关（不需要在后端镜像中）
+frontend/
+frontend-app/
+frontend-app-demo/
+
+# 数据库文件
+*.sqlite
+*.db
+
+# 缓存目录
+.cache/
+.parcel-cache/
+
+# 本地配置文件
+.eslintrc.local
+.prettierrc.local
+jest.config.local.js
+
+# TypeScript 编译缓存
+*.tsbuildinfo
+
+# 热重载临时文件
+.happypack/
+
+# PM2 相关（如果使用）
+ecosystem.config.js
+
+# Webpack 相关（如果在前端目录构建）
+webpack.config.js
+webpack.*.js
+
+# Babel 相关
+.babelrc
+.babelrc.js
+
+# ESLint 相关
+.eslintcache
+
+# Prettier 相关
+.prettierignore
+
+# Husky 相关
+.husky/
+
+# Lint-staged 相关
+.lintstagedrc
+
+# GitHub 相关
+.github/
+
+# CI/CD 相关
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+.github/workflows/
+
+# 开发依赖
+devDependencies/
+
+# 示例文件
+examples/
+sample/
+
+# 本地开发脚本
+dev.sh
+start.sh
+stop.sh
