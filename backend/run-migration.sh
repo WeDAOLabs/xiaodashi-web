@@ -49,8 +49,21 @@ log_success "找到 typeorm.config.js"
 log_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 log_info "当前 Migration 状态:"
 log_info "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-if ! sh ./backend/node_modules/.bin/typeorm migration:show -d ./backend/dist/typeorm.config.js; then
+
+# 捕获 migration:show 输出
+output=$(sh ./backend/node_modules/.bin/typeorm migration:show -d ./backend/dist/typeorm.config.js 2>&1)
+if [ $? -ne 0 ]; then
     log_warning "无法显示 Migration 状态"
+else
+    echo "$output"
+    
+    # 检查是否有待执行的 migration
+    if ! echo "$output" | grep -q "\[ \]"; then
+        log_success "✓ 数据库结构已是最新版本，无需执行 Migration"
+        exit 0
+    fi
+    
+    log_info "发现待执行的 Migration，准备执行..."
 fi
 
 # 询问确认（在非交互环境中跳过）

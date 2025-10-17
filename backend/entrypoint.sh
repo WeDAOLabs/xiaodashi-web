@@ -101,11 +101,20 @@ run_migrations() {
             return 0
         fi
 
-        # 只检查状态，不自动执行
-        if sh ./backend/node_modules/.bin/typeorm migration:show -d ./backend/dist/typeorm.config.js 2>/dev/null; then
+        # 执行 migration:show 并捕获输出
+        output=$(sh ./backend/node_modules/.bin/typeorm migration:show -d ./backend/dist/typeorm.config.js 2>&1)
+        exit_code=$?
+
+        if [ $exit_code -eq 0 ]; then
             log_info "Migration 状态检查完成"
-            log_warning "⚠️  如有待执行的 Migration，请手动运行:"
-            log_warning "   docker compose -f docker-compose.prod.yml run --rm migration"
+            
+            # 检查是否有待执行的 migration（[ ] 标记，注意中间有空格）
+            if echo "$output" | grep -q "\[ \]"; then
+                log_warning "⚠️  发现待执行的 Migration，请手动运行:"
+                log_warning "   docker compose -f docker-compose.prod.yml run --rm migration"
+            else
+                log_success "✓ 数据库结构已是最新版本"
+            fi
         else
             log_warning "无法检查 Migration 状态"
         fi
