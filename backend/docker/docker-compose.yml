@@ -23,57 +23,32 @@ services:
       - "${PORT:-2999}:2999"  # API服务端口
       - "9229:9229"           # 调试端口
 
-    # 环境变量
+    # 环境变量（开发环境配置）
+    # 优先级：.env (应用配置) < .env.docker (Docker配置) < environment (硬编码覆盖)
+    env_file:
+      - .env        # 应用配置（数据库、JWT、Redis等）
+      - .env.docker # Docker 配置（镜像、资源限制等）
+
+    # 硬编码环境变量覆盖（确保开发环境特定配置）
     environment:
       NODE_ENV: development
       PORT: ${PORT:-2999}
-
-      # 数据库配置（连接外部数据库）
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_SSL: ${DB_SSL:-false}
-      DB_CONNECTION_TIMEOUT: ${DB_CONNECTION_TIMEOUT:-60000}
-
-      # Redis配置（连接外部Redis）
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT:-6379}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
-      REDIS_DB: ${REDIS_DB:-0}
-
-      # JWT配置
-      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
-      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
-      JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
-      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
-
-      # 安全配置
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:3001}
-      CORS_CREDENTIALS: ${CORS_CREDENTIALS:-true}
-
-      # 应用配置
-      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
-      FRONTEND_APP_URL: ${FRONTEND_APP_URL:-http://localhost:3001}
-
-      # 开发配置
-      SWAGGER_ENABLED: ${SWAGGER_ENABLED:-true}
-      DEBUG: ${DEBUG:-true}
-      SHOW_ERROR_DETAILS: ${SHOW_ERROR_DETAILS:-true}
-      LOG_LEVEL: ${LOG_LEVEL:-debug}
-
-      # 验证码配置（开发环境可以关闭）
-      CAPTCHA_ENABLED: ${CAPTCHA_ENABLED:-false}
+      
+      # 开发环境特定配置（强制覆盖）
+      SWAGGER_ENABLED: true
+      DEBUG: true
+      SHOW_ERROR_DETAILS: true
+      LOG_LEVEL: debug
+      CAPTCHA_ENABLED: false
 
     # 卷挂载（支持热重载）
     volumes:
-      - ../shared:/app/shared:ro          # shared包只读挂载
-      - ./src:/app/backend/src            # 源代码热重载
-      - ./package.json:/app/backend/package.json:ro
-      - ./tsconfig.json:/app/backend/tsconfig.json:ro
-      - ./tsconfig.build.json:/app/backend/tsconfig.build.json:ro
-      - ./test:/app/backend/test:ro        # 测试文件
+      - ../../shared:/app/shared:ro          # shared包只读挂载
+      - ../src:/app/backend/src              # 源代码热重载
+      - ../package.json:/app/backend/package.json:ro
+      - ../tsconfig.json:/app/backend/tsconfig.json:ro
+      - ../tsconfig.build.json:/app/backend/tsconfig.build.json:ro
+      - ../test:/app/backend/test:ro         # 测试文件
 
     # 网络配置
     networks:

@@ -9,14 +9,16 @@ backend/
 ├── entrypoint.sh              # 应用启动脚本
 ├── run-migration.sh           # Migration 执行脚本
 ├── wait-for-db.sh             # 数据库等待脚本
+├── .env.example               # 本地开发环境变量模板
 ├── scripts/                   # 构建脚本
 │   ├── build-docker.sh        # 构建脚本
 │   ├── push-docker.sh         # 推送脚本
 │   └── deploy-docker.sh       # 部署脚本
-└── docker/                    # 服务器运行文件
-    ├── docker-compose.yml     # 开发环境
-    ├── docker-compose.prod.yml # 生产环境
-    └── .env.docker.example    # 环境变量模板
+└── docker/                    # Docker 部署文件（上传到服务器）
+    ├── docker-compose.yml     # 开发环境编排
+    ├── docker-compose.prod.yml # 生产环境编排
+    ├── .env.example           # 应用配置模板（330行）
+    └── .env.docker.example    # Docker 配置模板（80行）
 ```
 
 ## 1. 构建镜像
@@ -32,16 +34,60 @@ cd xiaodashi-web
 ./backend/scripts/build-docker.sh dev
 ```
 
-## 2. 推送到阿里云
+## 2. 配置说明
+
+### 配置文件分离原则
+
+Docker 部署采用配置分离设计，分为两个独立的配置文件：
+
+**`.env` - 应用配置**（330行）
+- 数据库连接（PostgreSQL、Redis）
+- 认证配置（JWT、密码加密）
+- 安全配置（CORS、限流）
+- 业务配置（用户注册、邮箱验证等）
+- 第三方服务（OSS、短信、邮件）
+
+**`.env.docker` - Docker 配置**（80行）
+- Docker Compose 项目名称
+- 镜像名称和版本标签
+- 容器资源限制
+- Docker 日志配置
+- 阿里云镜像仓库凭证
+
+**优势：**
+- 配置职责清晰，互不干扰
+- 应用配置可复用于多种部署方式
+- 避免重复维护相同配置
+
+### 环境变量加载顺序
+
+Docker Compose 读取配置的优先级（从低到高）：
+
+```
+1. .env (应用配置)
+   ↓ 低优先级，提供基础配置
+2. .env.docker (Docker 配置)
+   ↓ 中优先级，可以覆盖 .env 中的值
+3. docker-compose.yml 中的 environment (硬编码)
+   ↓ 高优先级，强制覆盖
+```
+
+**示例：**
+- `.env` 中设置 `NODE_ENV=development`
+- `.env.docker` 中可以覆盖为 `NODE_ENV=production`
+- `docker-compose.prod.yml` 的 `environment` 中强制设为 `NODE_ENV=production`
+
+这样设计确保生产环境的关键配置（如 `SWAGGER_ENABLED=false`）不会被意外修改。
+
+## 3. 推送到阿里云
 
 ### 配置镜像仓库信息
 
 在 `backend/docker/.env.docker` 中配置：
 
 ```bash
-DOCKER_REGISTRY=registry.cn-hangzhou.aliyuncs.com
-DOCKER_NAMESPACE=your-namespace
-DOCKER_IMAGE_NAME=xiaodashi-backend
+IMAGE_NAME=registry.cn-beijing.aliyuncs.com/your-namespace/xiaodashi-backend
+IMAGE_TAG=v1.0.0
 ALIYUN_ACCESS_KEY_ID=your_access_key
 ALIYUN_ACCESS_KEY_SECRET=your_secret_key
 ```
@@ -56,7 +102,7 @@ ALIYUN_ACCESS_KEY_SECRET=your_secret_key
 ./backend/scripts/push-docker.sh xiaodashi/backend:v1.0.0 --multi-region
 ```
 
-## 3. 服务器部署
+## 4. 服务器部署
 
 ### 准备服务器
 
@@ -66,21 +112,33 @@ ALIYUN_ACCESS_KEY_SECRET=your_secret_key
 
 ### 配置环境变量
 
-```bash
-# 复制环境变量模板
-cp .env.docker.example .env
+需要配置 **两个** 环境文件：
 
-# 编辑配置（主要是阿里云数据库连接）
+#### 步骤 1：配置应用环境（.env）
+
+```bash
+# 复制应用配置模板
+cp .env.example .env
+
+# 编辑应用配置
 vim .env
 ```
 
 关键配置项：
 ```bash
+# 运行环境
+NODE_ENV=production
+PORT=2999
+
+# 前端应用 URL
+FRONTEND_URL=https://your-domain.com
+FRONTEND_APP_URL=https://app.your-domain.com
+
 # 阿里云 PostgreSQL
 DB_HOST=pg-xxxxx.pg.rds.aliyuncs.com
 DB_PORT=5432
 DB_USER=xiaodashi
-DB_PASSWORD=your_password
+DB_PASSWORD=your_secure_password
 DB_NAME=xiaodashi_prod
 DB_SSL=true
 
@@ -89,9 +147,48 @@ REDIS_HOST=r-xxxxx.redis.rds.aliyuncs.com
 REDIS_PORT=6379
 REDIS_PASSWORD=your_redis_password
 
-# 应用配置
-NODE_ENV=production
-PORT=2999
+# JWT 密钥（必须修改）
+JWT_ACCESS_SECRET=生成的强密钥
+JWT_REFRESH_SECRET=生成的强密钥
+
+# CORS 配置
+CORS_ORIGINS=https://your-domain.com,https://app.your-domain.com
+
+# 安全配置
+CAPTCHA_ENABLED=true
+SWAGGER_ENABLED=false
+DEBUG=false
+SHOW_ERROR_DETAILS=false
+```
+
+#### 步骤 2：配置 Docker 环境（.env.docker）
+
+```bash
+# 复制 Docker 配置模板
+cp .env.docker.example .env.docker
+
+# 编辑 Docker 配置
+vim .env.docker
+```
+
+关键配置项：
+```bash
+# Docker Compose 项目名称
+COMPOSE_PROJECT_NAME=xiaodashi-app-backend
+
+# 镜像配置
+IMAGE_NAME=registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend
+IMAGE_TAG=latest
+
+# 资源限制
+CPU_LIMIT=2.0
+MEMORY_LIMIT=2G
+CPU_RESERVATION=0.5
+MEMORY_RESERVATION=512M
+
+# Docker 日志配置
+LOG_MAX_SIZE=10m
+LOG_MAX_FILES=3
 ```
 
 ## 使用方法
@@ -117,20 +214,24 @@ docker compose -f docker-compose.prod.yml logs migration
 ### 初次部署
 
 ```bash
-# 1. 准备环境文件
-cp .env.example .env.docker
-# 编辑 .env.docker 配置数据库连接
+# 1. 准备应用配置文件
+cp .env.example .env
+# 编辑 .env 配置数据库、JWT、CORS等应用配置
 
-# 2. 拉取镜像
+# 2. 准备 Docker 配置文件
+cp .env.docker.example .env.docker
+# 编辑 .env.docker 配置镜像、资源限制等
+
+# 3. 拉取镜像
 docker compose -f docker-compose.prod.yml pull
 
-# 3. 执行 migration
+# 4. 执行 migration
 docker compose -f docker-compose.prod.yml run --rm migration
 
-# 4. 启动应用
+# 5. 启动应用
 docker compose -f docker-compose.prod.yml up -d backend
 
-# 5. 健康检查
+# 6. 健康检查
 curl http://localhost:2999/health
 ```
 

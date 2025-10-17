@@ -21,10 +21,12 @@ services:
       - "${PORT:-2999}:2999"
 
     # 环境变量（生产环境配置）
+    # 优先级：.env (应用配置) < .env.docker (Docker配置) < environment (硬编码覆盖)
     env_file:
-      - .env.docker
+      - .env        # 应用配置（数据库、JWT、Redis等）
+      - .env.docker # Docker 配置（镜像、资源限制等）
 
-    # 额外的环境变量覆盖
+    # 硬编码环境变量覆盖（确保生产环境关键配置）
     environment:
       NODE_ENV: production
       PORT: ${PORT:-2999}
@@ -33,7 +35,6 @@ services:
       SWAGGER_ENABLED: false
       DEBUG: false
       SHOW_ERROR_DETAILS: false
-      LOG_LEVEL: ${LOG_LEVEL:-info}
 
     # 资源限制
     deploy:
@@ -89,7 +90,8 @@ services:
     
     # 环境变量
     env_file:
-      - .env.docker
+      - .env        # 应用配置（数据库、JWT等）
+      - .env.docker # Docker 配置
     
     environment:
       NODE_ENV: production
