@@ -146,7 +146,7 @@ get_project_info() {
 
     # 获取项目信息（项目名称使用固定值，版本号从package.json读取）
     PROJECT_NAME="xiaodashi-backend"
-    PROJECT_VERSION=$(node -p "require('backend/package.json').version" 2>/dev/null || echo "1.0.0")
+    PROJECT_VERSION=$(node -p "require('./backend/package.json').version" 2>/dev/null || echo "1.0.0")
 
     # 设置固定的镜像基础名称
     BASE_IMAGE_NAME="registry.cn-beijing.aliyuncs.com/huyuan/xiao-da-shi-app-backend"
