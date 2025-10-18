@@ -92,6 +92,7 @@ async function bootstrap() {
   await app.listen(appConfig?.port || 2999);
 
   logger.log(`🚀 应用启动成功！`);
+  logger.log(`📦 服务版本: ${appConfig?.version || 'unknown'}`);
   logger.log(`🌐 服务地址: http://localhost:${appConfig?.port || 2999}`);
   logger.log(`🔧 运行环境: ${appConfig?.env || 'development'}`);
 }
