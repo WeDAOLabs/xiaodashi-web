@@ -12,11 +12,11 @@
 // 环境变量必须以 NEXT_PUBLIC_ 开头才能暴露到客户端
 export const publicConfig = {
   /** Backend API 基础地址 */
-  backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL!,
+  backendUrl: process.env.APP_BACKEND_URL!,
 
   /** Token 刷新时间（过期前多少秒开始刷新） */
   tokenRefreshBeforeExpiry: Number(
-    process.env.NEXT_PUBLIC_TOKEN_REFRESH_BEFORE_EXPIRY || 300
+    process.env.TOKEN_REFRESH_BEFORE_EXPIRY || 300
   ),
 
   /** 是否为开发环境 */
@@ -44,7 +44,7 @@ export const serverConfig = {
 
 // 验证客户端必需的环境变量
 if (!publicConfig.backendUrl) {
-  throw new Error('❌ 缺少必需的环境变量: NEXT_PUBLIC_BACKEND_URL');
+  throw new Error('❌ 缺少必需的环境变量: APP_BACKEND_URL');
 }
 
 // 验证服务端必需的环境变量（仅在服务端）

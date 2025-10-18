@@ -258,7 +258,7 @@ localStorage.setItem('accessToken', token);
 
 ```env
 # frontend-app/.env.local
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
+APP_BACKEND_URL=http://localhost:3001
 JWT_SECRET=your-super-secret-key-at-least-32-chars
 OPENAI_API_KEY=sk-your-openai-key
 CLAUDE_API_KEY=your-claude-key
@@ -338,7 +338,7 @@ const config = {
     apiProxy: false, // 开发时可直接调用第三方API
   },
   production: {
-    backendUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
+    backendUrl: process.env.APP_BACKEND_URL,
     apiProxy: true, // 生产环境强制使用API代理
   }
 };
