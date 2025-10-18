@@ -14,6 +14,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { isOriginAllowed } from './common/utils/cors.util';
 import type { AppConfig } from './config/app.config';
 import type { SecurityConfig } from './config/security.config';
 
@@ -50,9 +51,23 @@ async function bootstrap() {
   // 确保 request.ip 能正确获取客户端真实 IP，而非代理内网 IP
   app.set('trust proxy', true);
 
-  // CORS配置
+  // CORS配置 - 使用动态验证
   app.enableCors({
-    origin: securityConfig?.cors.origins || ['http://localhost:3000'],
+    origin: (origin, callback) => {
+      // 处理非浏览器请求（如 Postman、curl）
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const allowedOrigins = securityConfig?.cors.origins || [];
+
+      if (isOriginAllowed(origin, allowedOrigins)) {
+        callback(null, true);
+      } else {
+        logger.warn(`CORS 拒绝来自 ${origin} 的请求`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: securityConfig?.cors.credentials || true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

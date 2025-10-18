@@ -160,6 +160,58 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 ```
 
+## CORS 配置最佳实践
+
+### 配置格式
+
+支持三种配置格式：
+
+1. **精确匹配**（推荐用于生产环境）
+   ```bash
+   CORS_ORIGINS=https://app.xds.sxx0.com,https://admin.xds.sxx0.com
+   ```
+
+2. **通配符匹配**（适合多子域名场景）
+   ```bash
+   CORS_ORIGINS=https://*.sxx0.com
+   ```
+
+3. **正则表达式**（高级场景）
+   ```bash
+   CORS_ORIGINS=/^https:\/\/(app|admin)\.sxx0\.com$/
+   ```
+
+### 环境配置示例
+
+**开发环境：**
+```bash
+NODE_ENV=development
+# 开发环境自动允许 localhost，无需配置
+CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+```
+
+**生产环境（精确匹配）：**
+```bash
+NODE_ENV=production
+CORS_ORIGINS=https://app.xds.sxx0.com,https://admin.xds.sxx0.com
+CORS_CREDENTIALS=true
+```
+
+**生产环境（通配符）：**
+```bash
+NODE_ENV=production
+CORS_ORIGINS=https://*.sxx0.com
+CORS_CREDENTIALS=true
+```
+
+### CORS 安全建议
+
+1. ✅ 生产环境优先使用精确匹配
+2. ✅ 通配符仅用于可信的子域名
+3. ✅ 始终启用 `CORS_CREDENTIALS=true`
+4. ❌ 永远不要使用 `*` 允许所有域名
+5. ❌ 不要在生产环境使用正则表达式（除非必要）
+
 ## 配置最佳实践
 
 ### 1. 安全原则
