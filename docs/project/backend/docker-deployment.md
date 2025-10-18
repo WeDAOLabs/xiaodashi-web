@@ -21,13 +21,13 @@ cp .env.docker.example .env.docker
 # 编辑配置文件...
 
 # 3.2 拉取镜像
-docker compose -f docker-compose.prod.yml pull
+docker compose --env-file .env.docker -f docker-compose.prod.yml pull
 
 # 3.3 执行 migration
-docker compose -f docker-compose.prod.yml run --rm migration
+docker compose --env-file .env.docker -f docker-compose.prod.yml run --rm migration
 
 # 3.4 启动应用
-docker compose -f docker-compose.prod.yml up -d backend
+docker compose --env-file .env.docker -f docker-compose.prod.yml up -d backend
 ```
 
 ## 目录结构
@@ -108,6 +108,33 @@ Docker Compose 读取配置的优先级（从低到高）：
 - `docker-compose.prod.yml` 的 `environment` 中强制设为 `NODE_ENV=production`
 
 这样设计确保生产环境的关键配置（如 `SWAGGER_ENABLED=false`）不会被意外修改。
+
+### ⚠️ 重要：--env-file 参数说明
+
+**必须使用 `--env-file .env.docker` 参数：**
+
+```bash
+# ✅ 正确 - 会读取 .env.docker 中的 IMAGE_TAG 等变量
+docker compose --env-file .env.docker -f docker-compose.prod.yml up -d
+
+# ❌ 错误 - Docker Compose 无法读取 IMAGE_TAG，会使用默认值 latest
+docker compose -f docker-compose.prod.yml up -d
+```
+
+**原因说明：**
+
+`docker-compose.yml` 文件中的 `env_file` 配置项：
+```yaml
+env_file:
+  - .env
+  - .env.docker
+```
+
+**仅对容器内生效**，用于向运行中的容器注入环境变量。
+
+但 `docker-compose.yml` 文件本身的变量替换（如 `${IMAGE_TAG}`）发生在 Docker Compose **解析 yml 文件时**，这时需要**宿主机的环境变量**。
+
+因此必须使用 `--env-file` 参数告诉 Docker Compose 在解析 yml 文件时读取 `.env.docker` 文件。
 
 ## 3. 推送到阿里云
 
@@ -295,16 +322,16 @@ LOG_MAX_FILES=3
 
 ```bash
 # 1. 启动应用（不会自动执行 migration）
-docker compose -f docker-compose.prod.yml up -d
+docker compose --env-file .env.docker -f docker-compose.prod.yml up -d
 
 # 2. 查看应用日志（会提示是否有待执行的 migration）
-docker compose -f docker-compose.prod.yml logs backend
+docker compose --env-file .env.docker -f docker-compose.prod.yml logs backend
 
 # 3. 手动执行 migration
-docker compose -f docker-compose.prod.yml run --rm migration
+docker compose --env-file .env.docker -f docker-compose.prod.yml run --rm migration
 
 # 4. 查看 migration 执行日志
-docker compose -f docker-compose.prod.yml logs migration
+docker compose --env-file .env.docker -f docker-compose.prod.yml logs migration
 ```
 
 ## 完整部署流程
@@ -321,13 +348,13 @@ cp .env.docker.example .env.docker
 # 编辑 .env.docker 配置镜像、资源限制等
 
 # 3. 拉取镜像
-docker compose -f docker-compose.prod.yml pull
+docker compose --env-file .env.docker -f docker-compose.prod.yml pull
 
 # 4. 执行 migration
-docker compose -f docker-compose.prod.yml run --rm migration
+docker compose --env-file .env.docker -f docker-compose.prod.yml run --rm migration
 
 # 5. 启动应用
-docker compose -f docker-compose.prod.yml up -d backend
+docker compose --env-file .env.docker -f docker-compose.prod.yml up -d backend
 
 # 6. 健康检查
 curl http://localhost:2999/health
@@ -337,16 +364,16 @@ curl http://localhost:2999/health
 
 ```bash
 # 1. 拉取新镜像
-docker compose -f docker-compose.prod.yml pull
+docker compose --env-file .env.docker -f docker-compose.prod.yml pull
 
 # 2. 备份数据库（推荐）
 # pg_dump -h <host> -U <user> -d <database> > backup.sql
 
 # 3. 执行新的 migration
-docker compose -f docker-compose.prod.yml run --rm migration
+docker compose --env-file .env.docker -f docker-compose.prod.yml run --rm migration
 
 # 4. 重启应用
-docker compose -f docker-compose.prod.yml up -d backend
+docker compose --env-file .env.docker -f docker-compose.prod.yml up -d backend
 
 # 5. 验证
 curl http://localhost:2999/health
@@ -374,13 +401,13 @@ docker exec -it xiaodashi-backend-prod sh -c \
 
 A: 这是正常的提示，按照提示执行即可：
 ```bash
-docker compose -f docker-compose.prod.yml run --rm migration
+docker compose --env-file .env.docker -f docker-compose.prod.yml run --rm migration
 ```
 
 ### Q: Migration 执行失败怎么办？
 
 A: 
-1. 查看详细日志：`docker compose -f docker-compose.prod.yml logs migration`
+1. 查看详细日志：`docker compose --env-file .env.docker -f docker-compose.prod.yml logs migration`
 2. 检查数据库连接配置
 3. 检查数据库用户权限
 4. 如果需要，恢复数据库备份
@@ -392,11 +419,11 @@ A:
 # GitHub Actions 示例
 - name: Run Database Migration
   run: |
-    docker compose -f docker-compose.prod.yml run --rm migration
+    docker compose --env-file .env.docker -f docker-compose.prod.yml run --rm migration
     
 - name: Deploy Application
   run: |
-    docker compose -f docker-compose.prod.yml up -d backend
+    docker compose --env-file .env.docker -f docker-compose.prod.yml up -d backend
 ```
 
 ### Q: 可以恢复自动执行 Migration 吗？

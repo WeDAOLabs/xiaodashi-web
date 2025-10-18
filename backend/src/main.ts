@@ -1,7 +1,11 @@
 // 修复 @nestjs/typeorm@11.0.0 bug: crypto 未导入
+// 仅在 Docker 等环境中 crypto 不存在时注入（本地 Node.js v23+ 已内置）
 import * as crypto from 'crypto';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-(globalThis as any).crypto = crypto;
+if (!(globalThis as any).crypto) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  (globalThis as any).crypto = crypto;
+}
 
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
