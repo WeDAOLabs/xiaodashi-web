@@ -1,11 +1,11 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  ManyToOne,
-  JoinColumn,
+  Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -56,7 +56,6 @@ export class UserLoginLog {
   failureReason?: string;
 
   @CreateDateColumn({ type: 'timestamptz', comment: '登录尝试时间' })
-  @Index()
   createdAt: Date;
 
   // 关联关系

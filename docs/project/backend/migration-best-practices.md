@@ -101,6 +101,164 @@ psql -d xiaodashi -c "\d users"
 pnpm --filter backend build
 ```
 
+## 🔀 功能分支到主分支的 Migration 整理（重要）
+
+### 核心问题
+
+**开发场景**：
+- 在功能分支上开发新功能
+- 修改 Entity 多次，生成了多个 migrations
+- 这些 migrations 相互依赖，可能包含 DROP、ALTER 等假设表已存在的操作
+- 需要在合并主分支前整理成干净的 migration
+
+**目标**：
+- 一个功能 = 一个干净完整的 migration
+- 可以在空数据库上直接运行
+- 避免将开发过程中的试错历史提交到主分支
+
+### 推荐工作流程
+
+#### 阶段 1: 功能分支自由开发
+
+```bash
+# 1. 创建功能分支
+git checkout -b feature/user-notification
+
+# 2. 自由修改 Entity 并生成 migrations（可以多次）
+pnpm --filter backend migration:generate AddNotification
+pnpm --filter backend migration:run
+# 测试...发现需要修改
+
+pnpm --filter backend migration:revert
+# 修改 Entity
+pnpm --filter backend migration:generate FixNotification
+pnpm --filter backend migration:run
+# 继续测试...
+
+# 3. 最终可能有 3-5 个 migrations
+# ❌ AddNotification.ts
+# ❌ FixNotification.ts
+# ❌ UpdateNotificationIndex.ts
+```
+
+#### 阶段 2: 提交前 Squash Migrations（关键步骤）
+
+```bash
+# 1. 记录当前 migrations 列表
+pnpm --filter backend migration:show
+# 假设输出：
+# [X] 1 InitialSchema1760944323057  (主分支已有)
+# [X] 2 AddNotification1760950000000  (功能分支新增)
+# [X] 3 FixNotification1760951000000  (功能分支新增)
+# [X] 4 UpdateNotificationIndex1760952000000  (功能分支新增)
+
+# 2. 备份功能分支的 migrations（可选）
+mkdir -p migrations-feature-backup
+cp src/database/migrations/*Notification*.ts migrations-feature-backup/
+
+# 3. 回滚功能分支的所有 migrations
+pnpm --filter backend migration:revert  # 回滚 Migration 4
+pnpm --filter backend migration:revert  # 回滚 Migration 3
+pnpm --filter backend migration:revert  # 回滚 Migration 2
+# 直到回到主分支的状态（只剩 InitialSchema）
+
+# 4. 删除功能分支的旧 migrations
+rm src/database/migrations/*Notification*.ts
+
+# 5. 重新生成一个干净的 migration（基于最终的 Entity 状态）
+pnpm --filter backend migration:generate AddUserNotificationFeature
+
+# 6. 验证新 migration 内容
+cat src/database/migrations/*AddUserNotificationFeature.ts
+# 检查：
+# - 只有 CREATE TABLE "user_notifications"
+# - 没有 DROP INDEX/ALTER TABLE 等假设表已存在的操作
+# - 结构清晰完整
+
+# 7. 在空数据库上测试（重要！）
+# 方法 A: 使用临时测试数据库
+createdb xiaodashi_test
+DB_NAME=xiaodashi_test pnpm --filter backend migration:run
+# 应该一次成功
+
+# 方法 B: 使用 Docker 临时容器
+docker run --rm -e POSTGRES_DB=test postgres:16-alpine &
+# 连接临时数据库测试
+
+# 8. 验证通过后提交
+git add src/database/migrations/*AddUserNotificationFeature.ts
+git commit -m "feat: 添加用户通知功能"
+```
+
+### PR Review 检查清单
+
+**提交 PR 前自查**：
+
+- [ ] 功能的所有 migrations 已 Squash 成一个
+- [ ] Migration 文件名语义清晰（如 `AddUserNotificationFeature`）
+- [ ] 在空数据库上测试通过
+- [ ] Migration 只包含 CREATE 语句（新功能），或安全的 ALTER（已有功能修改）
+- [ ] 提供完整的 `down()` 回滚方法
+- [ ] Comment 注释清晰完整
+- [ ] 没有重复的索引定义
+
+**Code Review 重点**：
+
+- [ ] 验证 Migration 不依赖特定数据库状态
+- [ ] 检查是否有破坏性变更（DROP COLUMN、修改类型等）
+- [ ] 确认索引策略合理（不过度索引）
+- [ ] 验证外键关联正确
+
+### 常见问题和解决方案
+
+#### Q: 如果功能分支已经合并到测试环境怎么办？
+
+A: 有两种策略：
+
+**策略 1：测试环境也重置（推荐）**
+```bash
+# 1. 清空测试环境数据库
+# 2. Squash migrations
+# 3. 重新部署测试环境
+# 4. 运行 Seed 恢复测试数据
+```
+
+**策略 2：保留测试环境，只清理代码**
+```bash
+# 1. 功能分支的 migrations 在测试环境保持已执行状态
+# 2. 在代码层面 Squash（生成新的 migration）
+# 3. 新 migration 添加条件判断：
+async up(queryRunner: QueryRunner): Promise<void> {
+  const hasTable = await queryRunner.hasTable("user_notifications");
+  if (!hasTable) {
+    // 创建表（用于空数据库/生产环境）
+  }
+  // 测试环境表已存在，跳过
+}
+```
+
+#### Q: 多人协作时如何避免 Migration 冲突？
+
+A: 
+1. **约定命名前缀**：使用功能名作为前缀（如 `UserProfile-`, `Notification-`）
+2. **及时同步主分支**：定期 rebase develop 分支
+3. **提交前检查**：确保没有时间戳冲突
+4. **使用 PR 流程**：避免直接提交到主分支
+
+#### Q: 如何判断是否需要 Squash？
+
+A: 
+- ✅ 需要 Squash：功能分支有 2+ 个相互依赖的 migrations
+- ✅ 需要 Squash：Migration 包含 DROP 不一定存在的对象
+- ✅ 需要 Squash：开发过程中来回修改了多次
+- ❌ 不需要：单一 migration，逻辑清晰，空数据库可运行
+
+### Squash 最佳时机
+
+1. **每个功能 PR 提交前**（必须）
+2. **版本发布前**（推荐）
+3. **重大重构后**（推荐）
+
 ## 📚 常用命令速查
 
 ### Migration 管理命令
@@ -411,6 +569,76 @@ async up(queryRunner: QueryRunner): Promise<void> {
     `);
 }
 ```
+
+## 🌱 Seed 机制 - 解决测试数据依赖（推荐）
+
+### 为什么需要 Seed？
+
+**核心问题**：
+- 不敢清空数据库重置环境（担心丢失测试数据）
+- 无法随时 Squash migrations（依赖数据库中的历史数据）
+- 新人入职需要手动创建测试数据
+
+**Seed 机制解决方案**：
+用代码管理测试数据，而不是依赖数据库中的数据。
+
+### 实施建议
+
+#### 1. 目录结构
+```
+backend/src/database/
+├── entities/           # 数据模型
+├── migrations/         # 数据库结构
+└── seeds/             # 测试数据（待实现）
+    ├── 001-users.seed.ts
+    ├── 002-permissions.seed.ts
+    └── run-seeds.ts
+```
+
+#### 2. 核心脚本
+
+```bash
+# package.json
+{
+  "scripts": {
+    "seed:run": "ts-node src/database/seeds/run-seeds.ts",
+    "db:reset": "pnpm migration:revert && pnpm migration:run && pnpm seed:run"
+  }
+}
+```
+
+#### 3. 使用场景
+
+**场景 1：新人入职**
+```bash
+git clone && pnpm install
+pnpm migration:run    # 创建表
+pnpm seed:run         # 填充测试数据
+pnpm dev              # 开始开发
+```
+
+**场景 2：功能开发前整理**
+```bash
+pnpm db:reset         # 清空 → 运行 migrations → 填充数据
+# 数据库回到干净状态，可以开始新功能开发
+```
+
+**场景 3：PR 提交前 Squash**
+```bash
+# 因为有 Seed，可以随时清空数据库
+pnpm migration:revert  # 回滚到主分支状态
+rm src/database/migrations/*MyFeature*.ts
+pnpm migration:generate MyFeature
+pnpm migration:run
+pnpm seed:run         # 恢复测试数据
+```
+
+### 未来规划
+
+当项目成熟后，建议实施完整的 Seed 系统：
+- 开发环境：完整测试数据
+- 测试环境：模拟真实数据
+- 生产环境：仅初始权限配置
 
 ## 🎓 最佳实践总结
 

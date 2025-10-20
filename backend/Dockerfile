@@ -21,6 +21,9 @@ COPY shared/package.json ./shared/
 COPY shared ./shared
 COPY backend ./backend
 
+# 配置 pnpm 使用国内镜像源（加速下载）
+RUN pnpm config set registry https://registry.npmmirror.com
+
 # 安装所有依赖（包括 dev，用于构建）
 RUN pnpm install --frozen-lockfile
 

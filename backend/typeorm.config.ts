@@ -26,7 +26,10 @@ export default new DataSource({
   ],
 
   // Migration 配置
-  migrations: ['src/database/migrations/*{.ts,.js}'],
+  // 生产环境使用编译后的 .js，开发环境使用 .ts
+  migrations: process.env.NODE_ENV === 'production'
+    ? ['backend/dist/src/database/migrations/*.js']
+    : ['src/database/migrations/*{.ts,.js}'],
   migrationsTableName: 'typeorm_migrations',
 
   // 开发模式配置
