@@ -23,6 +23,14 @@ import {
   securityEntities,
 } from './security';
 
+import {
+  Team,
+  TeamMember,
+  TeamInvitation,
+  TeamRole,
+  teamEntities,
+} from './team';
+
 // 导出所有实体（保持向后兼容）
 export {
   User,
@@ -36,6 +44,10 @@ export {
   IPWhitelist,
   IPRateLimit,
   IPAccessLog,
+  Team,
+  TeamMember,
+  TeamInvitation,
+  TeamRole,
 };
 
 // 按域导出实体（为未来多数据库预留）
@@ -54,6 +66,11 @@ export const SecurityDomainEntities = {
   entityClasses: securityEntities,
 };
 
+export const TeamDomainEntities = {
+  entities: [Team, TeamMember, TeamInvitation, TeamRole],
+  entityClasses: teamEntities,
+};
+
 // 实体数组，用于TypeORM配置（当前单数据库使用）
 export const entities = [
   User,
@@ -67,6 +84,10 @@ export const entities = [
   IPWhitelist,
   IPRateLimit,
   IPAccessLog,
+  Team,
+  TeamMember,
+  TeamInvitation,
+  TeamRole,
 ];
 
 // 未来多数据库时可以使用的分域配置（预留）
@@ -74,4 +95,5 @@ export const domainEntities = {
   user: UserDomainEntities.entities,
   auth: AuthDomainEntities.entities,
   security: SecurityDomainEntities.entities,
+  team: TeamDomainEntities.entities,
 };

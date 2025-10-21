@@ -19,6 +19,9 @@ export * from './session';
 // 导出安全域相关类型
 export * from './security';
 
+// 导出团队域相关类型
+export * from './team';
+
 // 重新导出一些常用类型的别名，提供更简洁的导入方式
 export type {
   User,
@@ -62,6 +65,26 @@ export type {
   IPAccessLogEntry
 } from './security';
 
+// 导出团队相关类型
+export type {
+  Team,
+  TeamMember,
+  TeamInvitation,
+  TeamRole,
+  CreateTeamRequest,
+  UpdateTeamRequest,
+  AddTeamMemberRequest,
+  UpdateTeamMemberRequest,
+  CreateTeamInvitationRequest,
+  TeamMemberDetail,
+  TeamDetail,
+  TeamListItem,
+  UserTeamInfo
+} from './team';
+
+// 导出团队相关枚举（作为值，不是类型）
+export { TeamTier, TeamRoleType, InvitationStatus } from './team';
+
 // === 按域命名空间导出（为未来多数据库扩展预留） ===
 // 用户域类型命名空间
 export * as UserDomain from './user';
@@ -75,6 +98,9 @@ export * as SessionDomain from './session';
 // 安全域类型命名空间
 export * as SecurityDomain from './security';
 
+// 团队域类型命名空间
+export * as TeamDomain from './team';
+
 // 通用API类型命名空间
 export * as ApiTypes from './api.types';
 
@@ -87,12 +113,14 @@ import * as UserTypes from './user';
 import * as AuthTypes from './auth';
 import * as SessionTypes from './session';
 import * as SecurityTypes from './security';
+import * as TeamTypes from './team';
 
 export const DomainTypes = {
   User: UserTypes,
   Auth: AuthTypes,
   Session: SessionTypes,
   Security: SecurityTypes,
+  Team: TeamTypes,
   // Business: BusinessTypes,
   // Analytics: AnalyticsTypes,
 } as const;

@@ -115,7 +115,7 @@ function validateEnvironment() {
   if (missingEnvVars.length > 0) {
     throw new Error(
       `缺少必要的环境变量: ${missingEnvVars.join(', ')}\n` +
-      `请检查 .env 文件或设置相应的环境变量。`,
+        `请检查 .env 文件或设置相应的环境变量。`,
     );
   }
 }

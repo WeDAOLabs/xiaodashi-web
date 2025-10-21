@@ -20,6 +20,7 @@ export default new DataSource({
     'src/database/entities/user/*.entity{.ts,.js}',     // 用户域实体
     'src/database/entities/auth/*.entity{.ts,.js}',     // 认证域实体
     'src/database/entities/security/*.entity{.ts,.js}', // 安全域实体
+    'src/database/entities/team/*.entity{.ts,.js}',     // 团队域实体
     // 未来可以轻松拆分到不同数据源：
     // 'src/database/entities/business/*.entity{.ts,.js}', // 业务域实体
     // 'src/database/entities/analytics/*.entity{.ts,.js}', // 分析域实体
