@@ -79,7 +79,21 @@ export type {
   TeamMemberDetail,
   TeamDetail,
   TeamListItem,
-  UserTeamInfo
+  UserTeamInfo,
+  GetTeamsResponse,
+  GetTeamResponse,
+  GetTeamMembersResponse,
+  CreateTeamResponse,
+  UpdateTeamResponse,
+  AddTeamMemberResponse,
+  UpdateTeamMemberResponse,
+  CreateTeamInvitationResponse,
+  GetTeamInvitationsResponse,
+  RemoveTeamMemberResponse,
+  CancelTeamInvitationResponse,
+  TeamQueryParams,
+  TeamMemberQueryParams,
+  TeamInvitationQueryParams
 } from './team';
 
 // 导出团队相关枚举（作为值，不是类型）

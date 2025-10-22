@@ -141,6 +141,84 @@ export interface UserTeamInfo {
   member: TeamMember;
 }
 
+// === API 响应类型 ===
+
+// 获取用户所属团队列表响应
+export interface GetTeamsResponse {
+  teams: TeamListItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// 获取单个团队详情响应
+export interface GetTeamResponse {
+  team: TeamDetail;
+}
+
+// 获取团队成员列表响应
+export interface GetTeamMembersResponse {
+  members: TeamMemberDetail[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// 创建团队响应
+export interface CreateTeamResponse {
+  team: TeamDetail;
+}
+
+// 更新团队响应
+export interface UpdateTeamResponse {
+  team: TeamDetail;
+}
+
+// 添加团队成员响应
+export interface AddTeamMemberResponse {
+  member: TeamMemberDetail;
+}
+
+// 更新团队成员响应
+export interface UpdateTeamMemberResponse {
+  member: TeamMemberDetail;
+}
+
+// 创建团队邀请响应
+export interface CreateTeamInvitationResponse {
+  invitation: TeamInvitation;
+  inviteLink: string;     // 邀请链接
+}
+
+// 获取团队邀请列表响应
+export interface GetTeamInvitationsResponse {
+  invitations: TeamInvitation[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+// 移除团队成员响应
+export interface RemoveTeamMemberResponse {
+  message: string;        // 操作结果消息
+  removedUserId: string;  // 被移除的用户ID
+}
+
+// 取消团队邀请响应
+export interface CancelTeamInvitationResponse {
+  message: string;        // 操作结果消息
+  cancelledInvitationId: string;  // 被取消的邀请ID
+}
+
 // === 查询参数类型 ===
 
 // 团队查询参数
