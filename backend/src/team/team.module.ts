@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TeamService } from './team.service';
+import { TeamController } from './team.controller';
+import { TeamRoleGuard } from './guards/team-role.guard';
 import { Team } from '../database/entities/team/team.entity';
 import { TeamMember } from '../database/entities/team/team-member.entity';
+import { TeamInvitation } from '../database/entities/team/team-invitation.entity';
+import { User } from '../database/entities/user/user.entity';
 
 /**
  * 团队模块
@@ -16,12 +20,18 @@ import { TeamMember } from '../database/entities/team/team-member.entity';
  */
 @Module({
   imports: [
-    // 注册 Team 和 TeamMember 实体以供 TeamService 使用
-    TypeOrmModule.forFeature([Team, TeamMember]),
+    // 注册团队相关实体以供 TeamService 使用
+    TypeOrmModule.forFeature([Team, TeamMember, TeamInvitation, User]),
+  ],
+  controllers: [
+    // 团队控制器 - 提供团队管理API端点
+    TeamController,
   ],
   providers: [
     // 团队服务 - 提供核心的团队管理功能
     TeamService,
+    // 团队角色权限守卫
+    TeamRoleGuard,
   ],
   exports: [
     // 导出团队服务供其他模块使用

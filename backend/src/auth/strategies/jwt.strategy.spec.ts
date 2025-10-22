@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { UnauthorizedException } from '@nestjs/common';
-import { JwtStrategy } from './jwt.strategy';
-import { User } from '../../database/entities/user/user.entity';
+import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { JWTPayload, UserRole, UserStatus } from '@xiaodashi/shared';
+import { User } from '../../database/entities/user/user.entity';
+import { JwtStrategy } from './jwt.strategy';
 
 /**
  * JwtStrategy单元测试
@@ -40,10 +40,10 @@ describe('JwtStrategy', () => {
     status: UserStatus.ACTIVE,
     avatar: 'https://example.com/avatar.jpg',
     emailVerified: true,
-    emailVerificationToken: undefined,
-    emailVerificationExpiresAt: undefined,
-    passwordResetToken: undefined,
-    passwordResetExpiresAt: undefined,
+    emailVerificationToken: null,
+    emailVerificationExpiresAt: null,
+    passwordResetToken: null,
+    passwordResetExpiresAt: null,
     lastLoginAt: new Date('2024-01-01T10:00:00Z'),
     loginAttempts: 0,
     lockedUntil: undefined,
@@ -106,8 +106,13 @@ describe('JwtStrategy', () => {
       // 执行
       const result = await strategy.validate(mockPayload);
 
-      // 断言
-      expect(result).toEqual(mockUser);
+      // 断言 - 现在应该返回 AuthenticatedUser 类型，只包含基本字段
+      expect(result).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        name: mockUser.name,
+        role: mockUser.role,
+      });
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { id: mockPayload.sub },
         select: [
@@ -190,8 +195,13 @@ describe('JwtStrategy', () => {
       // 执行
       const result = await strategy.validate(mockPayload);
 
-      // 断言
-      expect(result).toEqual(activeUser);
+      // 断言 - 现在应该返回 AuthenticatedUser 类型，只包含基本字段
+      expect(result).toEqual({
+        id: activeUser.id,
+        email: activeUser.email,
+        name: activeUser.name,
+        role: activeUser.role,
+      });
     });
 
     it('应该正确处理管理员角色用户', async () => {
@@ -211,8 +221,13 @@ describe('JwtStrategy', () => {
       // 执行
       const result = await strategy.validate(adminPayload);
 
-      // 断言
-      expect(result).toEqual(adminUser);
+      // 断言 - 现在应该返回 AuthenticatedUser 类型，只包含基本字段
+      expect(result).toEqual({
+        id: adminUser.id,
+        email: adminUser.email,
+        name: adminUser.name,
+        role: adminUser.role,
+      });
       expect(result.role).toBe(UserRole.ADMIN);
     });
 
@@ -233,8 +248,13 @@ describe('JwtStrategy', () => {
       // 执行
       const result = await strategy.validate(premiumPayload);
 
-      // 断言
-      expect(result).toEqual(premiumUser);
+      // 断言 - 现在应该返回 AuthenticatedUser 类型，只包含基本字段
+      expect(result).toEqual({
+        id: premiumUser.id,
+        email: premiumUser.email,
+        name: premiumUser.name,
+        role: premiumUser.role,
+      });
       expect(result.role).toBe(UserRole.PREMIUM);
     });
 

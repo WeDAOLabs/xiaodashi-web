@@ -193,7 +193,6 @@ export interface UpdateTeamMemberResponse {
 // 创建团队邀请响应
 export interface CreateTeamInvitationResponse {
   invitation: TeamInvitation;
-  inviteLink: string;     // 邀请链接
 }
 
 // 获取团队邀请列表响应

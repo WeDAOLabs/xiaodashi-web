@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { JWTPayload, UserStatus } from '@xiaodashi/shared';
+import { JWTPayload, AuthenticatedUser, UserStatus } from '@xiaodashi/shared';
 import { User } from '../../database/entities/user/user.entity';
 import { AuthConfig } from '../../config/auth.config';
 
@@ -49,10 +49,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * 用于进一步验证用户的存在性和账户状态
    *
    * @param payload - JWT解码后的载荷信息
-   * @returns Promise<User> - 验证通过的用户实体
+   * @returns Promise<AuthenticatedUser> - 验证通过的用户信息
    * @throws UnauthorizedException - 用户不存在或账户被锁定时抛出
    */
-  async validate(payload: JWTPayload): Promise<User> {
+  async validate(payload: JWTPayload): Promise<AuthenticatedUser> {
     const { sub: userId } = payload;
 
     // 根据JWT中的用户ID查找用户
@@ -87,7 +87,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     // 验证通过，返回用户信息
-    // 注意：返回的用户信息会被添加到request.user中，供后续处理器使用
-    return user;
+    // 注意：返回AuthenticatedUser类型，包含id字段
+    // 为了保持向后兼容性，也包含JWT的原始信息
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    };
   }
 }
