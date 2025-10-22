@@ -34,7 +34,7 @@ import {
 } from '@xiaodashi/shared';
 import * as bcrypt from 'bcrypt';
 import type { Request } from 'express';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { AuthConfig } from '../config/auth.config';
 import { SecurityConfig } from '../config/security.config';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
@@ -42,6 +42,7 @@ import { User } from '../database/entities/user/user.entity';
 import { AccountLockoutService } from '../security/services/account-lockout.service';
 import { CaptchaService } from '../security/services/captcha.service';
 import { SessionService } from '../session/session.service';
+import { TeamService } from '../team/team.service';
 
 /**
  * 认证服务类
@@ -67,6 +68,8 @@ export class AuthService {
     private readonly sessionService: SessionService,
     private readonly accountLockoutService: AccountLockoutService,
     private readonly captchaService: CaptchaService,
+    private readonly dataSource: DataSource,
+    private readonly teamService: TeamService,
   ) {
     this.authConfig = this.configService.get<AuthConfig>('auth')!;
   }
@@ -661,46 +664,70 @@ export class AuthService {
     // 加密密码
     const passwordHash = await this.hashPassword(password);
 
-    // 创建用户
-    const user = this.userRepository.create({
-      email,
-      name,
-      passwordHash,
-      status: UserStatus.INACTIVE, // 默认未激活，需要邮箱验证
-      role: UserRole.USER, // 默认角色
-    });
+    // 使用事务确保用户创建和团队创建的原子性
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    const savedUser = await this.userRepository.save(user);
+    try {
+      // 1. 创建用户
+      const user = queryRunner.manager.create(User, {
+        email,
+        name,
+        passwordHash,
+        status: UserStatus.INACTIVE, // 默认未激活，需要邮箱验证
+        role: UserRole.USER, // 默认角色
+      });
 
-    // 生成邮箱验证token并存储
-    const emailVerificationToken = this.generateEmailVerificationToken(
-      savedUser.id,
-    );
-    await this.userRepository.update(savedUser.id, {
-      emailVerificationToken,
-      emailVerificationExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24小时
-    });
+      const savedUser = await queryRunner.manager.save(User, user);
 
-    // 生成登录tokens
-    const tokens = this.generateTokens(savedUser);
+      // 2. 创建默认团队和成员关系
+      await this.teamService.createDefaultTeam(
+        savedUser.id,
+        savedUser.name,
+        queryRunner,
+      );
 
-    // 构造响应
-    const userResponse = {
-      id: savedUser.id,
-      email: savedUser.email,
-      name: savedUser.name,
-      role: savedUser.role,
-      status: savedUser.status,
-      avatar: savedUser.avatar,
-      createdAt: savedUser.createdAt.toISOString(),
-      updatedAt: savedUser.updatedAt.toISOString(),
-    };
+      // 3. 更新用户的邮箱验证token（使用真实的用户ID重新生成）
+      const actualEmailVerificationToken = this.generateEmailVerificationToken(
+        savedUser.id,
+      );
+      await queryRunner.manager.update(User, savedUser.id, {
+        emailVerificationToken: actualEmailVerificationToken,
+        emailVerificationExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24小时
+      });
 
-    return {
-      user: userResponse,
-      tokens,
-      needEmailVerification: true,
-    };
+      // 提交事务
+      await queryRunner.commitTransaction();
+
+      // 生成登录tokens
+      const tokens = this.generateTokens(savedUser);
+
+      // 构造响应
+      const userResponse = {
+        id: savedUser.id,
+        email: savedUser.email,
+        name: savedUser.name,
+        role: savedUser.role,
+        status: savedUser.status,
+        avatar: savedUser.avatar,
+        createdAt: savedUser.createdAt.toISOString(),
+        updatedAt: savedUser.updatedAt.toISOString(),
+      };
+
+      return {
+        user: userResponse,
+        tokens,
+        needEmailVerification: true,
+      };
+    } catch (error) {
+      // 回滚事务
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      // 释放连接
+      await queryRunner.release();
+    }
   }
 
   /**

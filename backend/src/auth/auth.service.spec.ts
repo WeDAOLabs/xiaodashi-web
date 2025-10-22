@@ -3,13 +3,16 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UnauthorizedException } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { AuthService } from './auth.service';
 import { User } from '../database/entities/user/user.entity';
 import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { SessionService } from '../session/session.service';
 import { AccountLockoutService } from '../security/services/account-lockout.service';
 import { CaptchaService } from '../security/services/captcha.service';
+import { TeamService } from '../team/team.service';
 import { UserRole, UserStatus, LoginRequest } from '@xiaodashi/shared';
+import type { QueryRunner } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 // Mock bcrypt at the module level
@@ -183,6 +186,48 @@ describe('AuthService', () => {
     }),
   };
 
+  // Mock TeamService
+  const mockTeamService = {
+    createDefaultTeam: jest.fn().mockResolvedValue({
+      team: {
+        id: 'mock-team-id',
+        name: 'Test User的团队',
+        ownerId: 'new-user-id',
+        tier: 'free',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      member: {
+        id: 'mock-member-id',
+        teamId: 'mock-team-id',
+        userId: 'new-user-id',
+        role: 'owner',
+        displayName: 'Test User',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    }),
+  };
+
+  // Mock QueryRunner
+  const mockQueryRunner: Partial<QueryRunner> = {
+    connect: jest.fn().mockResolvedValue(undefined),
+    startTransaction: jest.fn().mockResolvedValue(undefined),
+    commitTransaction: jest.fn().mockResolvedValue(undefined),
+    rollbackTransaction: jest.fn().mockResolvedValue(undefined),
+    release: jest.fn().mockResolvedValue(undefined),
+    manager: {
+      create: jest.fn(),
+      save: jest.fn(),
+      update: jest.fn(),
+    } as never,
+  };
+
+  // Mock DataSource
+  const mockDataSource = {
+    createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
+  };
+
   // 模拟认证令牌
   const mockTokens = {
     accessToken: 'mock.access.token',
@@ -224,6 +269,14 @@ describe('AuthService', () => {
           provide: CaptchaService,
           useValue: mockCaptchaService,
         },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
+        {
+          provide: TeamService,
+          useValue: mockTeamService,
+        },
       ],
     }).compile();
 
@@ -235,6 +288,16 @@ describe('AuthService', () => {
     // 重置bcrypt mocks
     jest.mocked(bcrypt.hash).mockClear();
     jest.mocked(bcrypt.compare).mockClear();
+
+    // 重置 QueryRunner mocks
+    (mockQueryRunner.connect as jest.Mock).mockClear();
+    (mockQueryRunner.startTransaction as jest.Mock).mockClear();
+    (mockQueryRunner.commitTransaction as jest.Mock).mockClear();
+    (mockQueryRunner.rollbackTransaction as jest.Mock).mockClear();
+    (mockQueryRunner.release as jest.Mock).mockClear();
+    (mockQueryRunner.manager!.create as jest.Mock).mockClear();
+    (mockQueryRunner.manager!.save as jest.Mock).mockClear();
+    (mockQueryRunner.manager!.update as jest.Mock).mockClear();
   });
 
   it('should be defined', () => {
@@ -559,7 +622,7 @@ describe('AuthService', () => {
   });
 
   describe('register', () => {
-    it('应该成功注册新用户', async () => {
+    it('应该成功注册新用户并自动创建团队', async () => {
       // 安排
       const registerRequest = {
         email: 'newuser@example.com',
@@ -577,12 +640,21 @@ describe('AuthService', () => {
         name: registerRequest.name,
         passwordHash: hashedPassword,
         lastLoginAt: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
+      // Mock 设置
       mockUserRepository.findOne.mockResolvedValue(null); // 用户不存在
       jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword as never);
-      mockUserRepository.create.mockReturnValue(newUser);
-      mockUserRepository.save.mockResolvedValue(newUser);
+
+      // Mock QueryRunner 行为
+      (mockQueryRunner.manager!.create as jest.Mock).mockReturnValue(newUser);
+      (mockQueryRunner.manager!.save as jest.Mock).mockResolvedValue(newUser);
+      (mockQueryRunner.manager!.update as jest.Mock).mockResolvedValue(
+        undefined,
+      );
+
       jest.spyOn(service, 'generateTokens').mockReturnValue(mockTokens);
 
       // 执行
@@ -594,14 +666,79 @@ describe('AuthService', () => {
       expect(result.tokens).toEqual(mockTokens);
       expect(result.needEmailVerification).toBe(true);
 
-      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
-        where: { email: registerRequest.email },
+      // 验证事务操作
+      expect(mockDataSource.createQueryRunner).toHaveBeenCalled();
+      expect(mockQueryRunner.connect).toHaveBeenCalled();
+      expect(mockQueryRunner.startTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.release).toHaveBeenCalled();
+
+      // 验证用户创建
+      expect(mockQueryRunner.manager!.create).toHaveBeenCalledWith(User, {
+        email: registerRequest.email,
+        name: registerRequest.name,
+        passwordHash: hashedPassword,
+        status: UserStatus.INACTIVE,
+        role: UserRole.USER,
       });
-      expect(jest.mocked(bcrypt.hash)).toHaveBeenCalledWith(
-        registerRequest.password,
-        mockAuthConfig.bcrypt.saltRounds,
+
+      // 验证团队创建
+      expect(mockTeamService.createDefaultTeam).toHaveBeenCalledWith(
+        newUser.id,
+        newUser.name,
+        mockQueryRunner,
       );
-      expect(mockUserRepository.save).toHaveBeenCalledWith(newUser);
+
+      // 验证邮箱验证 token 更新
+      expect(mockQueryRunner.manager!.update).toHaveBeenCalledWith(
+        User,
+        newUser.id,
+        expect.objectContaining({
+          emailVerificationToken: expect.any(String),
+          emailVerificationExpiresAt: expect.any(Date),
+        }),
+      );
+    });
+
+    it('应该在事务失败时回滚所有操作', async () => {
+      // 安排
+      const registerRequest = {
+        email: 'newuser@example.com',
+        name: '新用户',
+        password: 'password123',
+        confirmPassword: 'password123',
+        agreeToTerms: true,
+      };
+
+      const hashedPassword = '$2b$10$hashedNewPassword';
+      const newUser = {
+        ...mockUser,
+        id: 'new-user-id',
+        email: registerRequest.email,
+        name: registerRequest.name,
+        passwordHash: hashedPassword,
+      };
+
+      // Mock 设置
+      mockUserRepository.findOne.mockResolvedValue(null);
+      jest.mocked(bcrypt.hash).mockResolvedValue(hashedPassword as never);
+      (mockQueryRunner.manager!.create as jest.Mock).mockReturnValue(newUser);
+      (mockQueryRunner.manager!.save as jest.Mock).mockResolvedValue(newUser);
+
+      // Mock 团队创建失败
+      mockTeamService.createDefaultTeam.mockRejectedValue(
+        new Error('Team creation failed'),
+      );
+
+      // 执行和断言
+      await expect(service.register(registerRequest)).rejects.toThrow(
+        'Team creation failed',
+      );
+
+      // 验证事务回滚
+      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
+      expect(mockQueryRunner.commitTransaction).not.toHaveBeenCalled();
+      expect(mockQueryRunner.release).toHaveBeenCalled();
     });
 
     it('应该在邮箱已存在时抛出ConflictException', async () => {
@@ -623,6 +760,60 @@ describe('AuthService', () => {
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: registerRequest.email },
       });
+
+      // 验证没有创建事务
+      expect(mockDataSource.createQueryRunner).not.toHaveBeenCalled();
+    });
+
+    it('应该在密码不匹配时抛出BadRequestException', async () => {
+      // 安排
+      const registerRequest = {
+        email: 'newuser@example.com',
+        name: '新用户',
+        password: 'password123',
+        confirmPassword: 'differentPassword',
+        agreeToTerms: true,
+      };
+
+      // 执行和断言
+      await expect(service.register(registerRequest)).rejects.toThrow(
+        '密码确认不匹配',
+      );
+
+      // 验证没有查询数据库
+      expect(mockUserRepository.findOne).not.toHaveBeenCalled();
+    });
+
+    it('应该在密码强度不足时抛出BadRequestException', async () => {
+      // 安排
+      const registerRequest = {
+        email: 'newuser@example.com',
+        name: '新用户',
+        password: 'weak', // 弱密码
+        confirmPassword: 'weak',
+        agreeToTerms: true,
+      };
+
+      // 执行和断言
+      await expect(service.register(registerRequest)).rejects.toThrow(
+        '密码强度不符合要求',
+      );
+    });
+
+    it('应该在未同意服务条款时抛出BadRequestException', async () => {
+      // 安排
+      const registerRequest = {
+        email: 'newuser@example.com',
+        name: '新用户',
+        password: 'password123',
+        confirmPassword: 'password123',
+        agreeToTerms: false, // 未同意服务条款
+      };
+
+      // 执行和断言
+      await expect(service.register(registerRequest)).rejects.toThrow(
+        '必须同意服务条款',
+      );
     });
   });
 

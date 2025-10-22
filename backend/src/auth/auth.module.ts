@@ -12,6 +12,7 @@ import { UserLoginLog } from '../database/entities/user/user-login-log.entity';
 import { AuthConfig } from '../config/auth.config';
 import { SessionModule } from '../session/session.module';
 import { SecurityModule } from '../security/security.module';
+import { TeamModule } from '../team/team.module';
 
 /**
  * 认证模块
@@ -65,6 +66,9 @@ import { SecurityModule } from '../security/security.module';
 
     // SecurityModule - 安全模块，提供账户锁定等功能
     SecurityModule,
+
+    // TeamModule - 团队管理模块，提供团队创建功能
+    TeamModule,
   ],
 
   controllers: [
