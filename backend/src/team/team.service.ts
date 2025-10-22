@@ -14,10 +14,14 @@ import {
   InvitationStatus,
   GetTeamsResponse,
   GetTeamMembersResponse,
+  GetMyInvitationsResponse,
+  MyInvitationItem,
+  JoinTeamResponse,
   TeamQueryParams,
   TeamMemberQueryParams,
 } from '@xiaodashi/shared';
 import type { QueryRunner, Repository } from 'typeorm';
+import { In } from 'typeorm';
 import { Team } from '../database/entities/team/team.entity';
 import { TeamMember } from '../database/entities/team/team-member.entity';
 import { TeamInvitation } from '../database/entities/team/team-invitation.entity';
@@ -490,6 +494,224 @@ export class TeamService {
       createdAt: savedInvitation.createdAt.toISOString(),
       updatedAt: savedInvitation.updatedAt.toISOString(),
     };
+  }
+
+  /**
+   * 获取我的邀请列表
+   *
+   * @param userId - 用户ID
+   * @param pagination - 分页参数
+   * @returns Promise<GetMyInvitationsResponse> - 我的邀请列表响应
+   */
+  async getMyInvitations(
+    userId: string,
+    pagination: {
+      page?: number;
+      limit?: number;
+      status?: InvitationStatus;
+      email?: string;
+    } = {},
+  ): Promise<GetMyInvitationsResponse> {
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
+    const skip = (page - 1) * limit;
+
+    // 构建查询条件
+    const whereCondition: {
+      inviterId: string;
+      status?: InvitationStatus;
+      email?: string;
+    } = { inviterId: userId };
+    if (pagination.status) {
+      whereCondition.status = pagination.status;
+    }
+    if (pagination.email) {
+      whereCondition.email = pagination.email;
+    }
+
+    // 查询我创建的邀请，预加载团队信息
+    const [invitations, total] =
+      await this.teamInvitationRepository.findAndCount({
+        where: whereCondition,
+        relations: ['team'],
+        skip,
+        take: limit,
+        order: { createdAt: 'DESC' },
+      });
+
+    // 构建邀请列表项
+    const myInvitations: MyInvitationItem[] = invitations.map((invitation) => ({
+      id: invitation.id,
+      teamId: invitation.teamId,
+      teamName: invitation.team?.name || '未知团队',
+      inviterId: invitation.inviterId,
+      inviterName: '', // 需要通过查询获取邀请者姓名，或者从上下文获取
+      email: invitation.email,
+      token: invitation.token,
+      expiresAt: invitation.expiresAt.toISOString(),
+      status: invitation.status,
+      createdAt: invitation.createdAt.toISOString(),
+      updatedAt: invitation.updatedAt.toISOString(),
+    }));
+
+    // 如果需要邀请者姓名，批量查询用户信息
+    if (myInvitations.length > 0) {
+      const inviterIds = [
+        ...new Set(myInvitations.map((item) => item.inviterId)),
+      ];
+      const inviters = await this.userRepository.find({
+        where: { id: In(inviterIds) },
+      });
+
+      const inviterMap = new Map(inviters.map((user) => [user.id, user.name]));
+
+      myInvitations.forEach((item) => {
+        item.inviterName = inviterMap.get(item.inviterId) || '未知用户';
+      });
+    }
+
+    return {
+      invitations: myInvitations,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * 通过邀请令牌加入团队
+   *
+   * @param token - 邀请令牌
+   * @param userId - 用户ID
+   * @returns Promise<JoinTeamResponse> - 加入团队响应
+   */
+  async joinTeamByToken(
+    token: string,
+    userId: string,
+  ): Promise<JoinTeamResponse> {
+    // 查找有效的邀请
+    const invitation = await this.teamInvitationRepository.findOne({
+      where: { token },
+      relations: ['team'],
+    });
+
+    if (!invitation) {
+      throw new NotFoundException(`邀请令牌无效`);
+    }
+
+    // 检查邀请是否已过期
+    const now = new Date();
+    if (invitation.expiresAt < now) {
+      // 更新邀请状态为已过期
+      await this.teamInvitationRepository.update(invitation.id, {
+        status: InvitationStatus.EXPIRED,
+      });
+      throw new ForbiddenException(`邀请已过期`);
+    }
+
+    // 检查邀请状态
+    if (invitation.status !== InvitationStatus.PENDING) {
+      throw new ForbiddenException(
+        `邀请已被${this.getInvitationStatusText(invitation.status)}`,
+      );
+    }
+
+    // 检查用户是否已是团队成员
+    const existingMember = await this.teamMemberRepository.findOne({
+      where: { teamId: invitation.teamId, userId },
+    });
+
+    if (existingMember) {
+      throw new ForbiddenException(`您已经是该团队的成员`);
+    }
+
+    // 使用事务处理加入团队
+    const queryRunner =
+      this.teamInvitationRepository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // 创建团队成员记录
+      const newMember = queryRunner.manager.create(TeamMember, {
+        teamId: invitation.teamId,
+        userId: userId,
+        role: TeamRoleType.MEMBER, // 默认为普通成员
+        displayName: '', // 将在后续通过用户信息获取
+      });
+
+      const savedMember = await queryRunner.manager.save(TeamMember, newMember);
+
+      // 更新邀请状态为已接受
+      await queryRunner.manager.update(TeamInvitation, invitation.id, {
+        status: InvitationStatus.ACCEPTED,
+      });
+
+      await queryRunner.commitTransaction();
+
+      // 获取用户信息用于显示名称
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      if (user) {
+        savedMember.displayName = user.name;
+        await this.teamMemberRepository.update(savedMember.id, {
+          displayName: user.name,
+        });
+      }
+
+      // 获取团队详情
+      const teamDetail = await this.getTeamDetail(invitation.teamId, userId);
+
+      // 构建成员详细信息
+      const memberDetail: TeamMemberDetail = {
+        id: savedMember.id,
+        teamId: savedMember.teamId,
+        userId: savedMember.userId,
+        role: savedMember.role,
+        displayName: savedMember.displayName,
+        createdAt: savedMember.createdAt.toISOString(),
+        updatedAt: savedMember.updatedAt.toISOString(),
+        user: {
+          id: user!.id,
+          email: user!.email,
+          name: user!.name,
+          avatar: user!.avatar,
+        },
+      };
+
+      return {
+        team: teamDetail,
+        member: memberDetail,
+      };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  /**
+   * 获取邀请状态文本
+   *
+   * @param status - 邀请状态
+   * @returns string - 状态文本
+   */
+  private getInvitationStatusText(status: InvitationStatus): string {
+    switch (status) {
+      case InvitationStatus.PENDING:
+        return '处理';
+      case InvitationStatus.ACCEPTED:
+        return '接受';
+      case InvitationStatus.EXPIRED:
+        return '过期';
+      case InvitationStatus.CANCELLED:
+        return '取消';
+      default:
+        return '处理';
+    }
   }
 
   /**

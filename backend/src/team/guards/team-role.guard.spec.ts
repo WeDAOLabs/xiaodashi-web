@@ -2,14 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Reflector } from '@nestjs/core';
 import { ForbiddenException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { TeamRoleGuard, TeamRoles, RequireTeamMembership } from './team-role.guard';
+import {
+  TeamRoleGuard,
+  // TeamRoles, // 用于装饰器测试
+  // RequireTeamMembership, // 用于装饰器测试
+} from './team-role.guard';
 import { TeamRoleType, AuthenticatedUser } from '@xiaodashi/shared';
 import type { Repository } from 'typeorm';
 import { TeamMember } from '../../database/entities/team/team-member.entity';
 
 describe('TeamRoleGuard', () => {
   let guard: TeamRoleGuard;
-  let reflector: Reflector;
+  // let reflector: Reflector; // 从测试模块中获取
   let teamMemberRepository: jest.Mocked<Repository<TeamMember>>;
 
   const mockReflector = {
@@ -53,7 +57,7 @@ describe('TeamRoleGuard', () => {
 
     guard = module.get<TeamRoleGuard>(TeamRoleGuard);
     reflector = module.get<Reflector>(Reflector);
-    teamMemberRepository = module.get(getRepositoryToken(TeamMember)) as jest.Mocked<Repository<TeamMember>>;
+    teamMemberRepository = module.get(getRepositoryToken(TeamMember));
 
     // 清除所有 mock 调用记录
     jest.clearAllMocks();
@@ -72,7 +76,10 @@ describe('TeamRoleGuard', () => {
       // Mock没有权限要求
       mockReflector.getAllAndOverride.mockReturnValue(undefined);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       const result = await guard.canActivate(mockExecutionContext);
 
@@ -93,7 +100,10 @@ describe('TeamRoleGuard', () => {
 
       teamMemberRepository.findOne.mockResolvedValue(mockTeamMember);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       const result = await guard.canActivate(mockExecutionContext);
 
@@ -116,7 +126,10 @@ describe('TeamRoleGuard', () => {
 
       teamMemberRepository.findOne.mockResolvedValue(null);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
         ForbiddenException,
@@ -142,7 +155,10 @@ describe('TeamRoleGuard', () => {
 
       teamMemberRepository.findOne.mockResolvedValue(mockAdminMember);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       const result = await guard.canActivate(mockExecutionContext);
 
@@ -159,7 +175,10 @@ describe('TeamRoleGuard', () => {
       // 用户只有MEMBER角色
       teamMemberRepository.findOne.mockResolvedValue(mockTeamMember);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
         ForbiddenException,
@@ -180,7 +199,10 @@ describe('TeamRoleGuard', () => {
 
       teamMemberRepository.findOne.mockResolvedValue(mockOwnerMember);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       const result = await guard.canActivate(mockExecutionContext);
 
@@ -193,7 +215,10 @@ describe('TeamRoleGuard', () => {
 
       teamMemberRepository.findOne.mockResolvedValue(mockTeamMember);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
       await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
         ForbiddenException,
@@ -230,9 +255,14 @@ describe('TeamRoleGuard', () => {
       const error = new Error('Database error');
       teamMemberRepository.findOne.mockRejectedValue(error);
 
-      const mockExecutionContext = createMockExecutionContext('team-123', mockUser);
+      const mockExecutionContext = createMockExecutionContext(
+        'team-123',
+        mockUser,
+      );
 
-      await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(error);
+      await expect(guard.canActivate(mockExecutionContext)).rejects.toThrow(
+        error,
+      );
     });
   });
 
@@ -265,10 +295,10 @@ describe('TeamRoleGuard', () => {
       const result = await guard.canActivate(mockExecutionContext);
 
       expect(result).toBe(true);
-      expect(mockReflector.getAllAndOverride).toHaveBeenCalledWith('teamRoles', [
-        expect.anything(),
-        expect.anything(),
-      ]);
+      expect(mockReflector.getAllAndOverride).toHaveBeenCalledWith(
+        'teamRoles',
+        [expect.anything(), expect.anything()],
+      );
     });
 
     it('应该正确处理@RequireTeamMembership装饰器', async () => {
@@ -296,10 +326,10 @@ describe('TeamRoleGuard', () => {
       const result = await guard.canActivate(mockExecutionContext);
 
       expect(result).toBe(true);
-      expect(mockReflector.getAllAndOverride).toHaveBeenCalledWith('requireTeamMembership', [
-        expect.anything(),
-        expect.anything(),
-      ]);
+      expect(mockReflector.getAllAndOverride).toHaveBeenCalledWith(
+        'requireTeamMembership',
+        [expect.anything(), expect.anything()],
+      );
     });
   });
 

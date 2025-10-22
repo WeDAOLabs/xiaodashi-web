@@ -244,3 +244,42 @@ export interface TeamInvitationQueryParams {
   status?: InvitationStatus;  // 按状态筛选
   email?: string;         // 按邮箱筛选
 }
+
+// === 新增API类型 ===
+
+// 我的邀请列表项（包含团队信息）
+export interface MyInvitationItem {
+  id: string;
+  teamId: string;
+  teamName: string;
+  inviterId: string;
+  inviterName: string;
+  email: string;
+  token: string;
+  expiresAt: string;       // ISO 8601 格式
+  status: InvitationStatus;
+  createdAt: string;       // ISO 8601 格式
+  updatedAt: string;       // ISO 8601 格式
+}
+
+// 加入团队请求
+export interface JoinTeamRequest {
+  token: string;
+}
+
+// 加入团队响应
+export interface JoinTeamResponse {
+  team: TeamDetail;
+  member: TeamMemberDetail;
+}
+
+// 获取我的邀请列表响应
+export interface GetMyInvitationsResponse {
+  invitations: MyInvitationItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}

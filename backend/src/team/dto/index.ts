@@ -8,3 +8,5 @@ export { CreateInvitationDto } from './create-invitation.dto';
 export { PaginationDto } from './pagination.dto';
 export { TeamQueryDto } from './team-query.dto';
 export { TeamMemberQueryDto } from './team-member-query.dto';
+export { JoinTeamDto } from './join-team.dto';
+export { InvitationQueryDto } from './invitation-query.dto';

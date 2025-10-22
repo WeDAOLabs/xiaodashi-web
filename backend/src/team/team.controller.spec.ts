@@ -1,16 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
+// import { getRepositoryToken } from '@nestjs/typeorm'; // 仅用于测试模块配置
+// import { ConfigService } from '@nestjs/config'; // 仅用于测试模块配置
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { TeamRoleGuard, TeamRoles, RequireTeamMembership } from './guards/team-role.guard';
+import {
+  TeamRoleGuard,
+  // TeamRoles, // 用于装饰器测试
+  // RequireTeamMembership, // 用于装饰器测试
+} from './guards/team-role.guard';
 import { TeamController } from './team.controller';
 import { TeamService } from './team.service';
 import { AuthenticatedUser, TeamRoleType, TeamTier } from '@xiaodashi/shared';
-import type { Repository } from 'typeorm';
-import { Team } from '../database/entities/team/team.entity';
-import { TeamMember } from '../database/entities/team/team-member.entity';
-import { TeamInvitation } from '../database/entities/team/team-invitation.entity';
-import { User } from '../database/entities/user/user.entity';
+// import type { Repository } from 'typeorm'; // 仅用于类型定义
+// import { Team } from '../database/entities/team/team.entity'; // 仅用于类型定义
+// import { TeamMember } from '../database/entities/team/team-member.entity'; // 仅用于类型定义
+// import { TeamInvitation } from '../database/entities/team/team-invitation.entity'; // 仅用于类型定义
+// import { User } from '../database/entities/user/user.entity'; // 仅用于类型定义
 
 describe('TeamController', () => {
   let controller: TeamController;
@@ -44,11 +48,11 @@ describe('TeamController', () => {
         },
       ],
     })
-    .overrideGuard(JwtAuthGuard)
-    .useValue({ canActivate: () => true })
-    .overrideGuard(TeamRoleGuard)
-    .useValue({ canActivate: () => true })
-    .compile();
+      .overrideGuard(JwtAuthGuard)
+      .useValue({ canActivate: () => true })
+      .overrideGuard(TeamRoleGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<TeamController>(TeamController);
     teamService = module.get<TeamService>(TeamService);
@@ -392,7 +396,6 @@ describe('TeamController', () => {
         mockRequest,
       );
 
-      
       expect(result.success).toBe(true);
       expect(result.data.invitation.invitation).toEqual(mockInvitation);
       expect(result.message).toBe('创建团队邀请成功');

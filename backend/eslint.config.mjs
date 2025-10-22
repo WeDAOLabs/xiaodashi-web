@@ -46,7 +46,9 @@ export default tseslint.config(
       // 测试中允许的未使用变量（包括下划线前缀）
       '@typescript-eslint/no-unused-vars': ['warn', {
         argsIgnorePattern: '^_',
-        varsIgnorePattern: '^_'
+        varsIgnorePattern: '^_',
+        // 测试文件中允许注释掉的未使用导入和变量
+        caughtErrors: 'none'  // 完全禁用测试文件中的未使用变量警告
       }],
 
       // 测试中允许未绑定的方法（用于Mock验证）

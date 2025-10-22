@@ -41,6 +41,8 @@ import {
   CreateInvitationDto,
   TeamQueryDto,
   TeamMemberQueryDto,
+  JoinTeamDto,
+  InvitationQueryDto,
 } from './dto';
 import { ApiResponse as StandardApiResponse } from '@xiaodashi/shared';
 import {
@@ -49,6 +51,8 @@ import {
   GetTeamMembersResponse,
   CreateTeamInvitationResponse,
   RemoveTeamMemberResponse,
+  GetMyInvitationsResponse,
+  JoinTeamResponse,
 } from '@xiaodashi/shared';
 
 /**
@@ -369,6 +373,81 @@ export class TeamController {
         invitation,
       },
       message: '创建团队邀请成功',
+      code: 201,
+      timestamp: new Date().toISOString(),
+      requestId: req.id || 'unknown',
+    };
+  }
+
+  /**
+   * 获取我的邀请列表
+   */
+  @Get('invitations/my-invitations')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: '获取我的邀请列表',
+    description: '获取当前用户创建的所有团队邀请，包含邀请状态和团队信息',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '成功获取邀请列表',
+  })
+  @ApiResponse({ status: 401, description: '未授权访问' })
+  async getMyInvitations(
+    @Request() req: RequestWithUser,
+    @Query() query: InvitationQueryDto,
+  ): Promise<StandardApiResponse<GetMyInvitationsResponse>> {
+    const userId = req.user.id;
+    const { page, limit, status, email } = query;
+
+    const result = await this.teamService.getMyInvitations(userId, {
+      page,
+      limit,
+      status,
+      email,
+    });
+
+    return {
+      success: true,
+      data: result,
+      message: '获取邀请列表成功',
+      code: 200,
+      timestamp: new Date().toISOString(),
+      requestId: req.id || 'unknown',
+    };
+  }
+
+  /**
+   * 加入团队
+   */
+  @Post('join-team')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: '通过邀请令牌加入团队',
+    description: '使用邀请令牌加入对应的团队，用户需要已登录状态',
+  })
+  @ApiResponse({
+    status: 201,
+    description: '成功加入团队',
+  })
+  @ApiResponse({ status: 401, description: '未授权访问' })
+  @ApiResponse({ status: 404, description: '邀请令牌无效' })
+  @ApiResponse({ status: 403, description: '邀请已过期或已被处理' })
+  @ApiResponse({ status: 409, description: '用户已经是团队成员' })
+  @ApiResponse({ status: 422, description: '请求参数验证失败' })
+  async joinTeam(
+    @Request() req: RequestWithUser,
+    @Query() joinTeamDto: JoinTeamDto,
+  ): Promise<StandardApiResponse<JoinTeamResponse>> {
+    const userId = req.user.id;
+    const { token } = joinTeamDto;
+
+    const result = await this.teamService.joinTeamByToken(token, userId);
+
+    return {
+      success: true,
+      data: result,
+      message: '成功加入团队',
       code: 201,
       timestamp: new Date().toISOString(),
       requestId: req.id || 'unknown',

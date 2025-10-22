@@ -383,7 +383,7 @@ describe('TeamService', () => {
   describe('getUserTeams', () => {
     const mockUserId = 'test-user-id-123';
     const mockTeamId = 'test-team-id-456';
-    const mockUserId2 = 'test-user-id-789';
+    // const mockUserId2 = 'test-user-id-789'; // 预留用于未来的测试用例
 
     const mockTeamMembers = [
       {
@@ -564,7 +564,8 @@ describe('TeamService', () => {
       mockTeamMemberRepository.findOne = jest
         .fn()
         .mockResolvedValueOnce(mockTeamMember) // 第一次调用：检查用户权限
-        .mockResolvedValueOnce({ // 第二次调用：查找团队所有者
+        .mockResolvedValueOnce({
+          // 第二次调用：查找团队所有者
           ...mockTeamMember,
           role: TeamRoleType.OWNER,
           user: {
@@ -642,7 +643,8 @@ describe('TeamService', () => {
         .fn()
         .mockResolvedValueOnce(mockTeamMember) // updateTeam权限检查
         .mockResolvedValueOnce(mockTeamMember) // getTeamDetail权限检查
-        .mockResolvedValueOnce({ // getTeamDetail owner查询
+        .mockResolvedValueOnce({
+          // getTeamDetail owner查询
           ...mockTeamMember,
           role: TeamRoleType.OWNER,
           user: {
@@ -659,7 +661,11 @@ describe('TeamService', () => {
 
     it('应该成功更新团队信息', async () => {
       const updateData = { name: '新团队名称' };
-      const result = await service.updateTeam(mockTeamId, updateData, mockUserId);
+      const result = await service.updateTeam(
+        mockTeamId,
+        updateData,
+        mockUserId,
+      );
 
       expect(result).toBeDefined();
       expect(mockTeamRepository.save).toHaveBeenCalled();
@@ -792,19 +798,29 @@ describe('TeamService', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      mockTeamRepository.findOne = jest.fn().mockResolvedValue({ id: mockTeamId });
+      mockTeamRepository.findOne = jest
+        .fn()
+        .mockResolvedValue({ id: mockTeamId });
       mockTeamMemberRepository.findOne = jest
         .fn()
         .mockResolvedValueOnce(mockRequesterMember)
         .mockResolvedValueOnce(mockTargetMember);
-      mockTeamMemberRepository.remove = jest.fn().mockResolvedValue(mockTargetMember);
+      mockTeamMemberRepository.remove = jest
+        .fn()
+        .mockResolvedValue(mockTargetMember);
     });
 
     it('应该成功移除团队成员', async () => {
-      const result = await service.removeTeamMember(mockTeamId, mockTargetUserId, mockUserId);
+      const result = await service.removeTeamMember(
+        mockTeamId,
+        mockTargetUserId,
+        mockUserId,
+      );
 
       expect(result).toBeDefined();
-      expect(mockTeamMemberRepository.remove).toHaveBeenCalledWith(mockTargetMember);
+      expect(mockTeamMemberRepository.remove).toHaveBeenCalledWith(
+        mockTargetMember,
+      );
     });
   });
 
@@ -837,11 +853,19 @@ describe('TeamService', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      mockTeamMemberRepository.findOne = jest.fn().mockResolvedValue(mockTeamMember);
+      mockTeamMemberRepository.findOne = jest
+        .fn()
+        .mockResolvedValue(mockTeamMember);
       mockTeamInvitationRepository.findOne = jest.fn().mockResolvedValue(null);
-      mockTeamInvitationRepository.create = jest.fn().mockReturnValue(mockInvitation);
-      mockTeamInvitationRepository.save = jest.fn().mockResolvedValue(mockInvitation);
-      mockTeamRepository.findOne = jest.fn().mockResolvedValue({ id: mockTeamId });
+      mockTeamInvitationRepository.create = jest
+        .fn()
+        .mockReturnValue(mockInvitation);
+      mockTeamInvitationRepository.save = jest
+        .fn()
+        .mockResolvedValue(mockInvitation);
+      mockTeamRepository.findOne = jest
+        .fn()
+        .mockResolvedValue({ id: mockTeamId });
       mockTeamMemberRepository.createQueryBuilder = jest.fn().mockReturnValue({
         leftJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
@@ -851,8 +875,15 @@ describe('TeamService', () => {
     });
 
     it('应该成功创建团队邀请', async () => {
-      const invitationDto = { email: mockInviteeEmail, role: TeamRoleType.MEMBER };
-      const result = await service.createTeamInvitation(mockTeamId, invitationDto, mockInviterId);
+      const invitationDto = {
+        email: mockInviteeEmail,
+        role: TeamRoleType.MEMBER,
+      };
+      const result = await service.createTeamInvitation(
+        mockTeamId,
+        invitationDto,
+        mockInviterId,
+      );
 
       expect(result).toBeDefined();
       expect(result.id).toBeDefined();
