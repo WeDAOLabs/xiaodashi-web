@@ -70,4 +70,19 @@ export default tseslint.config(
       'prefer-const': 'error',
     },
   },
+  // Migration文件特殊规则 - 放宽TypeORM查询的类型检查
+  {
+    files: ['**/migrations/**/*.ts'],
+    rules: {
+      // 放宽TypeORM查询结果的类型检查
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+
+      // 保持基本的代码质量检查
+      'prefer-const': 'error',
+      'no-var': 'error',
+    },
+  },
 );
