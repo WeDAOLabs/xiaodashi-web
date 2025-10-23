@@ -10,7 +10,7 @@
 'use client';
 
 import { publicConfig } from '@/lib/config';
-import type { ApiResponse, ApiErrorResponse } from '@xiaodashi/shared';
+import type { ApiErrorResponse, ApiResponse } from '@xiaodashi/shared';
 
 /**
  * API 客户端类
@@ -104,20 +104,44 @@ class ApiClient {
       // 解析响应数据
       const data = await response.json();
 
-      // 检查响应格式
-      if ('success' in data && !data.success) {
-        // ApiErrorResponse 格式
-        const errorData = data as ApiErrorResponse;
-        throw new ApiError(
-          errorData.error.message || '操作失败',
-          response.status,
-          errorData.error.code
-        );
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[ApiClient Debug] Raw response:', data);
       }
 
-      // ApiResponse<T> 格式，返回 data 字段
-      const successData = data as ApiResponse<T>;
-      return successData.data;
+      // 检查是否为标准 ApiResponse 格式
+      if ('success' in data) {
+        if (!data.success) {
+          // 错误响应
+          const errorData = data as ApiErrorResponse;
+          throw new ApiError(
+            errorData.error.message || '操作失败',
+            response.status,
+            errorData.error.code
+          );
+        }
+
+        // 成功响应，验证并返回 data 字段
+        const successData = data as ApiResponse<T>;
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[ApiClient Debug] Has data field:', 'data' in successData);
+          console.log('[ApiClient Debug] Data value:', successData.data);
+        }
+
+        if ('data' in successData && successData.data !== undefined) {
+          const unwrapped = successData.data;
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[ApiClient] Returning unwrapped data:', unwrapped);
+          }
+          return unwrapped;
+        }
+      }
+
+      // 兜底：如果不是标准格式，直接返回原始数据
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[ApiClient Debug] Returning raw data (fallback)');
+      }
+      return data as T;
     } catch (error) {
       // 网络错误或其他异常
       if (error instanceof ApiError) {

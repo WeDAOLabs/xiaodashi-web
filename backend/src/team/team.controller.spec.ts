@@ -1,15 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 // import { getRepositoryToken } from '@nestjs/typeorm'; // 仅用于测试模块配置
 // import { ConfigService } from '@nestjs/config'; // 仅用于测试模块配置
+import { AuthenticatedUser, TeamRoleType, TeamTier } from '@xiaodashi/shared';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
   TeamRoleGuard,
-  // TeamRoles, // 用于装饰器测试
-  // RequireTeamMembership, // 用于装饰器测试
 } from './guards/team-role.guard';
 import { TeamController } from './team.controller';
 import { TeamService } from './team.service';
-import { AuthenticatedUser, TeamRoleType, TeamTier } from '@xiaodashi/shared';
 // import type { Repository } from 'typeorm'; // 仅用于类型定义
 // import { Team } from '../database/entities/team/team.entity'; // 仅用于类型定义
 // import { TeamMember } from '../database/entities/team/team-member.entity'; // 仅用于类型定义
@@ -107,6 +105,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const result = await controller.getUserTeams(mockRequest, {
@@ -114,10 +113,7 @@ describe('TeamController', () => {
         limit: 20,
       });
 
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual(mockTeamsResponse);
-      expect(result.message).toBe('获取团队列表成功');
-      expect(result.code).toBe(200);
+      expect(result).toEqual(mockTeamsResponse);
       expect(mockTeamService.getUserTeams).toHaveBeenCalledWith(mockUser.id, {
         page: 1,
         limit: 20,
@@ -128,6 +124,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       await controller.getUserTeams(mockRequest, {});
@@ -142,6 +139,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       await controller.getUserTeams(mockRequest, { page: 2, limit: 10 });
@@ -180,14 +178,12 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const result = await controller.getTeamDetail(mockTeamId, mockRequest);
 
-      expect(result.success).toBe(true);
-      expect(result.data.team).toEqual(mockTeamDetail);
-      expect(result.message).toBe('获取团队详情成功');
-      expect(result.code).toBe(200);
+      expect(result.team).toEqual(mockTeamDetail);
       expect(mockTeamService.getTeamDetail).toHaveBeenCalledWith(
         mockTeamId,
         mockUser.id,
@@ -226,6 +222,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const result = await controller.updateTeam(
@@ -234,10 +231,7 @@ describe('TeamController', () => {
         mockRequest,
       );
 
-      expect(result.success).toBe(true);
-      expect(result.data.team).toEqual(mockUpdatedTeam);
-      expect(result.message).toBe('更新团队信息成功');
-      expect(result.code).toBe(200);
+      expect(result.team).toEqual(mockUpdatedTeam);
       expect(mockTeamService.updateTeam).toHaveBeenCalledWith(
         mockTeamId,
         mockUpdateDto,
@@ -285,6 +279,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const result = await controller.getTeamMembers(
@@ -293,10 +288,7 @@ describe('TeamController', () => {
         mockRequest,
       );
 
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual(mockMembersResponse);
-      expect(result.message).toBe('获取团队成员列表成功');
-      expect(result.code).toBe(200);
+      expect(result).toEqual(mockMembersResponse);
       expect(mockTeamService.getTeamMembers).toHaveBeenCalledWith(
         mockTeamId,
         mockUser.id,
@@ -308,6 +300,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       await controller.getTeamMembers(mockTeamId, {}, mockRequest);
@@ -339,6 +332,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const result = await controller.removeTeamMember(
@@ -347,10 +341,7 @@ describe('TeamController', () => {
         mockRequest,
       );
 
-      expect(result.success).toBe(true);
-      expect(result.data).toEqual(mockRemoveResponse);
-      expect(result.message).toBe('移除团队成员成功');
-      expect(result.code).toBe(200);
+      expect(result).toEqual(mockRemoveResponse);
       expect(mockTeamService.removeTeamMember).toHaveBeenCalledWith(
         mockTeamId,
         mockTargetUserId,
@@ -379,15 +370,14 @@ describe('TeamController', () => {
     };
 
     beforeEach(() => {
-      mockTeamService.createTeamInvitation.mockResolvedValue({
-        invitation: mockInvitation,
-      });
+      mockTeamService.createTeamInvitation.mockResolvedValue(mockInvitation);
     });
 
     it('应该成功创建团队邀请', async () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const result = await controller.createTeamInvitation(
@@ -396,10 +386,7 @@ describe('TeamController', () => {
         mockRequest,
       );
 
-      expect(result.success).toBe(true);
-      expect(result.data.invitation.invitation).toEqual(mockInvitation);
-      expect(result.message).toBe('创建团队邀请成功');
-      expect(result.code).toBe(201);
+      expect(result).toEqual({ invitation: mockInvitation });
       expect(mockTeamService.createTeamInvitation).toHaveBeenCalledWith(
         mockTeamId,
         mockInvitationDto,
@@ -411,6 +398,7 @@ describe('TeamController', () => {
       const mockRequest = {
         user: mockUser,
         id: 'req-123',
+        params: {},
       };
 
       const invitationDtoWithoutRole = { email: 'invitee@example.com' };

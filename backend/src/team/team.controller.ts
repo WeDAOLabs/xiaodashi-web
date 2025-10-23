@@ -1,31 +1,49 @@
 import {
-  Controller,
-  Get,
-  Patch,
-  Delete,
-  Post,
-  Param,
   Body,
-  Query,
-  UseGuards,
-  Request,
+  Controller,
+  Delete,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
   ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
+import {
+  AuthenticatedUser,
+  CreateTeamInvitationResponse,
+  GetMyInvitationsResponse,
+  GetTeamMembersResponse,
+  GetTeamResponse,
+  GetTeamsResponse,
+  JoinTeamResponse,
+  RemoveTeamMemberResponse,
+  TeamRoleType,
+} from '@xiaodashi/shared';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import {
+  CreateInvitationDto,
+  InvitationQueryDto,
+  JoinTeamDto,
+  TeamMemberQueryDto,
+  TeamQueryDto,
+  UpdateTeamDto,
+} from './dto';
+import {
+  RequireTeamMembership,
   TeamRoleGuard,
   TeamRoles,
-  RequireTeamMembership,
 } from './guards/team-role.guard';
-import { TeamRoleType, AuthenticatedUser } from '@xiaodashi/shared';
 import { TeamService } from './team.service';
 
 // 扩展 Request 接口以包含认证用户信息
@@ -36,24 +54,6 @@ interface RequestWithUser {
     teamId?: string;
   };
 }
-import {
-  UpdateTeamDto,
-  CreateInvitationDto,
-  TeamQueryDto,
-  TeamMemberQueryDto,
-  JoinTeamDto,
-  InvitationQueryDto,
-} from './dto';
-import { ApiResponse as StandardApiResponse } from '@xiaodashi/shared';
-import {
-  GetTeamsResponse,
-  GetTeamResponse,
-  GetTeamMembersResponse,
-  CreateTeamInvitationResponse,
-  RemoveTeamMemberResponse,
-  GetMyInvitationsResponse,
-  JoinTeamResponse,
-} from '@xiaodashi/shared';
 
 /**
  * 团队管理控制器
@@ -69,7 +69,7 @@ import {
 @UseGuards(JwtAuthGuard)
 @Controller('v1/teams')
 export class TeamController {
-  constructor(private readonly teamService: TeamService) {}
+  constructor(private readonly teamService: TeamService) { }
 
   /**
    * 获取用户所属团队列表
@@ -142,20 +142,11 @@ export class TeamController {
   async getUserTeams(
     @Request() req: RequestWithUser,
     @Query() query: TeamQueryDto,
-  ): Promise<StandardApiResponse<GetTeamsResponse>> {
+  ): Promise<GetTeamsResponse> {
     const { page = 1, limit = 20 } = query;
-    const userId = req.user.id; // 从认证用户信息中获取用户ID
+    const userId = req.user.id;
 
-    const result = await this.teamService.getUserTeams(userId, { page, limit });
-
-    return {
-      success: true,
-      data: result,
-      message: '获取团队列表成功',
-      code: 200,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
+    return this.teamService.getUserTeams(userId, { page, limit });
   }
 
   /**
@@ -182,19 +173,11 @@ export class TeamController {
   async getTeamDetail(
     @Param('teamId') teamId: string,
     @Request() req: RequestWithUser,
-  ): Promise<StandardApiResponse<GetTeamResponse>> {
+  ): Promise<GetTeamResponse> {
     const userId = req.user.id;
-
     const team = await this.teamService.getTeamDetail(teamId, userId);
 
-    return {
-      success: true,
-      data: { team },
-      message: '获取团队详情成功',
-      code: 200,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
+    return { team };
   }
 
   /**
@@ -222,23 +205,15 @@ export class TeamController {
     @Param('teamId') teamId: string,
     @Body() updateTeamDto: UpdateTeamDto,
     @Request() req: RequestWithUser,
-  ): Promise<StandardApiResponse<GetTeamResponse>> {
+  ): Promise<GetTeamResponse> {
     const userId = req.user.id;
-
     const team = await this.teamService.updateTeam(
       teamId,
       updateTeamDto,
       userId,
     );
 
-    return {
-      success: true,
-      data: { team },
-      message: '更新团队信息成功',
-      code: 200,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
+    return { team };
   }
 
   /**
@@ -265,23 +240,14 @@ export class TeamController {
     @Param('teamId') teamId: string,
     @Query() query: TeamMemberQueryDto,
     @Request() req: RequestWithUser,
-  ): Promise<StandardApiResponse<GetTeamMembersResponse>> {
+  ): Promise<GetTeamMembersResponse> {
     const { page = 1, limit = 20 } = query;
     const userId = req.user.id;
 
-    const result = await this.teamService.getTeamMembers(teamId, userId, {
+    return this.teamService.getTeamMembers(teamId, userId, {
       page,
       limit,
     });
-
-    return {
-      success: true,
-      data: result,
-      message: '获取团队成员列表成功',
-      code: 200,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
   }
 
   /**
@@ -313,23 +279,10 @@ export class TeamController {
     @Param('teamId') teamId: string,
     @Param('userId') userId: string,
     @Request() req: RequestWithUser,
-  ): Promise<StandardApiResponse<RemoveTeamMemberResponse>> {
+  ): Promise<RemoveTeamMemberResponse> {
     const requestingUserId = req.user.id;
 
-    const result = await this.teamService.removeTeamMember(
-      teamId,
-      userId,
-      requestingUserId,
-    );
-
-    return {
-      success: true,
-      data: result,
-      message: '移除团队成员成功',
-      code: 200,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
+    return this.teamService.removeTeamMember(teamId, userId, requestingUserId);
   }
 
   /**
@@ -358,25 +311,15 @@ export class TeamController {
     @Param('teamId') teamId: string,
     @Body() createInvitationDto: CreateInvitationDto,
     @Request() req: RequestWithUser,
-  ): Promise<StandardApiResponse<CreateTeamInvitationResponse>> {
-    const inviterId = req.user.id; // 从认证用户信息中获取邀请者ID
-
+  ): Promise<CreateTeamInvitationResponse> {
+    const inviterId = req.user.id;
     const invitation = await this.teamService.createTeamInvitation(
       teamId,
       createInvitationDto,
       inviterId,
     );
 
-    return {
-      success: true,
-      data: {
-        invitation,
-      },
-      message: '创建团队邀请成功',
-      code: 201,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
+    return { invitation };
   }
 
   /**
@@ -396,25 +339,16 @@ export class TeamController {
   async getMyInvitations(
     @Request() req: RequestWithUser,
     @Query() query: InvitationQueryDto,
-  ): Promise<StandardApiResponse<GetMyInvitationsResponse>> {
+  ): Promise<GetMyInvitationsResponse> {
     const userId = req.user.id;
     const { page, limit, status, email } = query;
 
-    const result = await this.teamService.getMyInvitations(userId, {
+    return this.teamService.getMyInvitations(userId, {
       page,
       limit,
       status,
       email,
     });
-
-    return {
-      success: true,
-      data: result,
-      message: '获取邀请列表成功',
-      code: 200,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
   }
 
   /**
@@ -438,19 +372,10 @@ export class TeamController {
   async joinTeam(
     @Request() req: RequestWithUser,
     @Query() joinTeamDto: JoinTeamDto,
-  ): Promise<StandardApiResponse<JoinTeamResponse>> {
+  ): Promise<JoinTeamResponse> {
     const userId = req.user.id;
     const { token } = joinTeamDto;
 
-    const result = await this.teamService.joinTeamByToken(token, userId);
-
-    return {
-      success: true,
-      data: result,
-      message: '成功加入团队',
-      code: 201,
-      timestamp: new Date().toISOString(),
-      requestId: req.id || 'unknown',
-    };
+    return this.teamService.joinTeamByToken(token, userId);
   }
 }
