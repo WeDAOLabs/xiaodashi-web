@@ -140,7 +140,7 @@ const ContextSwitcher: React.FC<ContextSwitcherProps> = ({ className }) => {
             ))}
 
             {/* 创建新团队选项 */}
-            <SelectItem value="create-new" className="text-blue-600 hover:bg-blue-50">
+            <SelectItem value="create-new" disabled className="text-blue-600 hover:bg-blue-50">
               <div className="flex items-center gap-2">
                 <Plus className="w-4 h-4" />
                 <span>创建新团队</span>
