@@ -31,6 +31,12 @@ import {
   teamEntities,
 } from './team';
 
+import {
+  TeamPoint,
+  PointTransaction,
+  pointsEntities,
+} from './points';
+
 // 导出所有实体（保持向后兼容）
 export {
   User,
@@ -48,6 +54,8 @@ export {
   TeamMember,
   TeamInvitation,
   TeamRole,
+  TeamPoint,
+  PointTransaction,
 };
 
 // 按域导出实体（为未来多数据库预留）
@@ -71,6 +79,11 @@ export const TeamDomainEntities = {
   entityClasses: teamEntities,
 };
 
+export const PointsDomainEntities = {
+  entities: [TeamPoint, PointTransaction],
+  entityClasses: pointsEntities,
+};
+
 // 实体数组，用于TypeORM配置（当前单数据库使用）
 export const entities = [
   User,
@@ -88,6 +101,8 @@ export const entities = [
   TeamMember,
   TeamInvitation,
   TeamRole,
+  TeamPoint,
+  PointTransaction,
 ];
 
 // 未来多数据库时可以使用的分域配置（预留）
@@ -96,4 +111,5 @@ export const domainEntities = {
   auth: AuthDomainEntities.entities,
   security: SecurityDomainEntities.entities,
   team: TeamDomainEntities.entities,
+  points: PointsDomainEntities.entities,
 };
