@@ -9,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Team } from '../team/team.entity';
-import { TeamPoint } from './team-point.entity';
 
 @Entity('point_transactions', { comment: '积分交易记录表' })
 export class PointTransaction {
@@ -33,7 +32,8 @@ export class PointTransaction {
   @Column({
     type: 'varchar',
     length: 50,
-    comment: '交易类型：consumption-积分消耗，recharge-积分充值，initial_grant-初始积分发放，adjustment-积分调整',
+    comment:
+      '交易类型：consumption-积分消耗，recharge-积分充值，initial_grant-初始积分发放，adjustment-积分调整',
   })
   @Index()
   type: PointTransactionType;

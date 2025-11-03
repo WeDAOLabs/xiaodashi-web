@@ -31,11 +31,7 @@ import {
   teamEntities,
 } from './team';
 
-import {
-  TeamPoint,
-  PointTransaction,
-  pointsEntities,
-} from './points';
+import { TeamPoint, PointTransaction, pointsEntities } from './points';
 
 // 导出所有实体（保持向后兼容）
 export {

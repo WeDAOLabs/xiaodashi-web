@@ -3,9 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 // import { ConfigService } from '@nestjs/config'; // 仅用于测试模块配置
 import { AuthenticatedUser, TeamRoleType, TeamTier } from '@xiaodashi/shared';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import {
-  TeamRoleGuard,
-} from './guards/team-role.guard';
+import { TeamRoleGuard } from './guards/team-role.guard';
 import { TeamController } from './team.controller';
 import { TeamService } from './team.service';
 // import type { Repository } from 'typeorm'; // 仅用于类型定义

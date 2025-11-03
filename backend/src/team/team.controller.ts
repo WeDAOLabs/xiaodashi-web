@@ -69,7 +69,7 @@ interface RequestWithUser {
 @UseGuards(JwtAuthGuard)
 @Controller('v1/teams')
 export class TeamController {
-  constructor(private readonly teamService: TeamService) { }
+  constructor(private readonly teamService: TeamService) {}
 
   /**
    * 获取用户所属团队列表

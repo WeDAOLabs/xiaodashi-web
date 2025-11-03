@@ -28,7 +28,8 @@ export class TeamPoint {
     precision: 19,
     scale: 4,
     default: 0,
-    comment: '当前积分余额，支持4位小数精度，范围-999999999999.9999到999999999999.9999',
+    comment:
+      '当前积分余额，支持4位小数精度，范围-999999999999.9999到999999999999.9999',
   })
   @Index()
   balance: number;
@@ -37,7 +38,8 @@ export class TeamPoint {
     type: 'varchar',
     length: 20,
     default: PointStatus.ACTIVE,
-    comment: '积分状态：active-激活状态，frozen-冻结状态，expired-过期状态，默认激活状态',
+    comment:
+      '积分状态：active-激活状态，frozen-冻结状态，expired-过期状态，默认激活状态',
   })
   @Index()
   status: PointStatus;

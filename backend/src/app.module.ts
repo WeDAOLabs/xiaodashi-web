@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { SessionModule } from './session/session.module';
 import { SecurityModule } from './security/security.module';
 import { TeamModule } from './team/team.module';
+import { PointsModule } from './points/points.module';
 import { configs } from './config';
 import { entities } from './database/entities';
 
@@ -51,6 +52,7 @@ import { entities } from './database/entities';
     SessionModule,
     SecurityModule,
     TeamModule,
+    PointsModule,
   ],
   controllers: [],
   providers: [],
